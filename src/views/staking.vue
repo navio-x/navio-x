@@ -58,9 +58,11 @@
 <div class="p-4 overflow-auto bg-zinc-900 text-white">
     <div v-if="staked_commitments&&Object.keys(staked_commitments).length>0">
         <h3>Staked Commitments</h3>
-        <div v-for="(commitment,index) in staked_commitments" class="bg-zinc-800 border-b mt-5 p-3 border-zinc-800 dark:bg-zinc-800 dark:border-zinc-950 border-zinc-950 hover:bg-zinc-900 dark:hover:bg-zinc-900">
+        <div v-for="(commitment,index) in staked_commitments" class="bg-zinc-800 border-b mt-5 p-3 border-zinc-700 dark:bg-zinc-800 dark:border-zinc-700 border-zinc-950 hover:bg-zinc-900 dark:hover:bg-zinc-900">
             <span class="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">{{index+1}}</span>
+            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Amount : {{commitment.amount}}</div>
             <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Commitment : {{commitment.commitment}}</div>
+            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">TX Hash : {{commitment.tx_hash}}</div>
             <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Value : {{commitment.value}}</div>
             <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Gamma : {{commitment.gamma}}</div>
         </div>

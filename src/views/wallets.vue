@@ -16,7 +16,7 @@
         <div class="p-6 space-y-6">
           <div>
             <label for="wallet_name" class="block mb-2 text-sm font-medium dark:text-white text-white">Wallet name</label>
-            <input type="text" autofocus id="wallet_name" v-model="new_wallet_name" class="bg-zinc-800 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+            <input type="text" autofocus id="wallet_name" v-model="new_wallet_name" class="bg-zinc-800 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
           </div>
         </div>
         <!-- Modal footer -->
@@ -52,7 +52,7 @@
 <p>No wallet loaded.</p>
 </div>!-->
 
-<p v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">Click on the wallet you want to activate or deactivate</p>
+<p v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">Click on the wallet you want to load or unload</p>
 <div class="w-48 mt-3 space-y-3 ftext-white dark:text-white" v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">
   <!--<p>All wallets : {{Object.keys(all_wallets.wallets).length}}</p>!-->
   <label class="w-full relative inline-flex items-center cursor-pointer" v-for="wallet in all_wallets.wallets">
@@ -61,8 +61,7 @@
     <span class="ms-3 text-sm font-medium dark:text-gray-300 text-gray-300">{{wallet.name}}</span>
   </label>
 
-
-  <h3 class="mb-4 font-semibold dark:text-white text-white">Active Wallet : </h3>
+  <h3 class="mb-4 font-semibold dark:text-white text-white">Change Active Wallet : </h3>
   <div class="flex" v-for="wallet in all_wallets.wallets">
     <input type="radio" name="hs-default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-gray-800 dark:bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" :id="'lr_'+wallet.name" v-bind:value="wallet.name" v-model="active_wallet" v-on:change="set_active_wallet(wallet)">
     <label :for="'lr_'+wallet.name" class="text-sm ms-2 dark:text-gray-400 text-gray-400">{{wallet.name}}</label>
@@ -138,6 +137,10 @@
             console.log("loading wallet -> " + wallet.name);
             console.log(r);
             vm.listwallets();
+            if (!this.active_wallet)
+            {
+              vm.set_active_wallet(wallet);
+            }
           });
         }
         else if (!wallet.checked)
