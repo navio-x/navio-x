@@ -158,7 +158,7 @@ function startProcess()
     bShell=true;
   }
   let rpcpassword="y";
-  var parameters = ["--testnet --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community"];
+  var parameters = ["--testnet --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community -debug=net"];
   console.log("Daemon Parameters : [" + parameters + "]");
   const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
   console.log("Platform : "+process.platform);
@@ -192,6 +192,8 @@ function startProcess()
         newProcess.on('exit', (code) => {
           newProcess=null;
           console.log("Daemon stopped. Exit Code : "+code);
+          app.quit()
+          process.exit(0)          
         });
         newProcess.stdout.on('data', (data) =>
         {
@@ -233,6 +235,8 @@ function startProcess()
       newProcess.on('exit', (code) => {
         newProcess=null;
         console.log("Daemon stopped. Exit Code : "+code);
+        app.quit()
+        process.exit(0)
       });
       newProcess.stdout.on('data', (data) =>
       {

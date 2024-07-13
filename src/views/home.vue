@@ -71,7 +71,7 @@
 								<span class="bg-gray-700 text-gray-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{{format(tx.time,'DD.MM.YY&nbsp;HH:mm:ss')}}</span>
 							</td>
 							<td class="p-3">
-								<span class="bg-yellow-900 text-yellow-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">{{tx.blockheight}}</span>
+								<span v-if="tx.blockheight" class="bg-yellow-900 text-yellow-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">{{tx.blockheight}}</span>
 							</td>
 							<td class="p-3">
 								<span v-if="tx.label" class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{tx.label}}</span>
@@ -96,7 +96,7 @@
 							</td>
 						</tr>
 					</table>
-					<div v-else class="dark:text-white text-white">No transaction found.</div>
+					<div v-else class="dark:text-white text-white">No recent transaction found.</div>
 				</div>
 			</div>
 		</div>
