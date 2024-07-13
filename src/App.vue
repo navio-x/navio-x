@@ -301,6 +301,9 @@
         <span v-if="headers" class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400">
             {{(blocks==headers?"Synced":"Syncing...")}}
         </span>
+        <span v-else class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400">
+            Initializing...
+        </span>
     </div>
 
 </div>
