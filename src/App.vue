@@ -362,7 +362,7 @@
           blocks:0,
           headers:0,
           chain:undefined,
-          networkinfo:{},
+          networkinfo:undefined,
           remember:false,
           auto_login:false
       }
