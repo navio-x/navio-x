@@ -133,7 +133,7 @@ function startProcess()
   let daemonPath="";
   let rpcuser="x";
   let coin={
-    "daemon_file_linux":"naviodx",
+    "daemon_file_linux":"naviod",
     "daemon_file_osx":"naviod",
     "daemon_file_windows":"naviod.exe"
   };

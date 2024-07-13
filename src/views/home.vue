@@ -193,6 +193,7 @@
 			this.timer = setInterval(() => 
 			{
 				this.getbalance();
+				this.listtransactions();
 			},
 			1000);
 		},
