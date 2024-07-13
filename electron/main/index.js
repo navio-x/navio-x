@@ -177,7 +177,6 @@ function startProcess()
       {
         if (err)
         {
-          bError=false;
           console.log(err);
           alert("Daemon start failed->"+executablePath+"->"+err.message);
         }
@@ -215,11 +214,10 @@ function startProcess()
   else
   {
     console.log(executablePath);
-    newProcess=child(coin.daemon_file_windows, parameters, defaults, function(err, data)
+    newProcess=spawn(coin.daemon_file_windows, parameters, defaults, function(err, data)
     {
       if (err)
       {
-        bError=false;
         console.log(err);
         alert("Daemon start failed -> "+err.message);
       }
