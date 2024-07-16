@@ -13,13 +13,33 @@ import VueClipboard from 'vue-clipboard2';
 const store = createStore({
   state () {
     return {
-      active_wallet: 0
+      active_wallet: undefined,
+      is_staking_active: false,
+      network:undefined,
+      rpcuser:undefined,
+      rpcpassword:undefined
     }
   },
   mutations: {
     set_active_wallet (state,payload)
     {
       state.active_wallet=payload;
+    },
+    set_staking_active (state,payload)
+    {
+      state.is_staking_active=payload;
+    },
+    set_network (state,payload)
+    {
+      state.network=payload;
+    },
+    set_rpcuser (state,payload)
+    {
+      state.rpcuser=payload;
+    },
+    set_rpcpassword (state,payload)
+    {
+      state.rpcpassword=payload;
     }
   }
 })

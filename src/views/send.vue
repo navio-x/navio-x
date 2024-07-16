@@ -1,10 +1,10 @@
 <template>
-  <div class="h-full dark:bg-zinc-800 bg-zinc-800 dark:text-white text-white">
+  <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
     <div class="p-4">
       <h3>Send</h3>
     </div>
     <div class="w-full mx-auto">
-      <div class="mx-auto">
+      <div class="p-3 mx-auto">
         <div class="relative z-10 bg-white rounded-xl p-4 dark:bg-zinc-800 bg-zinc-800">
           <div class="mb-4 sm:mb-8">
             <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Address (xNAV)</label>

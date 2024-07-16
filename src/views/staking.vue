@@ -3,8 +3,8 @@
         <div class="w-full mb-1">
           <h3 class="p-4">Staking</h3>
       </div>
-      <div class="p-3">
-          <div id="alert-additional-content-5" class="p-4 border border-zinc-300 rounded-lg bg-zinc-800 border-zinc-600 dark:border-zinc-600 dark:bg-zinc-800" role="alert">
+      <div class="p-3 w-full">
+          <div id="alert-additional-content-5" class="p-4 rounded-lg bg-zinc-800 dark:bg-zinc-800" role="alert">
               <div class="flex items-center">
                 <svg class="flex-shrink-0 w-4 h-4 me-2 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"></path>
@@ -15,17 +15,24 @@
           <div class="mt-2 mb-4 text-sm text-gray-300 dark:text-gray-300">
             You can earn rewards by staking by locking your coins. You must have at least 100 NAV for staking. The rewards you will earn will vary depending on the amount you lock.
         </div>
-  <!--<div class="flex">
-    <button type="button" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-800">
-      <svg class="me-2 h-3 w-3 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
-        <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"></path>
+    </div>
+</div>
+<div class="flex p-3">
+    <button v-if="!$store.state.is_staking_active" v-on:click="start_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 -ms-1">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
       </svg>
-      View more
-    </button>
-    <button type="button" class="text-gray-800 bg-transparent border border-gray-700 hover:bg-gray-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-800 dark:text-gray-300 dark:hover:text-white" data-dismiss-target="#alert-additional-content-5" aria-label="Close">
-      Dismiss
-    </button>
-</div>!-->
+      Start Staking
+  </button>
+  <div v-else class="flex items-center w-full px-3 py-2 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
+      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <span class="sr-only">Info</span>
+    <div>
+        <span class="font-medium">Staker running...</span>
+    </div>
 </div>
 </div>
 <div class="flex p-3">
@@ -78,6 +85,7 @@
 </template>
 
 <script>
+    import { ipcRenderer } from 'electron';
     import ApexCharts from 'apexcharts';
     import Swal from 'sweetalert2';
     import '@sweetalert2/theme-dark/dark.scss';
@@ -201,6 +209,7 @@
               }
           }
 
+
       },
       series: [{
         name: 'Rewards',
@@ -227,6 +236,24 @@ methods:{
         }
     });
     },
+    start_staking : function()
+    {
+        let vm=this;
+        if (vm.$store.state.active_wallet)
+        {
+            console.log("Starting staking process...");
+            ipcRenderer.invoke('start-staker', vm.$store.state.network, vm.$store.state.active_wallet,vm.$store.state.rpcuser,vm.$store.state.rpcpassword);
+        }
+        else
+        {
+            Swal.fire({
+                title: 'Staking',
+                text: "Please select a wallet for start staking process.",
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
+    },
     lock_coins : function()
     {
         let vm=this;
@@ -245,15 +272,15 @@ methods:{
             }
             else
             {
-             vm.list_staked_commitments();
-             Swal.fire({
+               vm.list_staked_commitments();
+               Swal.fire({
                 title: 'Success!',
                 text: "Coins successfully locked.",
                 icon: 'success',
                 confirmButtonText: 'OK'
             })
-         }
-     });
+           }
+       });
     },
     unlock_coins : function()
     {
@@ -273,19 +300,25 @@ methods:{
             }
             else
             {
-             vm.list_staked_commitments();
-             Swal.fire({
+               vm.list_staked_commitments();
+               Swal.fire({
                 title: 'Success!',
                 text: "Coins successfully unlocked.",
                 icon: 'success',
                 confirmButtonText: 'OK'
             })
-         }
-     });
+           }
+       });
     },
 },
-mounted() {
+mounted()
+{
+    let vm=this;
     this.list_staked_commitments();
+    ipcRenderer.on('start-staker-success', (_event, pid) =>
+    {
+        vm.$store.commit('set_staking_active',true);
+    });
 }
 }
 </script>

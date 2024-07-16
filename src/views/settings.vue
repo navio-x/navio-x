@@ -19,7 +19,7 @@
         <a href="#">
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-white dark:text-white">Stop Navio Daemon</h5>
         </a>
-        <p class="mb-3 font-normal text-gray-400 dark:text-gray-400">The Navio daemon providing wallet services continues to run in the background. As a result of stopping this service, your Navio X wallets will be unavailable until the service is restarted.</p>
+        <p class="mb-3 font-normal text-gray-400 dark:text-gray-400">The Navio daemon providing wallet services continues to run in the background. As a result of stopping this service, your Navio X wallets will be unavailable until the daemon is restarted.</p>
         <button v-on:click="stop_daemon()" class="inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           Stop Daemon
         </button>

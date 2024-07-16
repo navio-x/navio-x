@@ -36,6 +36,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
     let win=null;
+    let daemonBinaryStarted=false;
 // Here, you can also use other preload
     const preload = join(__dirname, '../preload/index.js')
     const url = process.env.VITE_DEV_SERVER_URL
@@ -57,16 +58,26 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         },
       })
 
-  win.setMenu(null);
-      //win.webContents.openDevTools();
+      win.setMenu(null);
+  //win.webContents.openDevTools();
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
     // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {
     win.loadFile(indexHtml)
-    startProcess();
+    startDaemon();
   }
+
+  win.on('close', e =>
+  {
+    console.log("on-close");
+    if (daemonBinaryStarted)
+    {
+      e.preventDefault();
+      win.webContents.send('stop-daemon',5);
+    }
+  });
 
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
@@ -82,6 +93,23 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 }
 
 app.whenReady().then(createWindow)
+
+app.on('before-quit', (event) => {
+  if (daemonBinaryStarted)
+  {
+
+    console.log("before-quit")
+    event.preventDefault();
+  }
+})
+
+app.on('will-quit', (event) => {
+  if (daemonBinaryStarted)
+  {
+    console.log("will-quit")
+    event.preventDefault();
+  }
+})
 
 app.on('window-all-closed', () => {
   win = null
@@ -106,23 +134,19 @@ app.on('activate', () => {
 })
 
 // New window example arg: new windows url
-ipcMain.handle('open-win', (_, arg) => {
-  const childWindow = new BrowserWindow({
+ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
+  startStaker(network,wallet,rpcuser,rpcpassword);
+  /*const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
     },
   })
-
-  if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`)
-  } else {
-    childWindow.loadFile(indexHtml, { hash: arg })
-  }
+  childWindow.loadURL(`${arg}`);*/
 })
 
-function startProcess()
+function startDaemon()
 {
   let bShell=false;
   let binDir=__dirname;
@@ -130,35 +154,35 @@ function startProcess()
   if (process.platform === 'darwin') binDir+="/";
   if (process.platform === 'linux') binDir+="/";
   binDir+="bin";
-  let daemonPath="";
+  let binaryPath="";
   let rpcuser="x";
   let coin={
-    "daemon_file_linux":"naviod",
-    "daemon_file_osx":"naviod",
-    "daemon_file_windows":"naviod.exe"
+    "f_linux":"naviod",
+    "f_osx":"naviod",
+    "f_windows":"naviod.exe"
   };
-  let daemonBinaryFileName="";
+  let binaryFileName="";
   let executablePath="";
   if (process.platform=="win32")
   {
-    executablePath=binDir+"\\"+coin.daemon_file_windows;
-    daemonBinaryFileName=coin.daemon_file_windows;
+    executablePath=binDir+"\\"+coin.f_windows;
+    binaryFileName=coin.f_windows;
     bShell=false;
   }
   if (process.platform=="linux")
   {
-    executablePath=binDir+"/./"+coin.daemon_file_linux;
-    daemonBinaryFileName=coin.daemon_file_linux;
+    executablePath=binDir+"/./"+coin.f_linux;
+    binaryFileName=coin.f_linux;
     bShell=true;
   }
   if (process.platform=="darwin")
   {
-    executablePath=binDir+"/./"+coin.daemon_file_osx;
-    daemonBinaryFileName=coin.daemon_file_osx;
+    executablePath=binDir+"/./"+coin.f_osx;
+    binaryFileName=coin.f_osx;
     bShell=true;
   }
   let rpcpassword="y";
-  var parameters = ["--testnet --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community -debug=net"];
+  var parameters = ["--testnet --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community -debugexclude=libevent"];
   console.log("Daemon Parameters : [" + parameters + "]");
   const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
   console.log("Platform : "+process.platform);
@@ -167,31 +191,178 @@ function startProcess()
   var newProcess;
   if (process.platform=="linux" || process.platform=="darwin")
   {
-    if (process.platform=="linux") daemonPath=binDir+"/"+coin.daemon_file_linux;
-    if (process.platform=="darwin") daemonPath=binDir+"/"+coin.daemon_file_osx;
-    console.log("Setting daemon file as executable " + daemonPath);
+    if (process.platform=="linux") binaryPath=binDir+"/"+coin.f_linux;
+    if (process.platform=="darwin") binaryPath=binDir+"/"+coin.f_osx;
+    console.log("Setting daemon file as executable " + binaryPath);
+    var chmodProcess=execFile("chmod +x " + binaryPath, null, defaults, function(err, data)
+    {
+      newProcess=spawn(executablePath, parameters, defaults, function(err, data)
+      {
+        if (err)
+        {
+          daemonBinaryStarted=false;
+          console.log(err);
+          console.log("Failed to start daemon->"+executablePath+"->"+err.message);
+        }
+      });
+      newProcess.on('error', (err) => {
+        daemonBinaryStarted=false;
+        console.log('Failed to start daemon->'+executablePath+"->"+err.message);
+      });   
+      if (newProcess.pid!=undefined)
+      {
+        daemonBinaryStarted=true;
+        console.log("Daemon started. PID:" + newProcess.pid);
+        newProcess.on('exit', (code) => {
+          if (daemonBinaryStarted)
+          {
+            newProcess=null;
+            console.log("Daemon stopped. Exit Code : "+code);
+            app.quit()
+            process.exit(0);
+          }
+        });
+        newProcess.stdout.on('data', (data) =>
+        {
+          console.log(data.toString());
+        });
+        newProcess.stderr.on("data", function (stderr) {
+          console.log("stderr : " + stderr);
+          daemonBinaryStarted=false;
+          if (!stderr.toString().startsWith("Warning"))
+          {
+            console.log("Failed to start daemon->"+stderr.toString());
+          }     
+        });
+      }
+      else
+      {
+        daemonBinaryStarted=false;
+        console.log("Failed to start daemon.");
+      }
+    });
+  }
+  else
+  {
+    console.log(executablePath);
+    newProcess=spawn(coin.f_windows, parameters, defaults, function(err, data)
+    {
+      if (err)
+      {
+        daemonBinaryStarted=false;
+        console.log(err);
+        console.log("Failed to start daemon->"+err.message);
+      }
+    });
+    newProcess.on('error', (err) => {
+      daemonBinaryStarted=false;
+      console.log('Failed to start daemon->'+err.message);
+      console.log(err);
+    });
+    if (newProcess.pid!=undefined)
+    {
+      daemonBinaryStarted=true;
+      console.log("Binary started. PID:" + newProcess.pid);
+      newProcess.on('exit', (code) => {
+        daemonBinaryStarted=false;
+        newProcess=null;
+        console.log("Daemon stopped. Exit Code : "+code);
+        app.quit()
+        process.exit(0)
+      });
+      newProcess.stdout.on('data', (data) =>
+      {
+        console.log(data.toString());
+      });
+      newProcess.stderr.on("data", function (stderr) {
+        daemonBinaryStarted=false;
+        console.log("stderr : " + stderr);
+        if (!stderr.toString().startsWith("Warning"))
+        {
+          console.log("Failed to start daemon.",stderr.toString());
+        }     
+      });
+    }
+    else
+    {
+      daemonBinaryStarted=false;
+      console.log("Failed to start daemon.");
+    }
+  }
+}
+
+function startStaker(network,wallet,rpcuser,rpcpassword)
+{
+  console.log("Starting staker...");
+  console.log(`${network}`);
+  console.log(`${wallet}`);
+  console.log(`${rpcuser}`);
+  console.log(`${rpcpassword}`);
+  let bShell=false;
+  let binDir=__dirname;
+  if (process.platform === 'win32') binDir+="\\";
+  if (process.platform === 'darwin') binDir+="/";
+  if (process.platform === 'linux') binDir+="/";
+  binDir+="bin";
+  let binaryPath="";
+  let coin={
+    "f_linux":"navio-staker",
+    "f_osx":"navio-staker",
+    "f_windows":"navio-staker.exe"
+  };
+  let binaryFileName="";
+  let executablePath="";
+  if (process.platform=="win32")
+  {
+    executablePath=binDir+"\\"+coin.f_windows;
+    binaryFileName=coin.f_windows;
+    bShell=false;
+  }
+  if (process.platform=="linux")
+  {
+    executablePath=binDir+"/./"+coin.f_linux;
+    binaryFileName=coin.f_linux;
+    bShell=true;
+  }
+  if (process.platform=="darwin")
+  {
+    executablePath=binDir+"/./"+coin.f_osx;
+    binaryFileName=coin.f_osx;
+    bShell=true;
+  }
+  var parameters = ["-"+network+" -wallet="+wallet+" -rpcuser="+rpcuser+" -rpcpassword="+rpcpassword];
+  console.log("Binary Parameters : [" + parameters + "]");
+  const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
+  console.log("Platform : "+process.platform);
+  console.log("App Path : "+app.getAppPath());
+  console.log("Architecture : "+process.arch);
+  var newProcess;
+  if (process.platform=="linux" || process.platform=="darwin")
+  {
+    if (process.platform=="linux") binaryPath=binDir+"/"+coin.f_linux;
+    if (process.platform=="darwin") binaryPath=binDir+"/"+coin.f_osx;
+    console.log("Setting binary file as executable " + binaryPath);
     var buttons = ['OK', 'Cancel'];
-    var chmodProcess=execFile("chmod +x " + daemonPath, null, defaults, function(err, data)
+    var chmodProcess=execFile("chmod +x " + binaryPath, null, defaults, function(err, data)
     {
       newProcess=spawn(executablePath, parameters, defaults, function(err, data)
       {
         if (err)
         {
           console.log(err);
-          alert("Daemon start failed->"+executablePath+"->"+err.message);
+          console.log("Binary start failed->"+executablePath+"->"+err.message);
         }
       });
       newProcess.on('error', (err) => {
-        console.log('Failed to start daemon->'+executablePath+"->"+err.message);
-        alert('Failed to start daemon->'+executablePath+"->"+err.message);
+        console.log('Failed to start binary->'+executablePath+"->"+err.message);
       });   
       if (newProcess.pid!=undefined)
       {
-        console.log("Daemon started. PID:" + newProcess.pid);
-        if (!win) createMainWindow();
+        win.webContents.send('start-staker-success',newProcess.pid);
+        console.log("Binary started. PID:" + newProcess.pid);
         newProcess.on('exit', (code) => {
           newProcess=null;
-          console.log("Daemon stopped. Exit Code : "+code);
+          console.log("Binary stopped. Exit Code : "+code);
           app.quit()
           process.exit(0)          
         });
@@ -203,38 +374,38 @@ function startProcess()
           console.log("stderr : " + stderr);
           if (!stderr.toString().startsWith("Warning"))
           {
-            alert("Daemon start failed->"+stderr.toString());
+            console.log("Binary start failed->"+stderr.toString());
           }     
         });
       }
       else
       {
-        console.log("Daemon start failed.");
+        console.log("Binary start failed.");
       }
     });
   }
   else
   {
     console.log(executablePath);
-    newProcess=spawn(coin.daemon_file_windows, parameters, defaults, function(err, data)
+    newProcess=spawn(coin.f_windows, parameters, defaults, function(err, data)
     {
       if (err)
       {
         console.log(err);
-        alert("Daemon start failed -> "+err.message);
+        console.log("Binary start failed -> "+err.message);
       }
     });
     newProcess.on('error', (err) => {
-      console.log('Failed to start daemon.'+err.message);
-      alert(err);
+      console.log('Failed to start Binary.'+err.message);
+      console.log(err);
     });
     if (newProcess.pid!=undefined)
     {
-      console.log("Daemon started. PID:" + newProcess.pid);
-      if (!win) createMainWindow();
+      win.webContents.send('start-staker-success',newProcess.pid);
+      console.log("Binary started. PID:" + newProcess.pid);
       newProcess.on('exit', (code) => {
         newProcess=null;
-        console.log("Daemon stopped. Exit Code : "+code);
+        console.log("Binary stopped. Exit Code : "+code);
         app.quit()
         process.exit(0)
       });
@@ -246,13 +417,13 @@ function startProcess()
         console.log("stderr : " + stderr);
         if (!stderr.toString().startsWith("Warning"))
         {
-          alert("Daemon start failed",stderr.toString());
+          console.log("Binary start failed",stderr.toString());
         }     
       });
     }
     else
     {
-      console.log("Daemon start failed.");
+      console.log("Binary start failed.");
     }
   }
 }
