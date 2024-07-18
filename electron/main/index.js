@@ -49,7 +49,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Main window',
-        width:1024,
+        width:1100,
         height:700,
         icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
         webPreferences: {

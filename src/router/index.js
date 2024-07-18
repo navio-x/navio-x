@@ -8,6 +8,7 @@ import Console from "../views/console.vue";
 import Settings from "../views/settings.vue";
 import History from "../views/history.vue";
 import Staking from "../views/staking.vue";
+import Peers from "../views/peers.vue";
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: Settings,
+  },
+  {
+    path: "/peers",
+    name: "Peers",
+    component: Peers,
   }
 ];
 

@@ -74,10 +74,10 @@
 								<span v-if="tx.blockheight" class="bg-yellow-900 text-yellow-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">{{tx.blockheight}}</span>
 							</td>
 							<td class="p-3">
-								<span v-if="tx.label" class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{tx.label}}</span>
+								<span v-if="tx.label" class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 whitespace-nowrap">{{tx.label}}</span>
 							</td>
 							<td class="p-3">
-								<span class="bg-gray-700 text-gray-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{{tx.category}}</span>
+								<span class="bg-gray-700 text-gray-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 whitespace-nowrap">{{tx.category}}</span>
 
 							</td>
 							<td class="p-3">
