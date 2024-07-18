@@ -1,5 +1,6 @@
 <template>
-  <div v-if="$store.state.active_wallet" class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+<div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+  <div v-if="$store.state.active_wallet">
     <div class="p-4">
       <h3>Send</h3>
     </div>
@@ -38,6 +39,7 @@
       <span class="ms-3">Wallets</span>
     </a>
   </router-link>
+</div>
 </div>
 </template>
 <script>

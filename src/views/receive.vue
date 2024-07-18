@@ -26,7 +26,8 @@
 </div>
 </div>
 </div>
-<div v-if="$store.state.active_wallet" class="h-full bg-zinc-900 text-white">
+<div class="h-full bg-zinc-900 text-white">
+<div v-if="$store.state.active_wallet">
     <div class="w-full mb-5">
       <h3 class="p-4">Receive</h3>
       <button id="button" v-on:click="generate_new_address()" type="button" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -110,6 +111,7 @@
 </a>
 </router-link>
 </div>
+    </div>
 </template>
 <script>
     import QRCodeStyling from "qr-code-styling";

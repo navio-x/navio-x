@@ -1,13 +1,14 @@
 <template>
-    <div v-if="$store.state.active_wallet" class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
-        <div class="p-4">
-            <h3>History</h3>
-        </div>
-        <div class="p-4 overflow-auto dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs&&Object.keys(txs).length>0">
-                <table class="w-full text-sm text-left rtl:text-right dark:text-gray-400 text-gray-400">
-                    <thead class="text-xs uppercase bg-zinc-800 dark:bg-zinc-800 dark:text-gray-400 text-gray-400">
-                        <tr>
+    <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+        <div v-if="$store.state.active_wallet">
+            <div class="p-4">
+                <h3>History</h3>
+            </div>
+            <div class="p-4 overflow-auto dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs&&Object.keys(txs).length>0">
+                    <table class="w-full text-sm text-left rtl:text-right dark:text-gray-400 text-gray-400">
+                        <thead class="text-xs uppercase bg-zinc-800 dark:bg-zinc-800 dark:text-gray-400 text-gray-400">
+                            <tr>
                            <!--<th scope="col" class="px-6 py-3">
                                 &nbsp;
                             </th>!-->
@@ -84,6 +85,7 @@
         <span class="ms-3">Wallets</span>
     </a>
 </router-link>
+</div>
 </div>
 </template>
 
