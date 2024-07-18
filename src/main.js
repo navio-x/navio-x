@@ -15,6 +15,7 @@ const store = createStore({
     return {
       active_wallet: undefined,
       is_staking_active: false,
+      is_daemon_auto_started:false,
       network:undefined,
       rpcuser:undefined,
       rpcpassword:undefined
@@ -28,6 +29,10 @@ const store = createStore({
     set_staking_active (state,payload)
     {
       state.is_staking_active=payload;
+    },
+    set_daemon_auto_started (state,payload)
+    {
+      state.is_daemon_auto_started=payload;
     },
     set_network (state,payload)
     {

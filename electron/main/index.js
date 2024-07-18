@@ -1,8 +1,9 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
-import { release } from 'node:os'
-import { join } from 'node:path'
+import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { release } from 'node:os';
+import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { spawn } from 'node:child_process';
+const crypto = require('crypto');
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -36,12 +37,15 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
     let win=null;
-    let daemonBinaryStarted=false;
 // Here, you can also use other preload
     const preload = join(__dirname, '../preload/index.js')
     const url = process.env.VITE_DEV_SERVER_URL
     const indexHtml = join(process.env.DIST, 'index.html')
-
+    const randomBytes=crypto.randomBytes(256);
+    const rpcuser=crypto.createHash('sha256').update(randomBytes, 'utf8').digest('hex');
+    const rpcpassword=crypto.createHash('md5').update(randomBytes, 'utf8').digest('hex');
+    const network="testnet";
+    var daemonBinaryStarted=false;
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Main window',
@@ -59,28 +63,31 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       })
 
       win.setMenu(null);
-  //win.webContents.openDevTools();
+      //win.webContents.openDevTools();
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
     // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {
     win.loadFile(indexHtml)
-    startDaemon();
   }
 
   win.on('close', e =>
   {
     console.log("on-close");
+    console.log("daemon binary started :" + daemonBinaryStarted);
     if (daemonBinaryStarted)
     {
+      console.log("stop-daemon fired");
       e.preventDefault();
       win.webContents.send('stop-daemon',5);
     }
   });
 
   // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
+  win.webContents.on('did-finish-load', () =>
+  {
+    startDaemon();
     win?.webContents.send('main-process-message', new Date().toLocaleString())
   })
 
@@ -97,7 +104,6 @@ app.whenReady().then(createWindow)
 app.on('before-quit', (event) => {
   if (daemonBinaryStarted)
   {
-
     console.log("before-quit")
     event.preventDefault();
   }
@@ -133,7 +139,6 @@ app.on('activate', () => {
   }
 })
 
-// New window example arg: new windows url
 ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
   startStaker(network,wallet,rpcuser,rpcpassword);
   /*const childWindow = new BrowserWindow({
@@ -146,6 +151,10 @@ ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
   childWindow.loadURL(`${arg}`);*/
 })
 
+ipcMain.handle('shell-open-item', (_, path) => {
+  shell.showItemInFolder(`${path}`);
+})
+
 function startDaemon()
 {
   let bShell=false;
@@ -155,7 +164,6 @@ function startDaemon()
   if (process.platform === 'linux') binDir+="/";
   binDir+="bin";
   let binaryPath="";
-  let rpcuser="x";
   let coin={
     "f_linux":"naviod",
     "f_osx":"naviod",
@@ -181,13 +189,13 @@ function startDaemon()
     binaryFileName=coin.f_osx;
     bShell=true;
   }
-  let rpcpassword="y";
-  var parameters = ["--testnet --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community -debugexclude=libevent"];
-  console.log("Daemon Parameters : [" + parameters + "]");
+  const substr = 'Starting HTTP server';
   const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
+  var parameters = ["--"+network+" --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community -debugexclude=libevent"];
+  console.log("Daemon Parameters : [" + parameters + "]");
   console.log("Platform : "+process.platform);
-  console.log("App Path : "+app.getAppPath());
   console.log("Architecture : "+process.arch);
+  console.log("App Path : "+app.getAppPath());
   var newProcess;
   if (process.platform=="linux" || process.platform=="darwin")
   {
@@ -208,6 +216,7 @@ function startDaemon()
       newProcess.on('error', (err) => {
         daemonBinaryStarted=false;
         console.log('Failed to start daemon->'+executablePath+"->"+err.message);
+        win.webContents.send('is-daemon-started',{started:false, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
       });   
       if (newProcess.pid!=undefined)
       {
@@ -224,20 +233,25 @@ function startDaemon()
         });
         newProcess.stdout.on('data', (data) =>
         {
-          console.log(data.toString());
+          console.log("*" + data.toString());
+          if (data.toString().includes(substr))
+          {
+            console.log("is-daemon-started fired");
+            win.webContents.send('is-daemon-started',{started:true, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
+          }
         });
         newProcess.stderr.on("data", function (stderr) {
           console.log("stderr : " + stderr);
-          daemonBinaryStarted=false;
           if (!stderr.toString().startsWith("Warning"))
           {
-            console.log("Failed to start daemon->"+stderr.toString());
-          }     
+            console.log(stderr.toString());
+          }    
         });
       }
       else
       {
         daemonBinaryStarted=false;
+        win.webContents.send('is-daemon-started',{started:false, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
         console.log("Failed to start daemon.");
       }
     });
@@ -250,19 +264,22 @@ function startDaemon()
       if (err)
       {
         daemonBinaryStarted=false;
+        win.webContents.send('is-daemon-started',{started:false, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
         console.log(err);
         console.log("Failed to start daemon->"+err.message);
       }
     });
     newProcess.on('error', (err) => {
       daemonBinaryStarted=false;
+      win.webContents.send('is-daemon-started',{started:false, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
       console.log('Failed to start daemon->'+err.message);
       console.log(err);
     });
     if (newProcess.pid!=undefined)
     {
       daemonBinaryStarted=true;
-      console.log("Binary started. PID:" + newProcess.pid);
+      win.webContents.send('is-daemon-started',{started:true, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
+      console.log("Daemon started. PID:" + newProcess.pid);
       newProcess.on('exit', (code) => {
         daemonBinaryStarted=false;
         newProcess=null;
@@ -272,20 +289,25 @@ function startDaemon()
       });
       newProcess.stdout.on('data', (data) =>
       {
-        console.log(data.toString());
+        console.log("*" + data.toString());
+        if (data.toString().includes(substr))
+        {
+          console.log("is-daemon-started fired");
+          win.webContents.send('is-daemon-started',{started:true, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
+        }        
       });
       newProcess.stderr.on("data", function (stderr) {
-        daemonBinaryStarted=false;
         console.log("stderr : " + stderr);
         if (!stderr.toString().startsWith("Warning"))
         {
-          console.log("Failed to start daemon.",stderr.toString());
+          console.log(stderr.toString());
         }     
       });
     }
     else
     {
       daemonBinaryStarted=false;
+      win.webContents.send('is-daemon-started',{started:false, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
       console.log("Failed to start daemon.");
     }
   }
