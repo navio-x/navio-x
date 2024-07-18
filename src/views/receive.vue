@@ -26,7 +26,7 @@
 </div>
 </div>
 </div>
-<div class="h-full bg-zinc-900 text-white">
+<div v-if="$store.state.active_wallet" class="h-full bg-zinc-900 text-white">
     <div class="w-full mb-5">
       <h3 class="p-4">Receive</h3>
       <button id="button" v-on:click="generate_new_address()" type="button" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -97,8 +97,20 @@
 </div>
 </div>
 </div>
-</template>
+<div class="p-4" v-else>
+  <p>No wallet loaded or selected.</p>
+  <p>You can create, load and activate a wallet in Wallets page.</p>
+  <router-link to="/wallets">
+    <a href="" class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+    </svg>
 
+    <span class="ms-3">Wallets</span>
+</a>
+</router-link>
+</div>
+</template>
 <script>
     import QRCodeStyling from "qr-code-styling";
     import Swal from 'sweetalert2';
@@ -121,131 +133,131 @@
             }
         },
         methods:{
-        set_active_address:function(address)
-        {
-            this.active_address=address.address;
-        },
-        docopy:function(t)
-        {
-            this.$copyText(t);
-            Toast.fire({
-              icon: 'success',
-              title: 'Copied',
-          });
-        },
-        list_all_addresses:function()
-        {
-            let vm=this;
-            this.client.command([{ method: "listreceivedbyaddress", parameters: [0,true] }]).then((r) =>
+            set_active_address:function(address)
             {
-              if (r[0].name=="RpcError"||r[0].code)
-              {
-                console.log("RpcError");
-                console.log(r);
-            }
-            else
-            { 
-                console.log(r[0]);
-                vm.all_addresses=r[0];
-            }
-        });
-        },
-        generate_new_address : function()
-        {
-            let vm=this;
-            this.client.command([{ method: "getnewaddress", parameters: {"label":"","address_type":"blsct"} }]).then((r) => 
+                this.active_address=address.address;
+            },
+            docopy:function(t)
             {
-                console.log(r);
-                if (r[0].name=="RpcError"||r[0].code)
+                this.$copyText(t);
+                Toast.fire({
+                  icon: 'success',
+                  title: 'Copied',
+              });
+            },
+            list_all_addresses:function()
+            {
+                let vm=this;
+                this.client.command([{ method: "listreceivedbyaddress", parameters: [0,true] }]).then((r) =>
                 {
+                  if (r[0].name=="RpcError"||r[0].code)
+                  {
                     console.log("RpcError");
-                    Swal.fire({
-                        title: 'Error!',
-                        text: r[0].message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    })
+                    console.log(r);
                 }
                 else
-                {
-                 vm.list_all_addresses();
-                 Swal.fire({
-                    title: 'Success!',
-                    text: "New address successfully generated.",
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                })
-             }
-         });
-        },
-        generate_block : function(n)
-        {
-            let vm=this;
-            this.client.command([{ method: "generatetoblsctaddress", parameters: {"nblocks":n,"address":vm.active_address} }]).then((r) => 
+                { 
+                    console.log(r[0]);
+                    vm.all_addresses=r[0];
+                }
+            });
+            },
+            generate_new_address : function()
             {
-                console.log(r);
-                if (r[0].name=="RpcError"||r[0].code)
+                let vm=this;
+                this.client.command([{ method: "getnewaddress", parameters: {"label":"","address_type":"blsct"} }]).then((r) => 
                 {
-                    console.log("RpcError");
-                    Swal.fire({
-                        title: 'Error!',
-                        text: r[0].message,
-                        icon: 'error',
+                    console.log(r);
+                    if (r[0].name=="RpcError"||r[0].code)
+                    {
+                        console.log("RpcError");
+                        Swal.fire({
+                            title: 'Error!',
+                            text: r[0].message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                    else
+                    {
+                       vm.list_all_addresses();
+                       Swal.fire({
+                        title: 'Success!',
+                        text: "New address successfully generated.",
+                        icon: 'success',
                         confirmButtonText: 'OK'
                     })
-                }
-                else
+                   }
+               });
+            },
+            generate_block : function(n)
+            {
+                let vm=this;
+                this.client.command([{ method: "generatetoblsctaddress", parameters: {"nblocks":n,"address":vm.active_address} }]).then((r) => 
                 {
-                 vm.list_all_addresses();
-                 Swal.fire({
-                    title: 'Success!',
-                    text: "New block successfully generated.",
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                })
-             }
-         });
-        },
-        show: function(address)
+                    console.log(r);
+                    if (r[0].name=="RpcError"||r[0].code)
+                    {
+                        console.log("RpcError");
+                        Swal.fire({
+                            title: 'Error!',
+                            text: r[0].message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                    else
+                    {
+                       vm.list_all_addresses();
+                       Swal.fire({
+                        title: 'Success!',
+                        text: "New block successfully generated.",
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                   }
+               });
+            },
+            show: function(address)
+            {
+               const qrCode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                type: "svg",
+                data: this.prefix+address,
+                image: "https://raw.githubusercontent.com/anquii/navcoin-assets/main/xnav/xnav-logo-border.svg",
+                dotsOptions: {
+                    color: "#4267b2",
+                    type: "rounded"
+                },
+                backgroundOptions: {
+                    color: "#e9ebee",
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 20
+                }
+            });
+
+               document.getElementById("canvas").innerHTML="";
+               qrCode.append(document.getElementById("canvas"));
+
+               this.qr_address=address;
+               this.modal.show();
+           },
+           hide: function()
+           {
+            this.modal.hide();
+        }
+    },
+    mounted() {
+        this.list_all_addresses();
+        initFlowbite();
+        this.modal=new Modal(document.querySelector('#modal'),
         {
-         const qrCode = new QRCodeStyling({
-            width: 300,
-            height: 300,
-            type: "svg",
-            data: this.prefix+address,
-            image: "https://raw.githubusercontent.com/anquii/navcoin-assets/main/xnav/xnav-logo-border.svg",
-            dotsOptions: {
-                color: "#4267b2",
-                type: "rounded"
-            },
-            backgroundOptions: {
-                color: "#e9ebee",
-            },
-            imageOptions: {
-                crossOrigin: "anonymous",
-                margin: 20
-            }
+            backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
         });
-
-         document.getElementById("canvas").innerHTML="";
-         qrCode.append(document.getElementById("canvas"));
-
-         this.qr_address=address;
-         this.modal.show();
-     },
-     hide: function()
-     {
-        this.modal.hide();
     }
-},
-mounted() {
-    this.list_all_addresses();
-    initFlowbite();
-    this.modal=new Modal(document.querySelector('#modal'),
-    {
-        backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
-    });
-}
 }
 </script>
 

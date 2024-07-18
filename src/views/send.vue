@@ -1,5 +1,4 @@
 <template>
-
   <div v-if="$store.state.active_wallet" class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
     <div class="p-4">
       <h3>Send</h3>
@@ -27,7 +26,7 @@
     </div>
   </div>
 </div>
-<div v-else>
+<div class="p-4" v-else>
   <p>No wallet loaded or selected.</p>
   <p>You can create, load and activate a wallet in Wallets page.</p>
   <router-link to="/wallets">
