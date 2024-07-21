@@ -1,6 +1,6 @@
 <template>
     <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
-        <div v-if="$store.state.active_wallet">
+        <div v-if="$store.state.active_wallet&&ready">
             <div class="p-4">
                 <h3>History</h3>
             </div>
@@ -70,10 +70,9 @@
             <div v-else>
                 <p>No transaction found.</p>
             </div>
-
         </div>
     </div>
-    <div class="p-4" v-else>
+    <div class="p-4" v-if="!$store.state.active_wallet">
       <p>No wallet loaded or selected.</p>
       <p>You can create, load and activate a wallet in Wallets page.</p>
       <router-link to="/wallets">
@@ -94,6 +93,7 @@
         data() {
           return {
             txs:[],
+            ready:false
         }
     },
     methods: {
@@ -104,6 +104,7 @@
             {
               if (r[0].name=="RpcError"||r[0].code)
               {
+                vm.ready=true;
                 console.log("RpcError");
                 console.log(r);
             }
@@ -111,6 +112,7 @@
             { 
                 console.log(r[0]);
                 vm.txs=r[0].reverse();
+                vm.ready=true;
             }
         });
         }

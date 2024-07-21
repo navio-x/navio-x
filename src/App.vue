@@ -319,9 +319,10 @@
 </div>
 
 <div class="w-full flex items-center p-2 space-x-4" title="Network Details">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-yellow-400">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-  </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
+</svg>
+
   <div class="w-16" :title="'Protocol version : '+networkinfo.protocolversion">
     <router-link to="/peers">
         <span class="flex items-center space-x-1 text-xs dark:text-gray-400 text-white whitespace-nowrap">
@@ -336,9 +337,16 @@
 </div>
 <div class="relative h-32 w-32" v-else>
     <div class="flex items-center p-2 mt-3 space-x-4 justify-self-end">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-500">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-      </svg>
+<svg class="pl" viewBox="0 0 128 128" width="128px" height="128px" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="pl-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="hsl(193,90%,55%)"></stop>
+            <stop offset="100%" stop-color="hsl(223,90%,55%)"></stop>
+        </linearGradient>
+    </defs>
+    <circle class="pl__ring" r="56" cx="64" cy="64" fill="none" stroke="hsla(0,10%,10%,0.1)" stroke-width="16" stroke-linecap="round"></circle>
+    <path class="pl__worm" d="M92,15.492S78.194,4.967,66.743,16.887c-17.231,17.938-28.26,96.974-28.26,96.974L119.85,59.892l-99-31.588,57.528,89.832L97.8,19.349,13.636,88.51l89.012,16.015S81.908,38.332,66.1,22.337C50.114,6.156,36,15.492,36,15.492a56,56,0,1,0,56,0Z" fill="none" stroke="url(#pl-grad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="44 1111" stroke-dashoffset="10"></path>
+</svg>
       <div class="w-16">
         <span title="Active Wallet" class="text-xs dark:text-white text-white whitespace-nowrap" v-if="client">Initializing...</span>
         <span class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400 whitespace-nowrap">
@@ -605,7 +613,92 @@ mounted()
 }
 </script>
 <style scoped>
+.pl,
+.pl__worm {
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
 
+.pl {
+  animation-name: bump9;
+  animation-timing-function: linear;
+  width: 8em;
+  height: 8em;
+}
+
+.pl__ring {
+  stroke: hsla(var(--hue),10%,10%,0.1);
+  transition: stroke 0.3s;
+}
+
+.pl__worm {
+  animation-name: worm9;
+  animation-timing-function: cubic-bezier(0.42,0.17,0.75,0.83);
+}
+
+/* Animations */
+@keyframes bump9 {
+  from,
+  42%,
+  46%,
+  51%,
+  55%,
+  59%,
+  63%,
+  67%,
+  71%,
+  74%,
+  78%,
+  81%,
+  85%,
+  88%,
+  92%,
+  to {
+    transform: translate(0,0);
+  }
+
+  44% {
+    transform: translate(1.33%,6.75%);
+  }
+
+  53% {
+    transform: translate(-16.67%,-0.54%);
+  }
+
+  61% {
+    transform: translate(3.66%,-2.46%);
+  }
+
+  69% {
+    transform: translate(-0.59%,15.27%);
+  }
+
+  76% {
+    transform: translate(-1.92%,-4.68%);
+  }
+
+  83% {
+    transform: translate(9.38%,0.96%);
+  }
+
+  90% {
+    transform: translate(-4.55%,1.98%);
+  }
+}
+
+@keyframes worm9 {
+  from {
+    stroke-dashoffset: 10;
+  }
+
+  25% {
+    stroke-dashoffset: 295;
+  }
+
+  to {
+    stroke-dashoffset: 1165;
+  }
+}
     @font-face {
       font-family: 'Quicksand';
       font-style: normal;

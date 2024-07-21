@@ -191,7 +191,7 @@ function startDaemon()
   }
   const substr = 'Starting HTTP server';
   const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
-  var parameters = ["--"+network+" --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -addnode=testnet-navio.nav.community -debugexclude=libevent"];
+  var parameters = ["--"+network+" --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -txindex=1 -addnode=testnet-navio.nav.community -debugexclude=libevent"];
   console.log("Daemon Parameters : [" + parameters + "]");
   console.log("Platform : "+process.platform);
   console.log("Architecture : "+process.arch);
