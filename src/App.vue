@@ -112,9 +112,9 @@
 <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900 " v-show="state=='setup'">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <a class="flex items-center ps-2.5" style="margin-bottom:24px;">
-       <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
-   </a>       
-   <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-zinc-800 bg-zinc-800 dark:border-zinc-700 border-zinc-700">
+         <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
+     </a>       
+     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-zinc-800 bg-zinc-800 dark:border-zinc-700 border-zinc-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl dark:text-white text-white">
               Setup
@@ -185,43 +185,46 @@
 
 <div id="nav" v-show="state=='ready'">
   <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-     <div class="h-full px-3 py-4 overflow-y-auto bg-zinc-800 dark:bg-zinc-800 border-r-2 border-zinc-700">
+   <div class="h-full px-3 py-4 overflow-y-auto bg-zinc-800 dark:bg-zinc-800 border-r-2 border-zinc-700">
       <a class="flex items-center ps-2.5" style="margin-top:15px;margin-bottom:30px;">
-       <img src="./assets/logo.svg" style="width:128px;" alt="Navio Logo"/>
-       <!--<span class="ml-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">Navio</span>!-->
-   </a>       
-   <ul class="space-y-2 text-md">
-       <li>
-           <router-link to="/home">
+         <img src="./assets/logo.svg" style="width:128px;" alt="Navio Logo"/>
+         <!--<span class="ml-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">Navio</span>!-->
+     </a>       
+     <ul class="space-y-2 text-md">
+         <li>
+             <router-link to="/home">
+                <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+</svg>
+
+                    <span class="ms-3">Home</span>
+                </a>
+            </router-link>
+        </li>
+        <li>
+         <router-link to="/wallets">
             <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 22.8787C4.34315 22.8787 3 21.5355 3 19.8787V9.87866C3 9.84477 3.00169 9.81126 3.00498 9.77823H3C3 9.20227 3.2288 8.64989 3.63607 8.24262L9.87868 2.00002C11.0502 0.828445 12.9497 0.828445 14.1213 2.00002L20.3639 8.24264C20.7712 8.6499 21 9.20227 21 9.77823H20.995C20.9983 9.81126 21 9.84477 21 9.87866V19.8787C21 21.5355 19.6569 22.8787 18 22.8787H6ZM12.7071 3.41423L19 9.70713V19.8787C19 20.4309 18.5523 20.8787 18 20.8787H15V15.8787C15 14.2218 13.6569 12.8787 12 12.8787C10.3431 12.8787 9 14.2218 9 15.8787V20.8787H6C5.44772 20.8787 5 20.4309 5 19.8787V9.7072L11.2929 3.41423C11.6834 3.02371 12.3166 3.02371 12.7071 3.41423Z" fill="currentColor" /></svg>
-                <span class="ms-3">Home</span>
-            </a>
-        </router-link>
-    </li>
-    <li>
-       <router-link to="/wallets">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+              </svg>
+
+              <span class="ms-3">Wallets</span>
+          </a>
+      </router-link>
+  </li>
+  <li>
+     <router-link to="/send">
         <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
           </svg>
-
-          <span class="ms-3">Wallets</span>
+          <span class="ms-3">Send</span>
       </a>
   </router-link>
 </li>
 <li>
-   <router-link to="/send">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-      </svg>
-      <span class="ms-3">Send</span>
-  </a>
-</router-link>
-</li>
-<li>
-   <router-link to="/receive">
+ <router-link to="/receive">
     <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -231,7 +234,7 @@
 </router-link>
 </li>           
 <li>
-   <router-link to="/history">
+ <router-link to="/history">
     <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
@@ -241,7 +244,7 @@
 </router-link>
 </li>
 <li>
-   <router-link to="/staking">
+ <router-link to="/staking">
     <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -252,21 +255,21 @@
 </router-link>
 </li>
 </ul>
-<ul class="pt-4 mt-2 space-y-2 text-md border-t border-zinc-700 dark:border-zinc-700">
+<ul class="mt-2 space-y-2 text-md border-t border-zinc-700 dark:border-zinc-700">
   <li style="display:none">
-   <router-link to="/help">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />
-      </svg>
+     <router-link to="/help">
+        <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />
+          </svg>
 
-      <span class="ms-3">Help</span>
-  </a>
-</router-link>
+          <span class="ms-3">Help</span>
+      </a>
+  </router-link>
 </li> 
 
 <li>
-   <router-link to="/console">
+ <router-link to="/console">
     <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
@@ -278,7 +281,7 @@
 </li> 
 
 <li>
-   <router-link to="/settings">
+ <router-link to="/settings">
     <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
@@ -320,38 +323,28 @@
 
 <div class="w-full flex items-center p-2 space-x-4" title="Network Details">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
-</svg>
+      <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
+  </svg>
 
   <div class="w-16" :title="'Protocol version : '+networkinfo.protocolversion">
     <router-link to="/peers">
         <span class="flex items-center space-x-1 text-xs dark:text-gray-400 text-white whitespace-nowrap">
-        {{networkinfo.connections?networkinfo.connections+" Connection":"No connection"}}
-    </span>
-    <span v-if="networkinfo.version" class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400">
-        v{{networkinfo.version}}
-    </span>
-</router-link>
+            {{networkinfo.connections?networkinfo.connections+" Connection":"No connection"}}
+        </span>
+        <span v-if="networkinfo.version" class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400">
+            v{{networkinfo.version}}
+        </span>
+    </router-link>
 </div>
 </div>
 </div>
 <div class="relative h-32 w-32" v-else>
     <div class="flex items-center p-2 mt-3 space-x-4 justify-self-end">
-<svg class="pl" viewBox="0 0 128 128" width="128px" height="128px" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <linearGradient id="pl-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="hsl(193,90%,55%)"></stop>
-            <stop offset="100%" stop-color="hsl(223,90%,55%)"></stop>
-        </linearGradient>
-    </defs>
-    <circle class="pl__ring" r="56" cx="64" cy="64" fill="none" stroke="hsla(0,10%,10%,0.1)" stroke-width="16" stroke-linecap="round"></circle>
-    <path class="pl__worm" d="M92,15.492S78.194,4.967,66.743,16.887c-17.231,17.938-28.26,96.974-28.26,96.974L119.85,59.892l-99-31.588,57.528,89.832L97.8,19.349,13.636,88.51l89.012,16.015S81.908,38.332,66.1,22.337C50.114,6.156,36,15.492,36,15.492a56,56,0,1,0,56,0Z" fill="none" stroke="url(#pl-grad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="44 1111" stroke-dashoffset="10"></path>
-</svg>
-      <div class="w-16">
-        <span title="Active Wallet" class="text-xs dark:text-white text-white whitespace-nowrap" v-if="client">Initializing...</span>
-        <span class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400 whitespace-nowrap">
-            
-        </span>
+        <div class="loader-container">
+          <div class="loader"></div>
+      </div>
+      <div class="w-32">
+        <span class="text-sm dark:text-white text-white whitespace-nowrap" v-if="client">Initializing...</span>
     </div>
 
 </div>
@@ -361,7 +354,7 @@
 </aside>
 
 <div class="sm:ml-64 h-screen" @wallet-change="alert()">   
- <router-view />
+   <router-view />
 </div>
 </div>
 
@@ -613,6 +606,37 @@ mounted()
 }
 </script>
 <style scoped>
+
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .loader {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+        box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    50% {
+        transform: rotate(180deg);
+        box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    100% {
+        transform: rotate(360deg);
+        box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.4);
+    }
+}
+
 .pl,
 .pl__worm {
   animation-duration: 3s;
@@ -655,57 +679,57 @@ mounted()
   92%,
   to {
     transform: translate(0,0);
-  }
+}
 
-  44% {
+44% {
     transform: translate(1.33%,6.75%);
-  }
+}
 
-  53% {
+53% {
     transform: translate(-16.67%,-0.54%);
-  }
+}
 
-  61% {
+61% {
     transform: translate(3.66%,-2.46%);
-  }
+}
 
-  69% {
+69% {
     transform: translate(-0.59%,15.27%);
-  }
+}
 
-  76% {
+76% {
     transform: translate(-1.92%,-4.68%);
-  }
+}
 
-  83% {
+83% {
     transform: translate(9.38%,0.96%);
-  }
+}
 
-  90% {
+90% {
     transform: translate(-4.55%,1.98%);
-  }
+}
 }
 
 @keyframes worm9 {
   from {
     stroke-dashoffset: 10;
-  }
-
-  25% {
-    stroke-dashoffset: 295;
-  }
-
-  to {
-    stroke-dashoffset: 1165;
-  }
 }
-    @font-face {
-      font-family: 'Quicksand';
-      font-style: normal;
-      font-weight: 100;
-      src: url('./assets/fonts/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o58m-wi40.woff2') format('woff2');
-      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-  }
+
+25% {
+    stroke-dashoffset: 295;
+}
+
+to {
+    stroke-dashoffset: 1165;
+}
+}
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 100;
+  src: url('./assets/fonts/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o58m-wi40.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
 /* latin-ext */
 @font-face {
   font-family: 'Quicksand';
