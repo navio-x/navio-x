@@ -4,7 +4,7 @@
 			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 text-lg">
 				<div class="grid grid-cols-2 gap-4 p-10">
 					<div class="col-span-2 text-3xl text-white">
-						<span class="bg-clip-text bg-gradient-to-tl from-cyan-400 to-blue-600 text-transparent">Available</span>
+						<span class="bg-clip-text bg-gradient-to-br from-cyan-400 to-blue-600 text-transparent">Available</span>
 					</div>
 					<div class="col-span-2 text-2xl text-white font-bold mt-2">{{formatNumbers(balance.mine.trusted)}}</div>
 					<div class="text-gray-500">Pending</div>
@@ -16,32 +16,8 @@
 				</div>
 				<div class="grid grid-cols-2 gap-4 p-10 ml-5" v-show="balance">
 					<div class="col-span-2 text-4xl text-white inline-flex items-baseline items-center">
-						<span class="text-green-500 mr-3 self-center" style="display: none;">
-							<div class="loader">
-								<div class="box box-1">
-									<div class="side-left"></div>
-									<div class="side-right"></div>
-									<div class="side-top"></div>
-								</div>
-								<div class="box box-2">
-									<div class="side-left"></div>
-									<div class="side-right"></div>
-									<div class="side-top"></div>
-								</div>
-								<div class="box box-3">
-									<div class="side-left"></div>
-									<div class="side-right"></div>
-									<div class="side-top"></div>
-								</div>
-								<div class="box box-4">
-									<div class="side-left"></div>
-									<div class="side-right"></div>
-									<div class="side-top"></div>
-								</div>
-							</div>
-						</span>
 						<div class="col-span-2 text-3xl">
-							<span class="bg-clip-text bg-gradient-to-tl from-pink-400 to-purple-600 text-transparent">Private Staking</span>
+							<span class="bg-clip-text bg-gradient-to-br from-orange-400 to-fuchsia-700 text-transparent">Private Staking</span>
 						</div>
 					</div>
 					<div class="col-span-2 text-2xl text-white font-bold mt-2">{{formatNumbers(balance.mine.staked_commitment_balance)}}</div>
