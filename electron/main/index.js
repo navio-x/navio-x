@@ -46,6 +46,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     const rpcpassword=crypto.createHash('md5').update(randomBytes, 'utf8').digest('hex');
     const network="testnet";
     var daemonBinaryStarted=false;
+    var daemonPID=undefined;
+    var stakerPID=undefined;
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Main window',
@@ -141,19 +143,24 @@ app.on('activate', () => {
 
 ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
   startStaker(network,wallet,rpcuser,rpcpassword);
-  /*const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  })
-  childWindow.loadURL(`${arg}`);*/
+})
+
+ipcMain.handle('stop-staker', (_, pid) => {
+  stopStaker(pid);
 })
 
 ipcMain.handle('shell-open-item', (_, path) => {
   shell.showItemInFolder(`${path}`);
 })
+
+/*const childWindow = new BrowserWindow({
+  webPreferences: {
+    preload,
+    nodeIntegration: true,
+    contextIsolation: false,
+  },
+})
+childWindow.loadURL(`${arg}`);*/
 
 function startDaemon()
 {
@@ -191,7 +198,7 @@ function startDaemon()
   }
   const substr = 'Starting HTTP server';
   const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
-  var parameters = ["--"+network+" --printtoconsole --walletcrosschain -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -txindex=1 -addnode=testnet-navio.nav.community -debugexclude=libevent"];
+  var parameters = ["--"+network+" --printtoconsole --walletcrosschain -rpcworkqueue=64 -rpcuser=" + rpcuser + " -rpcpassword=" + rpcpassword + " -txindex=1 -addnode=testnet-navio.nav.community -debug=1 -debugexclude=libevent -debugexclude=http -debugexclude=rpc -debugexclude=leveldb -debugexclude=bench"];
   console.log("Daemon Parameters : [" + parameters + "]");
   console.log("Platform : "+process.platform);
   console.log("Architecture : "+process.arch);
@@ -313,6 +320,12 @@ function startDaemon()
   }
 }
 
+function stopStaker(pid)
+{
+  console.log("Stopping staker. PID : " + pid);
+  process.kill(pid, 'SIGTERM');
+}
+
 function startStaker(network,wallet,rpcuser,rpcpassword)
 {
   console.log("Starting staker...");
@@ -363,7 +376,7 @@ function startStaker(network,wallet,rpcuser,rpcpassword)
   {
     if (process.platform=="linux") binaryPath=binDir+"/"+coin.f_linux;
     if (process.platform=="darwin") binaryPath=binDir+"/"+coin.f_osx;
-    console.log("Setting binary file as executable " + binaryPath);
+    console.log("Setting staker file as executable " + binaryPath);
     var buttons = ['OK', 'Cancel'];
     var chmodProcess=execFile("chmod +x " + binaryPath, null, defaults, function(err, data)
     {
@@ -372,21 +385,20 @@ function startStaker(network,wallet,rpcuser,rpcpassword)
         if (err)
         {
           console.log(err);
-          console.log("Binary start failed->"+executablePath+"->"+err.message);
+          console.log("Staker start failed->"+executablePath+"->"+err.message);
         }
       });
       newProcess.on('error', (err) => {
-        console.log('Failed to start binary->'+executablePath+"->"+err.message);
+        console.log('Failed to start staker->'+executablePath+"->"+err.message);
       });   
       if (newProcess.pid!=undefined)
       {
         win.webContents.send('start-staker-success',newProcess.pid);
-        console.log("Binary started. PID:" + newProcess.pid);
+        console.log("Staker started. PID:" + newProcess.pid);
         newProcess.on('exit', (code) => {
           newProcess=null;
-          console.log("Binary stopped. Exit Code : "+code);
-          app.quit()
-          process.exit(0)          
+          win.webContents.send('stop-staker-success');
+          console.log("Staker stopped. Exit Code : "+code);
         });
         newProcess.stdout.on('data', (data) =>
         {
@@ -396,13 +408,13 @@ function startStaker(network,wallet,rpcuser,rpcpassword)
           console.log("stderr : " + stderr);
           if (!stderr.toString().startsWith("Warning"))
           {
-            console.log("Binary start failed->"+stderr.toString());
+            console.log("Staker start failed->"+stderr.toString());
           }     
         });
       }
       else
       {
-        console.log("Binary start failed.");
+        console.log("Staker start failed.");
       }
     });
   }
@@ -414,22 +426,21 @@ function startStaker(network,wallet,rpcuser,rpcpassword)
       if (err)
       {
         console.log(err);
-        console.log("Binary start failed -> "+err.message);
+        console.log("Staker start failed -> "+err.message);
       }
     });
     newProcess.on('error', (err) => {
-      console.log('Failed to start Binary.'+err.message);
+      console.log('Failed to start staker.'+err.message);
       console.log(err);
     });
     if (newProcess.pid!=undefined)
     {
       win.webContents.send('start-staker-success',newProcess.pid);
-      console.log("Binary started. PID:" + newProcess.pid);
+      console.log("Staker started. PID:" + newProcess.pid);
       newProcess.on('exit', (code) => {
         newProcess=null;
-        console.log("Binary stopped. Exit Code : "+code);
-        app.quit()
-        process.exit(0)
+        win.webContents.send('stop-staker-success');
+        console.log("Staker stopped. Exit Code : "+code);
       });
       newProcess.stdout.on('data', (data) =>
       {
@@ -439,13 +450,13 @@ function startStaker(network,wallet,rpcuser,rpcpassword)
         console.log("stderr : " + stderr);
         if (!stderr.toString().startsWith("Warning"))
         {
-          console.log("Binary start failed",stderr.toString());
+          console.log("Staker start failed",stderr.toString());
         }     
       });
     }
     else
     {
-      console.log("Binary start failed.");
+      console.log("Staker start failed.");
     }
   }
 }

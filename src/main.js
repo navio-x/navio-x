@@ -18,7 +18,8 @@ const store = createStore({
       is_daemon_auto_started:false,
       network:undefined,
       rpcuser:undefined,
-      rpcpassword:undefined
+      rpcpassword:undefined,
+      staker_pid:undefined
     }
   },
   mutations: {
@@ -45,6 +46,10 @@ const store = createStore({
     set_rpcpassword (state,payload)
     {
       state.rpcpassword=payload;
+    },
+    set_staker_pid (state,payload)
+    {
+      state.staker_pid=payload;
     }
   }
 })
