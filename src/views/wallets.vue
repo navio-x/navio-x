@@ -83,6 +83,13 @@
   import { initFlowbite } from 'flowbite';
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+    })
   export default {
     data() {
       return {
@@ -110,6 +117,15 @@
           console.log(vm.all_wallets);
           console.log("Loaded wallets");
           console.log(vm.loaded_wallets);
+          if (vm.loaded_wallets.length==0)
+          {
+            Toast.fire({
+                icon: 'info',
+                title: 'There is no active wallet!',
+            });
+            this.active_wallet=undefined;
+            this.$store.commit('set_active_wallet',undefined);
+          }
           vm.all_wallets.wallets.forEach((wallet) =>
           {
             console.log(wallet.name);
@@ -146,6 +162,11 @@
         else if (!wallet.checked)
         {
           let vm=this;
+          if (this.$store.state.active_wallet==wallet.name && this.$store.state.active_wallet.is_staking_active)
+          {
+            console.log("Stopping staking process...");
+            ipcRenderer.invoke('stop-staker', this.$store.state.staker_pid);
+          }
           this.client.command([{ method: "unloadwallet", parameters: [wallet.name] }]).then((r) => 
           {
             console.log("unloading wallet -> " + wallet.name);

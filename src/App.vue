@@ -185,7 +185,7 @@
 
 <div id="nav" v-show="state=='ready'">
   <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-     <div class="h-full px-3 py-4 overflow-y-auto bg-zinc-800 dark:bg-zinc-800 border-r-2 border-zinc-700">
+     <div class="h-full px-3 py-4 overflow-y-auto bg-gradient-to-br from-zinc-800 via-zinc-800 to-zinc-900">
       <a class="flex items-center ps-2.5" style="margin-top:15px;margin-bottom:30px;">
        <img src="./assets/logo.svg" style="width:128px;" alt="Navio Logo"/>
        <!--<span class="ml-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">Navio</span>!-->
@@ -608,6 +608,7 @@ mounted()
     })
     ipcRenderer.on('start-staker-success', (_event, pid) =>
     {
+        this.$store.commit('set_staker_wallet',this.$store.state.active_wallet);
         this.$store.commit('set_staker_pid',pid);
         Toast.fire({
             icon: 'success',
@@ -620,7 +621,7 @@ mounted()
         this.$store.commit('set_staking_active',false);
         Toast.fire({
             icon: 'success',
-            title: "Staker successfully stopped for wallet '"+this.$store.state.active_wallet + "'"
+            title: "Staker successfully stopped for wallet '"+this.$store.state.staker_wallet + "'"
         });
     })
 }

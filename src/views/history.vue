@@ -3,6 +3,7 @@
         <div v-if="$store.state.active_wallet&&ready">
             <div class="p-4">
                 <h3>History</h3>
+                <p class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs&&Object.keys(txs).length>0">{{Object.keys(txs).length}} Transaction</p>
             </div>
             <div class="p-4 overflow-auto dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs&&Object.keys(txs).length>0">

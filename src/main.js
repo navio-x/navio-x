@@ -14,6 +14,7 @@ const store = createStore({
   state () {
     return {
       active_wallet: undefined,
+      staker_wallet: undefined,
       is_staking_active: false,
       is_daemon_auto_started:false,
       network:undefined,
@@ -50,6 +51,10 @@ const store = createStore({
     set_staker_pid (state,payload)
     {
       state.staker_pid=payload;
+    },
+    set_staker_wallet (state,payload)
+    {
+      state.staker_wallet=payload;
     }
   }
 })

@@ -233,9 +233,18 @@ function startDaemon()
           if (daemonBinaryStarted)
           {
             newProcess=null;
-            console.log("Daemon stopped. Exit Code : "+code);
-            app.quit()
-            process.exit(0);
+            if (code!=127)
+            {
+              console.log("Daemon stopped. Exit Code : "+code);
+              app.quit()
+              process.exit(0);
+            }
+            else
+            {
+              daemonBinaryStarted=false;
+              console.log("Daemon binary not found.");
+              win.webContents.send('is-daemon-started',{started:false, network: network,rpcuser:rpcuser,rpcpassword:rpcpassword });
+            }
           }
         });
         newProcess.stdout.on('data', (data) =>

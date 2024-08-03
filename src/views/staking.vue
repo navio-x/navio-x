@@ -40,7 +40,7 @@
         </svg>
         <span class="sr-only">Info</span>
         <div>
-            <span class="font-medium">Staker running...</span>
+            <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
         </div>
 </div>
 
