@@ -362,7 +362,7 @@
 
 </aside>
 
-<div class="sm:ml-64 h-screen" @wallet-change="alert()">   
+<div class="sm:ml-64 h-screen">
  <router-view />
 </div>
 </div>
