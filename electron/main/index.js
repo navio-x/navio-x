@@ -44,6 +44,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     const randomBytes=crypto.randomBytes(256);
     const rpcuser=crypto.createHash('sha256').update(randomBytes, 'utf8').digest('hex');
     const rpcpassword=crypto.createHash('md5').update(randomBytes, 'utf8').digest('hex');
+    //const rpcuser="x";
+    //const rpcpassword="y";
     const network="testnet";
     var daemonBinaryStarted=false;
     var daemonPID=undefined;

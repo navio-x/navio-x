@@ -110,3 +110,16 @@ code {
 ::-webkit-scrollbar-button {
     display:none;
 }
+
+textarea::-webkit-scrollbar {
+  width: 10px;
+  cursor: default;
+}
+textarea::-webkit-scrollbar-track {
+  background-color: light-grey;
+  cursor: default;
+}
+textarea::-webkit-scrollbar-thumb {
+  background-color: grey;
+  cursor: default;
+}
