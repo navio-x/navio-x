@@ -54,7 +54,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       win = new BrowserWindow({
         title: 'Main window',
         width:1100,
-        height:720,
+        height:740,
         icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
         webPreferences: {
           preload,
@@ -71,7 +71,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
     // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
   } else {
     win.loadFile(indexHtml)
   }
@@ -79,7 +79,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
   win.on('close', e =>
   {
     console.log("on-close");
-    console.log("daemon binary started :" + daemonBinaryStarted);
+    console.log("is daemon binary started :" + daemonBinaryStarted);
     if (daemonBinaryStarted)
     {
       console.log("stop-daemon fired");

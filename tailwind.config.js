@@ -10,7 +10,7 @@ module.exports = {
     'node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
     'node_modules/flowbite/**/*.{js,jsx,ts,tsx}'      
     ],
-    darkMode: true, // or 'media' or 'class'
+    darkMode: 'class', // or 'media' or 'class'
     theme: {
       extend: {},
     },

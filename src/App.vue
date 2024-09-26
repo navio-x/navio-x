@@ -291,6 +291,18 @@
 </router-link>
 </li> 
 
+<li>
+   <router-link to="/about">
+    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+</svg>
+
+      <span class="ms-3">About</span>
+  </a>
+</router-link>
+</li> 
+
 </ul>
 
 
@@ -445,6 +457,24 @@
         {
             console.log(r);
         });
+    },
+    stop_staking : function()
+    {
+        let vm=this;
+        if (vm.$store.state.active_wallet)
+        {
+            console.log("Stopping staking process...");
+            ipcRenderer.invoke('stop-staker', vm.$store.state.staker_pid);
+        }
+        else
+        {
+            Swal.fire({
+                title: 'Staking',
+                text: "Staking not started.",
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
     },
     stop_daemon:function()
     {
@@ -604,6 +634,7 @@ mounted()
     ipcRenderer.on('stop-daemon', (_event, value) =>
     {
         console.log("stop-daemon");
+        this.stop_staking();
         this.stop_daemon();
     })
     ipcRenderer.on('start-staker-success', (_event, pid) =>
