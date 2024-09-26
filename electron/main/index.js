@@ -54,7 +54,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       win = new BrowserWindow({
         title: 'Main window',
         width:1100,
-        height:740,
+        height:760,
         icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
         webPreferences: {
           preload,
