@@ -417,7 +417,7 @@
         this.state='agreement';
     },
     get_sync_percent: function() {
-        return parseFloat((this.blocks*100)/this.headers).toFixed(2);
+        return (this.blocks?parseFloat((this.blocks*100)/this.headers).toFixed(2):0);
     },
     accept_agreement: function() {
         localStorage.setItem('agreement_accepted', 1);
