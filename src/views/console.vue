@@ -84,8 +84,6 @@
             s=s.replace(/^"(.*)"$/, '$1');
             array.push(s);
           }); 
-
-
           if (i!=0) params.push(array);
           console.log(array);
           console.log(submatch + " is array");
@@ -99,6 +97,16 @@
             if (strcmd[i]=="false") params.push(false);
           }
         }
+        else if (this.isNumeric(strcmd[i]))
+        {
+          console.log(strcmd[i]+ " is numeric");
+          if (i!=0) params.push(parseInt(strcmd[i]));
+        }
+        else if (this.isJsonString(strcmd[i]))
+        {
+          console.log(strcmd[i]+ " is json");
+          if (i!=0) params.push(JSON.parse(strcmd[i]));
+        }
         else if (!matches && isNaN(strcmd[i]))
         {
           console.log(strcmd[i]+ " is string");
@@ -108,12 +116,15 @@
         }
         else
         {
-          console.log(strcmd[i]+ " is number");
-          if (i!=0) params.push(parseInt(strcmd[i]));
+          console.log(strcmd[i]+ " is unknown");
+          if (i!=0) params.push(strcmd[i]);
         }
       }
       console.log("method="+methodname);
-      console.log("params="+JSON.stringify(params));
+      console.log(params);
+      console.log("stringified params="+JSON.stringify(params));
+      this.add_to_log("method="+methodname);
+      this.add_to_log("params="+JSON.stringify(params));
       const batch = [{ method: methodname, parameters: params }]
       this.add_to_log(this.cmd,"command");
       let vm=this;
@@ -147,6 +158,9 @@
       }
       return true;
     },
+    isNumeric:function(value) {
+    return /^-?\d+$/.test(value);
+},
     jsonPretty:function(value)
     {
       let json = JSON.stringify(JSON.parse(value), null, 2);
@@ -193,8 +207,7 @@
 },
 mounted() {
   this.items=Object.keys(this.client.methods);
-  this.items.push("sendtoblsctaddress","generatetoblsctaddress");
+  this.items.push("sendtoblsctaddress","generatetoblsctaddress","getblsctauditkey","getblsctseed","stakelock","stakeunlock","createnft","createtoken","getnftbalance","gettokenbalance","mintnft","minttoken","sendnfttoblsctaddress","sendtokentoblsctaddress");
 }
 }
 </script>
-
