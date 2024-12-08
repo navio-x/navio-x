@@ -9,7 +9,7 @@
     </div>
     <footer class="flex bg-zinc-900 mt-3 h-18 w-full">
       <div class="flex w-full rounded-lg shadow-sm">
-        <autocomplete class="w-10/12" @selected="cmd = $event" @input="cmd = $event.target.value" @keyup.enter="run()" :items="items" />
+        <autocomplete ref="autocomplete" class="w-10/12" @selected="cmd = $event" @input="cmd = $event.target.value" @keyup.enter="run()" :items="items" />
         <button class="ml-3 h-10 bg-blue-500 hover:bg-blue-700 text-white w-2/12 font-bold rounded focus:outline-none focus:shadow-outline" v-on:click="run()"><center><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
         </svg></center>
@@ -123,8 +123,6 @@
       console.log("method="+methodname);
       console.log(params);
       console.log("stringified params="+JSON.stringify(params));
-      this.add_to_log("method="+methodname);
-      this.add_to_log("params="+JSON.stringify(params));
       const batch = [{ method: methodname, parameters: params }]
       this.add_to_log(this.cmd,"command");
       let vm=this;
@@ -138,7 +136,6 @@
         {
           vm.add_to_log(retval[0],"output");
         }
-
       }).catch((r) =>
       {
        Swal.fire({
@@ -149,6 +146,7 @@
       })
      });
       this.cmd="";
+      this.$refs.autocomplete.setResult("");
     },
     isJsonString:function(str) {
       try {
@@ -207,7 +205,7 @@
 },
 mounted() {
   this.items=Object.keys(this.client.methods);
-  this.items.push("sendtoblsctaddress","generatetoblsctaddress","getblsctauditkey","getblsctseed","stakelock","stakeunlock","createnft","createtoken","getnftbalance","gettokenbalance","mintnft","minttoken","sendnfttoblsctaddress","sendtokentoblsctaddress");
+  this.items.push("sendtoblsctaddress","generatetoblsctaddress","getblsctauditkey","getblsctseed","stakelock","stakeunlock","listtokens","createnft","createtoken","getnftbalance","gettokenbalance","mintnft","minttoken","sendnfttoblsctaddress","sendtokentoblsctaddress");
 }
 }
 </script>
