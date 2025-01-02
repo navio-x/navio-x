@@ -28,7 +28,7 @@
             <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
             <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
             <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-            <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./navcoind --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+            <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
             <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
                 <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
                     Connect
@@ -402,7 +402,7 @@
           username:"",
           password:"",
           host:"localhost",
-          port:48485,
+          port:33477,
           network:"testnet",
           blocks:0,
           headers:0,
@@ -611,7 +611,7 @@ mounted()
     {
         this.remember=true;
         this.host=(localStorage.getItem("host")?localStorage.getItem("host"):"localhost");
-        this.port=(localStorage.getItem("port")?localStorage.getItem("port"):"48485");
+        this.port=(localStorage.getItem("port")?localStorage.getItem("port"):"33477");
         this.username=localStorage.getItem("username");
         this.password=localStorage.getItem("password");
         if (localStorage.getItem("auto_login"))
