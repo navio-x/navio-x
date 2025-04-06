@@ -402,7 +402,7 @@
           username:"",
           password:"",
           host:"localhost",
-          port:33477,
+          port:33577,
           network:"testnet",
           blocks:0,
           headers:0,

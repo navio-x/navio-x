@@ -71,6 +71,8 @@
                         <input :ref="'lr_'+address.address" type="radio" name="hs-default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" :id="'lr_'+address.address" v-bind:value="address.address" v-model="active_address">
                     </th>
                     <td class="px-6 py-4" style="width:320px;height:auto;display:inline-block;overflow-wrap: break-word;">
+                              <span v-if="address.label" class="inline-flex justify-center items-center bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
+    {{address.label}}</span>
                         <label class="whitespace-pre-wrap text-sm text-gray-400 ms-2 dark:text-gray-400">{{address.address}}</label>
                     </td>
                     <td class="px-6 py-4">
