@@ -22,11 +22,11 @@
 					</div>
 					<div class="col-span-2 text-2xl text-white font-bold mt-2">{{formatNumbers(balance.mine.staked_commitment_balance)}}</div>
 					<div class="text-gray-500">24H</div>
-					<div class="text-gray-200">N/A</div>
+					<div class="text-gray-200">{{ generateSums.day }}</div>
 					<div class="text-gray-500">7D</div>
-					<div class="text-gray-200">N/A</div>
+					<div class="text-gray-200">{{ generateSums.week }}</div>
 					<div class="text-gray-500">30D</div>
-					<div class="text-gray-200">N/A</div>
+					<div class="text-gray-200">{{ generateSums.month }}</div>
 				</div>
 			</div>
 			<div class="mt-1 overflow-auto bg-zinc-900">
@@ -80,14 +80,14 @@
 			<p>No wallet loaded or selected.</p>
 			<p>You can create, load and activate a wallet in Wallets page.</p>
 			<router-link to="/wallets">
-            <a href="" class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-              </svg>
+				<a href="" class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+					</svg>
 
-              <span class="ms-3">Wallets</span>
-          </a>
-      </router-link>
+					<span class="ms-3">Wallets</span>
+				</a>
+			</router-link>
 		</div>
 	</div>
 </template>
@@ -95,11 +95,45 @@
 <script>
 	import moment from 'moment';
 	import sb from 'satoshi-bitcoin';
+	import { computed } from 'vue';
+
 	export default {
 		data() {
 			return {
 				balance:undefined,
-				txs: []
+				txs: [],
+				alltxs:[]
+			}
+		},
+		computed: {
+			generateSums() {
+				const now = Math.floor(Date.now() / 1000);
+				const oneDay = 60 * 60 * 24;
+				const oneWeek = oneDay * 7;
+				const oneMonth = oneDay * 30;
+
+				let result = {
+					day: 0,
+					week: 0,
+					month: 0
+				};
+
+				this.alltxs.forEach(tx => {
+					if (tx.category === 'generate') {
+						const diff = now - tx.time;
+						if (diff <= oneMonth) {
+							result.month += tx.amount;
+							if (diff <= oneWeek) {
+								result.week += tx.amount;
+								if (diff <= oneDay) {
+									result.day += tx.amount;
+								}
+							}
+						}
+					}
+				});
+
+				return result;
 			}
 		},
 		methods:
@@ -170,17 +204,36 @@
 						vm.txs=r[0].reverse();
 					}
 				});
+			},
+			listalltransactions: function()
+			{
+				let vm=this;
+				console.log("listtransactions");
+				vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
+				{
+					if (r[0].name=="RpcError"||r[0].code)
+					{
+						console.log("RpcError");
+						console.log(r);
+					}
+					else
+					{ 
+						vm.alltxs=r[0];
+					}
+				});
 			}
 		},
 		mounted() {
 			this.getbalance();	
 			this.listtransactions();
+			this.listalltransactions();
 			this.timer = setInterval(() => 
 			{
 				this.getbalance();
 				this.listtransactions();
+				this.listalltransactions();
 			},
-			1000);
+			5000);
 		},
 		beforeUnmount()
 		{

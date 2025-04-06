@@ -338,7 +338,7 @@
           vm.is_wallet_loaded=false;
           vm.wallet_info=undefined;
           console.log(r);
-        });;
+        });
       },
       manage_wallet:function(wallet)
       {

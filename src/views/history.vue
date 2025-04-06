@@ -26,6 +26,9 @@
                                 Type
                             </th>
                             <th scope="col" class="px-6 py-3">
+                                Category
+                            </th>
+                            <th scope="col" class="px-6 py-3">
                                 Amount
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -58,6 +61,7 @@
                                     </div>
                                 </div>
                             </td>
+                            <td><center>{{tx.category}}</center></td>
                             <td>
                                 <center>{{tx.amount}}</center>
                             </td>
