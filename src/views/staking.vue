@@ -14,18 +14,19 @@
                   <h3 class="text-lg font-medium text-gray-800 dark:text-gray-300">Introduction</h3>
               </div>
               <div class="mt-2 mb-4 text-sm text-gray-300 dark:text-gray-300">
-                You can earn rewards by staking by locking your coins. You must have at least 10000 NAV for staking. The rewards you will earn will vary depending on the amount you lock.
+                Earn rewards by staking your coins! To start staking, you need a minimum of 10,000 NAV. The more coins you lock, the higher your potential rewards. Please note that newly staked coins will become mature and eligible for rewards after 100 blocks.
             </div>
         </div>
     </div>
-    <div class="p-3">
-        <button v-if="!$store.state.is_staking_active" v-on:click="start_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 -ms-1">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
-          </svg>
-          Start Staking
-      </button>
+    <div class="grid grid-cols-2 gap-4 p-3">
+        <div>
+            <button v-if="!$store.state.is_staking_active" v-on:click="start_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 -ms-1">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+              </svg>
+              Start Staking
+          </button>
           <button v-if="$store.state.is_staking_active" v-on:click="stop_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-zinc-700 rounded-lg hover:bg-zinc-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:focus:ring-zinc-800">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 -ms-1">>
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -33,18 +34,28 @@
           </svg>
           Stop Staking
       </button>
-
-        <div v-if="$store.state.is_staking_active" class="w-full mt-3 px-3 py-2 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
-          <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-        </svg>
-        <span class="sr-only">Info</span>
-        <div>
-            <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
+  </div>
+  <div class="rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 text-white dark:text-white">
+    <div v-if="staked_commitments&&Object.keys(staked_commitments).length>0">
+        <div v-for="(commitment,index) in staked_commitments" class="p-3 text-md font-medium dark:text-white text-white"> 
+            {{commitment.amount}} NAV Locked
         </div>
+    </div>
+    <div v-else>
+        <p>No commitment found.</p>
+    </div>
+</div>
+</div>
+<div v-if="$store.state.is_staking_active" class="w-full mt-3 px-3 py-2 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
+  <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+</svg>
+<span class="sr-only">Info</span>
+<div>
+    <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
+</div>
 </div>
 
-</div>
 <div class="flex p-3">
     <div class="w-1/2">
       <label for="hs-trailing-button-add-on" class="sr-only">Label</label>
@@ -72,24 +83,9 @@
 </div>
 </div>
 
-<div class="p-4 overflow-auto bg-zinc-900 text-white">
-    <div v-if="staked_commitments&&Object.keys(staked_commitments).length>0">
-        <h3>Staked Commitments</h3>
-        <div v-for="(commitment,index) in staked_commitments" class="bg-zinc-800 border-b mt-5 p-3 border-zinc-700 dark:bg-zinc-800 dark:border-zinc-700 border-zinc-950 hover:bg-zinc-900 dark:hover:bg-zinc-900">
-            <div class="w-8 text-sm font-medium me-2 px-2.5 py-0.5 mb-5 rounded dark:bg-violet-700 bg-violet-700 dark:text-white text-white">{{index+1}}</div>
-            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Amount : {{commitment.amount}}</div>
-            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Commitment : {{commitment.commitment}}</div>
-            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">TX Hash : {{commitment.tx_hash}}</div>
-            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Value : {{commitment.value}}</div>
-            <div class="w-full text-xs text-gray-500 ms-2 dark:text-gray-400">Gamma : {{commitment.gamma}}</div>
-        </div>
-    </div>
-    <div v-else>
-        <p>No commitment found.</p>
-    </div>
-</div>
+
 <div class="p-5 dark:bg-zinc-900 bg-zinc-900">
-    <apexchart class="w-full border dark:border-zinc-700 border-zinc-700" height="300" :options="options" :series="series"></apexchart>
+    <apexchart class="w-full" height="300" :options="options" :series="series"></apexchart>
 </div>
 </div>
 <div class="p-4" v-else>
@@ -119,102 +115,278 @@
                 staked_commitments:undefined,
                 amount_lock:0,
                 amount_unlock:0,
-                options: {
-                    chart: {
-                        id: 'vuechart-example',
-                        type:'area',
-                        foreColor: '#bbbbbb',
-                        toolbar: {
-                            show: false,
-                            tools: {
-                              download: false
-                          }
-                      },
-                  },
-                  tooltip: {
-                    theme: "dark"
-                },
-                grid: {
-                    show: true,
-                    borderColor: '#232323',
-                    strokeDashArray: 0,
-                    position: 'back',
-                    xaxis: {
-                        lines: {
-                            show: false
-                        }
-                    },   
-                    yaxis: {
-                        lines: {
-                            show: false
-                        }
-                    },  
-                    row: {
-                        colors: undefined,
-                        opacity: 0.5
-                    },  
-                    column: {
-                        colors: undefined,
-                        opacity: 0.5
-                    },  
-                    padding: {
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        left: 0
-                    },  
-                },
-                fill: {
-                    type: "gradient",
-                    gradient: {
-                        shade: "dark",
-                        shadeIntensity: 0.5,
-                        type: "vertical",
-                        opacityFrom: 0.1,
-                        opacityTo: 1,
-                        colorStops: [
-                        {
-                          offset: 0,
-                          color: "#008FFB",
-                          opacity: 0.1
-                      },
-                      {
-                          offset: 100,
-                          color: "#008FFB",
-                          opacity: 0.3
-                      }
-                      ]
+                options: undefined,
+                series: undefined,
+                txs:[]
+            }
+        },
+        methods:{
+            list_staked_commitments:function()
+            {
+                let vm=this;
+                this.client.command([{ method: "liststakedcommitments"}]).then((r) =>
+                {
+                  if (r[0].name=="RpcError"||r[0].code)
+                  {
+                    console.log("RpcError");
+                    console.log(r);
+                }
+                else
+                { 
+                    console.log(r[0]);
+                    vm.staked_commitments=r[0];
+                }
+            });
+            },
+            start_staking : function()
+            {
+                let vm=this;
+                if (vm.$store.state.active_wallet)
+                {
+                    console.log("Starting staking process...");
+                    ipcRenderer.invoke('start-staker', vm.$store.state.network, vm.$store.state.active_wallet,vm.$store.state.rpcuser,vm.$store.state.rpcpassword);
+                }
+                else
+                {
+                    Swal.fire({
+                        title: 'Staking',
+                        text: "Please select a wallet for start staking process.",
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            },
+            stop_staking : function()
+            {
+                let vm=this;
+                if (vm.$store.state.active_wallet)
+                {
+                    console.log("Stopping staking process...");
+                    ipcRenderer.invoke('stop-staker', vm.$store.state.staker_pid);
+                }
+                else
+                {
+                    Swal.fire({
+                        title: 'Staking',
+                        text: "Staking not started.",
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            },
+            lock_coins : function()
+            {
+                let vm=this;
+                this.client.command([{ method: "stakelock", parameters: {"amount":vm.amount_lock} }]).then((r) => 
+                {
+                    console.log(r);
+                    if (r[0].name=="RpcError"||r[0].code)
+                    {
+                        console.log("RpcError");
+                        Swal.fire({
+                            title: 'Error!',
+                            text: r[0].message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
                     }
-                },
-                xaxis: {
-                  categories: ["January","February", "March", "April", "May", "June", "July", "August", "September", "October", "November","December"],
-                  color: undefined
-              },
-              dataLabels: {
-                  enabled: false,
-                  enabledOnSeries: undefined,
-                  formatter: function (val, opts) {
-                      return val
+                    else
+                    {
+                     vm.list_staked_commitments();
+                     Swal.fire({
+                        title: 'Success!',
+                        text: "Coins successfully locked.",
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                 }
+             });
+            },
+            unlock_coins : function()
+            {
+                let vm=this;
+                this.client.command([{ method: "stakeunlock", parameters: {"amount":vm.amount_unlock} }]).then((r) => 
+                {
+                    console.log(r);
+                    if (r[0].name=="RpcError"||r[0].code)
+                    {
+                        console.log("RpcError");
+                        Swal.fire({
+                            title: 'Error!',
+                            text: r[0].message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                    else
+                    {
+                     vm.list_staked_commitments();
+                     Swal.fire({
+                        title: 'Success!',
+                        text: "Coins successfully unlocked.",
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                 }
+             });
+            }
+        },
+        mounted()
+        {
+            let vm=this;
+            let categories = [];
+            let rewards= [];
+
+            this.list_staked_commitments();
+            console.log("staking rewards");
+            console.log("listtransactions");
+            vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
+            {
+                if (r[0].name=="RpcError"||r[0].code)
+                {
+                    console.log("RpcError");
+                    console.log(r);
+                }
+                else
+                { 
+                    vm.txs=r[0];
+                    const now = new Date();
+                    const oneDayMs = 1000 * 60 * 60 * 24;
+
+                    const result = Array.from({ length: 15 }, (_, i) => {
+                      const date = new Date(now.getTime() - oneDayMs * (14 - i));
+                      const isoDate = date.toISOString().split('T')[0];
+                      const shortDate = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+                      return {
+                        date: isoDate,
+                        shortDate: shortDate,
+                        total: 0
+                    };
+                });
+
+                    const nowEpoch = Math.floor(now.getTime() / 1000);
+
+                    vm.txs.forEach(tx => {
+                      if (tx.category === 'generate') {
+                        const dayDiff = Math.floor((nowEpoch - tx.time) / (60 * 60 * 24));
+                        if (dayDiff >= 0 && dayDiff < 15) {
+                          result[14 - dayDiff].total += tx.amount;
+                      }
+                  }
+              });
+                    console.log(result);
+                    result.forEach(day => {
+                        console.log(`Date: ${day.date} - Rewards : ${day.total}`);
+                        categories.push(day.shortDate);
+                        rewards.push(day.total);
+
+                    });
+                    vm.options={
+                        chart: {
+                            id: 'staking-chart',
+                            type:'area',
+                            foreColor: '#bbbbbb',
+                            toolbar: {
+                                show: false,
+                                tools: {
+                                  download: false
+                              }
+                          },
+                      },
+                      tooltip: {
+                        theme: "dark"
+                    },
+                    grid: {
+                        show: true,
+                        borderColor: '#343434',
+                        strokeDashArray: 0,
+                        position: 'back',
+                        xaxis: {
+                            lines: {
+                                show: true
+                            }
+                        },   
+                        yaxis: {
+                            lines: {
+                                show: true
+                            }
+                        },  
+                        row: {
+                            colors: undefined,
+                            opacity: 0.5
+                        },  
+                        column: {
+                            colors: undefined,
+                            opacity: 0.5
+                        },  
+                        padding: {
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: 0
+                        },  
+                    },
+                    fill: {
+                        type: "gradient",
+                        gradient: {
+                            shade: "dark",
+                            shadeIntensity: 0.5,
+                            type: "vertical",
+                            opacityFrom: 0.1,
+                            opacityTo: 1,
+                            colorStops: [
+                                {
+                                  offset: 0,
+                                  color: "#008FFB",
+                                  opacity: 0.1
+                              },
+                              {
+                                  offset: 100,
+                                  color: "#008FFB",
+                                  opacity: 0.3
+                              }
+                          ]
+                      }
                   },
-                  textAnchor: 'middle',
-                  distributed: false,
-                  offsetX: 0,
-                  offsetY: 0,
-                  style: {
-                      fontSize: '14px',
-                      fontFamily: 'Helvetica, Arial, sans-serif',
-                      fontWeight: 'bold',
-                      colors: [undefined]
+                  xaxis: {
+                      categories: categories,
+                      color: undefined
                   },
-                  background: {
-                    enabled: false,
-                    foreColor: undefined,
-                    padding: 4,
-                    borderRadius: 2,
-                    borderWidth: 1,
-                    borderColor: '#232323',
-                    opacity: 0.9,
-                    dropShadow: {
+                  dataLabels: {
+                      enabled: false,
+                      enabledOnSeries: undefined,
+                      formatter: function (val, opts) {
+                          return val
+                      },
+                      textAnchor: 'middle',
+                      distributed: false,
+                      offsetX: 0,
+                      offsetY: 0,
+                      style: {
+                          fontSize: '14px',
+                          fontFamily: 'Helvetica, Arial, sans-serif',
+                          fontWeight: 'bold',
+                          colors: [undefined]
+                      },
+                      background: {
+                        enabled: false,
+                        foreColor: undefined,
+                        padding: 4,
+                        borderRadius: 2,
+                        borderWidth: 1,
+                        borderColor: '#232323',
+                        opacity: 0.9,
+                        dropShadow: {
+                          enabled: false,
+                          top: 1,
+                          left: 1,
+                          blur: 1,
+                          color: '#000',
+                          opacity: 0.45
+                      }
+                  },
+                  dropShadow: {
                       enabled: false,
                       top: 1,
                       left: 1,
@@ -222,145 +394,20 @@
                       color: '#000',
                       opacity: 0.45
                   }
-              },
-              dropShadow: {
-                  enabled: false,
-                  top: 1,
-                  left: 1,
-                  blur: 1,
-                  color: '#000',
-                  opacity: 0.45
               }
-          }
+          };
+          vm.series=[{
+            name: 'Rewards',
+            data: rewards,
+            color: undefined
+        }];
+    }
+});
 
-
-      },
-      series: [{
-        name: 'Rewards',
-        data: [16, 24, 40, 32, 40, 48, 40, 52, 56, 60, 64, 68],
-        color: undefined
-    }]
-  }
-},
-methods:{
-    list_staked_commitments:function()
-    {
-        let vm=this;
-        this.client.command([{ method: "liststakedcommitments"}]).then((r) =>
-        {
-          if (r[0].name=="RpcError"||r[0].code)
-          {
-            console.log("RpcError");
-            console.log(r);
-        }
-        else
-        { 
-            console.log(r[0]);
-            vm.staked_commitments=r[0];
-        }
-    });
-    },
-    start_staking : function()
-    {
-        let vm=this;
-        if (vm.$store.state.active_wallet)
-        {
-            console.log("Starting staking process...");
-            ipcRenderer.invoke('start-staker', vm.$store.state.network, vm.$store.state.active_wallet,vm.$store.state.rpcuser,vm.$store.state.rpcpassword);
-        }
-        else
-        {
-            Swal.fire({
-                title: 'Staking',
-                text: "Please select a wallet for start staking process.",
-                icon: 'info',
-                confirmButtonText: 'OK'
-            })
-        }
-    },
-    stop_staking : function()
-    {
-        let vm=this;
-        if (vm.$store.state.active_wallet)
-        {
-            console.log("Stopping staking process...");
-            ipcRenderer.invoke('stop-staker', vm.$store.state.staker_pid);
-        }
-        else
-        {
-            Swal.fire({
-                title: 'Staking',
-                text: "Staking not started.",
-                icon: 'info',
-                confirmButtonText: 'OK'
-            })
-        }
-    },
-    lock_coins : function()
-    {
-        let vm=this;
-        this.client.command([{ method: "stakelock", parameters: {"amount":vm.amount_lock} }]).then((r) => 
-        {
-            console.log(r);
-            if (r[0].name=="RpcError"||r[0].code)
-            {
-                console.log("RpcError");
-                Swal.fire({
-                    title: 'Error!',
-                    text: r[0].message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-            else
-            {
-               vm.list_staked_commitments();
-               Swal.fire({
-                title: 'Success!',
-                text: "Coins successfully locked.",
-                icon: 'success',
-                confirmButtonText: 'OK'
-            })
-           }
-       });
-    },
-    unlock_coins : function()
-    {
-        let vm=this;
-        this.client.command([{ method: "stakeunlock", parameters: {"amount":vm.amount_unlock} }]).then((r) => 
-        {
-            console.log(r);
-            if (r[0].name=="RpcError"||r[0].code)
-            {
-                console.log("RpcError");
-                Swal.fire({
-                    title: 'Error!',
-                    text: r[0].message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-            else
-            {
-               vm.list_staked_commitments();
-               Swal.fire({
-                title: 'Success!',
-                text: "Coins successfully unlocked.",
-                icon: 'success',
-                confirmButtonText: 'OK'
-            })
-           }
-       });
-    },
-},
-mounted()
+ipcRenderer.on('start-staker-success', (_event, pid) =>
 {
-    let vm=this;
-    this.list_staked_commitments();
-    ipcRenderer.on('start-staker-success', (_event, pid) =>
-    {
-        vm.$store.commit('set_staking_active',true);
-    });
+    vm.$store.commit('set_staking_active',true);
+});
 }
 }
 </script>

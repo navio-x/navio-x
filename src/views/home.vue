@@ -10,7 +10,7 @@
 					<div class="text-gray-500">Pending</div>
 					<div class="text-gray-200">{{formatNumbers(balance.mine.untrusted_pending)}}</div>
 					<div class="text-gray-500">Immature</div>
-					<div class="text-gray-200">{{formatNumbers(balance.mine.immature)}}</div>
+					<div class="text-gray-200" title="Immature staking coins will mature after 100 blocks.">{{formatNumbers(balance.mine.immature)}}</div>
 					<div class="text-gray-500">Total</div>
 					<div class="text-gray-200">{{formatNumbers(getTotal(balance))}}</div>
 				</div>
