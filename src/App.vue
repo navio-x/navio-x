@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='welcome'">
+    <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='welcome'" >
         <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
             <div class="flex justify-center items-center">
                 <img src="./assets/nav_illustraion_01.png" style="width:400px;height:auto;">
@@ -21,92 +21,109 @@
         </div>
     </section>
     <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='connection_error'">
-        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
             <div class="flex justify-center items-center">
                 <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
             </div>
             <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
-            <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
-            <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-            <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
-            <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-                <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                    Connect
-                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </section>
-    <section class="h-full w-full dark:bg-zinc-900 bg-zinc-900" v-show="state=='agreement'">
-        <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16 dark:bg-zinc-900 bg-zinc-900">
-            <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none dark:text-white text-white">License Agreement</p>
-            <div class="w-full h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
-              <p>
-                This is a binding Agreement between Navio Developers (“Navio” or “We”) and the person, persons, or entity (“You” or “Your”) using the service, Software, or application (“Software”).
-            </p>
-            <p class="text-xl font-bold mt-5">
-                RIGHTS AND OBLIGATIONS
-            </p>
-            <p>
-                Navio provides the Software solely on the terms and conditions set forth in this Agreement and on the condition that You accept and comply with them. By using the Software You (a) accept this Agreement and agree that You are legally bound by its terms; and (b) represent and warrant that: (i) You are of legal age to enter into a binding agreement; and (ii) if You are a corporation, governmental organization or other legal entity, You have the right, power and authority to enter into this Agreement on behalf of the corporation, governmental organization or other legal entity and bind them to these terms.
-            </p>
-            <p>
-                This Software functions as a free, open source, and multi-signature digital wallet. The Software does not constitute an account where We or other third parties serve as financial intermediaries or custodians of Your Navio(s).
-            </p>
-            <p>
-                While the Software has undergone beta testing and continues to be improved by feedback from the open-source user and developer community, We cannot guarantee there will not be bugs in the Software. You acknowledge that Your use of this Software is at Your own discretion and in compliance with all applicable laws. You are responsible for safekeeping Your passwords, private key pairs, PINs, and any other codes You use to access the Software.
-            </p>
-            <p>
-                IF YOU LOSE ACCESS TO YOUR NAVIO-X WALLET OR YOUR ENCRYPTED PRIVATE KEYS AND YOU HAVE NOT SEPARATELY STORED A BACKUP OF YOUR WALLET AND CORRESPONDING PASSWORD, YOU ACKNOWLEDGE AND AGREE THAT ANY NAV YOU HAVE ASSOCIATED WITH THAT WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The authors of the Software, employees and affiliates of NAVIO, copyright holders, and NAVIO cannot retrieve Your private keys or passwords if You lose or forget them and cannot guarantee transaction confirmation as they do not have control over the Navio network.
-            </p>
-            <p class="text-xl font-bold mt-5">
-                DISCLAIMER
-            </p>
-            <p>
-                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE, EMPLOYEES AND AFFILIATES OF NAVIO, COPYRIGHT HOLDERS, OR NAVIO BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-            </p>
-            <p>
-                IN NO EVENT WILL NAVIO OR ITS AFFILIATES, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-            </p>
-            <p class="text-xl font-bold mt-5">
-                INTELLECTUAL PROPERTY
-            </p>
-            <p>
-                We retain all right, title, and interest in and to the Content and all of Navio’s brands, logos, and trademarks, including, but not limited to, Navio, Navio-X Wallet, and variations of the wording of the aforementioned brands, logos, and trademarks.
-            </p>
-            <p class="text-xl font-bold mt-5">
-                CHOICE OF LAW
-            </p>
-            <p>
-                This Agreement, and its application and interpretation, shall be governed exclusively by the laws of the State of Georgia, without regard to its conflict of law rules. You consent to the exclusive jurisdiction of the federal and state courts located in or near Atlanta, Georgia for any dispute arising under this Agreement.
-            </p>
-            <p class="text-xl font-bold mt-5">
-                SEVERABILITY
-            </p>
-            <p>
-                In the event any court shall declare any section or sections of this Agreement invalid or void, such declaration shall not invalidate the entire Agreement and all other paragraphs of the Agreement shall remain in full force and effect.
-            </p>
-            <p class="text-xl font-bold mt-5">
-                BINDING AGREEMENT
-            </p>
-            <p>
-                The terms and provisions of this Agreement are binding upon Your heirs, successors, assigns, and other representatives. This Agreement may be executed in counterparts, each of which shall be considered to be an original, but both of which constitute the same Agreement.
-            </p>
-            <p>
-                You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time.
-            </p>
-        </div>
-        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 mt-10">
-            <button v-on:click="accept_agreement()" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                I Agreee
-                <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                </svg>
-            </button>
-        </div>
+            <div v-if="!is_downloading">
+                <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
+                <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
+                <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+                <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+                    <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                        Connect
+                        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </button>
+                    <button v-on:click="downloadBinaries()" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                        Download binaries
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
+                      </svg>
+                  </button>
+              </div>
+          </div>
+          <div v-else class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
+            <div class="w-full flex justify-between mt-5">
+              <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files from https://releases.nav.io</span>
+              <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+              <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+          </div>
+      </div>
+  </div>
+</section>
+<section class="h-full w-full dark:bg-zinc-900 bg-zinc-900" v-show="state=='agreement'">
+    <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16 dark:bg-zinc-900 bg-zinc-900">
+        <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none dark:text-white text-white">License Agreement</p>
+        <div class="w-full h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+          <p>
+            This is a binding Agreement between Navio Developers (“Navio” or “We”) and the person, persons, or entity (“You” or “Your”) using the service, Software, or application (“Software”).
+        </p>
+        <p class="text-xl font-bold mt-5">
+            RIGHTS AND OBLIGATIONS
+        </p>
+        <p>
+            Navio provides the Software solely on the terms and conditions set forth in this Agreement and on the condition that You accept and comply with them. By using the Software You (a) accept this Agreement and agree that You are legally bound by its terms; and (b) represent and warrant that: (i) You are of legal age to enter into a binding agreement; and (ii) if You are a corporation, governmental organization or other legal entity, You have the right, power and authority to enter into this Agreement on behalf of the corporation, governmental organization or other legal entity and bind them to these terms.
+        </p>
+        <p>
+            This Software functions as a free, open source, and multi-signature digital wallet. The Software does not constitute an account where We or other third parties serve as financial intermediaries or custodians of Your Navio(s).
+        </p>
+        <p>
+            While the Software has undergone beta testing and continues to be improved by feedback from the open-source user and developer community, We cannot guarantee there will not be bugs in the Software. You acknowledge that Your use of this Software is at Your own discretion and in compliance with all applicable laws. You are responsible for safekeeping Your passwords, private key pairs, PINs, and any other codes You use to access the Software.
+        </p>
+        <p>
+            IF YOU LOSE ACCESS TO YOUR NAVIO-X WALLET OR YOUR ENCRYPTED PRIVATE KEYS AND YOU HAVE NOT SEPARATELY STORED A BACKUP OF YOUR WALLET AND CORRESPONDING PASSWORD, YOU ACKNOWLEDGE AND AGREE THAT ANY NAV YOU HAVE ASSOCIATED WITH THAT WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The authors of the Software, employees and affiliates of NAVIO, copyright holders, and NAVIO cannot retrieve Your private keys or passwords if You lose or forget them and cannot guarantee transaction confirmation as they do not have control over the Navio network.
+        </p>
+        <p class="text-xl font-bold mt-5">
+            DISCLAIMER
+        </p>
+        <p>
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE, EMPLOYEES AND AFFILIATES OF NAVIO, COPYRIGHT HOLDERS, OR NAVIO BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+        </p>
+        <p>
+            IN NO EVENT WILL NAVIO OR ITS AFFILIATES, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+        </p>
+        <p class="text-xl font-bold mt-5">
+            INTELLECTUAL PROPERTY
+        </p>
+        <p>
+            We retain all right, title, and interest in and to the Content and all of Navio’s brands, logos, and trademarks, including, but not limited to, Navio, Navio-X Wallet, and variations of the wording of the aforementioned brands, logos, and trademarks.
+        </p>
+        <p class="text-xl font-bold mt-5">
+            CHOICE OF LAW
+        </p>
+        <p>
+            This Agreement, and its application and interpretation, shall be governed exclusively by the laws of the State of Georgia, without regard to its conflict of law rules. You consent to the exclusive jurisdiction of the federal and state courts located in or near Atlanta, Georgia for any dispute arising under this Agreement.
+        </p>
+        <p class="text-xl font-bold mt-5">
+            SEVERABILITY
+        </p>
+        <p>
+            In the event any court shall declare any section or sections of this Agreement invalid or void, such declaration shall not invalidate the entire Agreement and all other paragraphs of the Agreement shall remain in full force and effect.
+        </p>
+        <p class="text-xl font-bold mt-5">
+            BINDING AGREEMENT
+        </p>
+        <p>
+            The terms and provisions of this Agreement are binding upon Your heirs, successors, assigns, and other representatives. This Agreement may be executed in counterparts, each of which shall be considered to be an original, but both of which constitute the same Agreement.
+        </p>
+        <p>
+            You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time.
+        </p>
     </div>
+    <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 mt-10">
+        <button v-on:click="accept_agreement()" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+            I Agreee
+            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+        </button>
+    </div>
+</div>
 </section>
 
 <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900 " v-show="state=='setup'">
@@ -409,7 +426,8 @@
           chain:undefined,
           networkinfo:{},
           remember:false,
-          auto_login:false
+          auto_login:false,
+          is_downloading:false
       }
   },
   methods: {
@@ -512,79 +530,104 @@
           }
       });
     },
-    connect: function() {
-        let vm=this;
-        if(this.username&&this.password)
+    downloadBinaries: function() {
+        this.is_downloading=true;
+        ipcRenderer.invoke('download-latest').then((extractPath) => {
+         document.getElementById('progress-bar').style.width = '100%';
+         document.getElementById('progress-text').textContent = '100%';
+         console.log("Binaries extracted to : " + extractPath);
+         Toast.fire({
+            icon: 'success',
+            title: "Binaries extracted to " + extractPath,
+        });
+         ipcRenderer.invoke('start-daemon').then((data) => {
+             console.log("start-daemon"+data);
+         }).catch((err) => {
+            alert('Error: ' + err.message);
+        });
+     }).catch((err) => {
+        alert('Error: ' + err.message);
+    });
+ },
+ connect: function() {
+    let vm=this;
+    if(this.username&&this.password)
+    {
+        this.app.appContext.app.config.globalProperties.client=new Client(
         {
-            this.app.appContext.app.config.globalProperties.client=new Client(
+            host:this.host,
+            port: this.port,
+            username:this.username,
+            password:this.password, 
+            wallet:'wallet_1'
+        });
+        console.log(this.client);
+        this.client.command([{ method: "getwalletinfo" }]).then((r) => 
+        {
+            if (this.remember)
             {
-                host:this.host,
-                port: this.port,
-                username:this.username,
-                password:this.password, 
-                wallet:'wallet_1'
-            });
-            console.log(this.client);
-            this.client.command([{ method: "getwalletinfo" }]).then((r) => 
+                localStorage.setItem('host', this.host);
+                localStorage.setItem('port', this.port);
+                localStorage.setItem('username', this.username);
+                localStorage.setItem('password', this.password);
+                if (this.auto_login) localStorage.setItem('auto_login', true);
+            }
+            else
             {
-                if (this.remember)
+                localStorage.removeItem('host', this.host);
+                localStorage.removeItem('port', this.port);
+                localStorage.removeItem('username', this.username);
+                localStorage.removeItem('password', this.password);
+            }
+            console.log(r);
+            if (this.auto_login)
+            {
+                this.state="ready";
+            }
+            else
+            {
+                if (localStorage.getItem("agreement_accepted"))
                 {
-                    localStorage.setItem('host', this.host);
-                    localStorage.setItem('port', this.port);
-                    localStorage.setItem('username', this.username);
-                    localStorage.setItem('password', this.password);
-                    if (this.auto_login) localStorage.setItem('auto_login', true);
+                    this.state='connected';
                 }
                 else
                 {
-                    localStorage.removeItem('host', this.host);
-                    localStorage.removeItem('port', this.port);
-                    localStorage.removeItem('username', this.username);
-                    localStorage.removeItem('password', this.password);
+                    this.state="welcome";
                 }
-                console.log(r);
-                if (this.auto_login)
-                {
-                    this.state="ready";
-                }
-                else
-                {
-                    if (localStorage.getItem("agreement_accepted"))
-                    {
-                        this.state='connected';
-                    }
-                    else
-                    {
-                        this.state="welcome";
-                    }
-                }
-                this.$router.push({ path: '/home' })
-                let vm=this;
-                vm.$store.commit('set_network',vm.network);
-                vm.$store.commit('set_rpcuser',vm.username);
-                vm.$store.commit('set_rpcpassword',vm.password);
-                var intervalId = window.setInterval(function()
-                {
-                    vm.getBlockChainInfo();
-                    vm.getNetworkInfo();
-                }, 1000);
-            }).catch((r) =>
+            }
+            this.$router.push({ path: '/home' })
+            let vm=this;
+            vm.$store.commit('set_network',vm.network);
+            vm.$store.commit('set_rpcuser',vm.username);
+            vm.$store.commit('set_rpcpassword',vm.password);
+            var intervalId = window.setInterval(function()
             {
-                this.state='connection_error';
-                Swal.fire({
-                  title: 'Connection Error',
-                  text: r.message,
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-              })
-            });
-        }
+                vm.getBlockChainInfo();
+                vm.getNetworkInfo();
+            }, 1000);
+        }).catch((r) =>
+        {
+            this.state='connection_error';
+            Swal.fire({
+              title: 'Connection Error',
+              text: r.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+          })
+        });
     }
+}
 },
 mounted()
 {
     console.log("App mounted");
     this.app=getCurrentInstance();
+    ipcRenderer.on('download-progress', (e, progress) => {
+     const percentage = Math.floor(progress * 100);
+     document.getElementById('progress-bar').style.width = percentage + '%';
+     document.getElementById('progress-text').textContent  = percentage + '%';
+ });
+
     ipcRenderer.on('is-daemon-started', (_event, data) =>
     {
         console.log("is-daemon-started");

@@ -4,6 +4,12 @@ import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { spawn } from 'node:child_process';
 const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
+const https = require('https');
+const decompress = require('decompress');
+const os = require('os');
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -143,6 +149,10 @@ app.on('activate', () => {
   }
 })
 
+ipcMain.handle('start-daemon', (_) => {
+  startDaemon();
+})
+
 ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
   startStaker(network,wallet,rpcuser,rpcpassword);
 })
@@ -155,6 +165,64 @@ ipcMain.handle('shell-open-item', (_, path) => {
   shell.showItemInFolder(`${path}`);
 })
 
+ipcMain.handle('download-latest', async () => {
+  const platform = os.platform(); // 'win32', 'darwin', 'linux'
+  console.log("Platform:"+platform);
+  let filename=undefined;
+  if (platform==="win32") filename="navio-latest-win64.zip";
+  if (platform==="darwin") filename="navio-latest-x86_64-apple-darwin.tar.gz";
+  if (platform==="linux") filename="navio-latest-x86_64-linux-gnu.tar.gz";
+  if (!filename) throw new Error('Platforma uygun dosya bulunamadı.');
+
+  const fullUrl = `https://releases.nav.io/${filename}`;
+  console.log("Filename:"+filename);
+  console.log("Full url:"+fullUrl);
+  const savePath = path.join(app.getPath('downloads'), path.basename(filename));
+
+  // Dosya indir
+  await downloadFile(fullUrl, savePath, (progress) => {
+    win.webContents.send('download-progress', progress);
+  });
+
+  // Decompress et
+  const extractPath = path.join(__dirname, 'bin'); // hedef klasör: dist-electron/main/bin
+await fs.promises.mkdir(extractPath, { recursive: true });
+
+await decompress(savePath, extractPath, {
+  filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
+  map: file => {
+    // sadece bin/ altını kök dizine çıkar
+    const parts = file.path.split('/');
+    const binIndex = parts.indexOf('bin');
+    if (binIndex !== -1) {
+      file.path = parts.slice(binIndex + 1).join('/'); // sadece bin içeriği
+    }
+    return file;
+  }
+});
+  return extractPath;
+});
+
+function downloadFile(url, dest, onProgress) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(dest);
+    https.get(url, (response) => {
+      const total = parseInt(response.headers['content-length'], 10);
+      let downloaded = 0;
+
+      response.pipe(file);
+
+      response.on('data', (chunk) => {
+        downloaded += chunk.length;
+        onProgress(downloaded / total);
+      });
+
+      file.on('finish', () => file.close(resolve));
+      response.on('error', reject);
+    });
+  });
+}
+
 /*const childWindow = new BrowserWindow({
   webPreferences: {
     preload,
@@ -166,6 +234,7 @@ childWindow.loadURL(`${arg}`);*/
 
 function startDaemon()
 {
+  console.log("Starting daemon...");
   let bShell=false;
   let binDir=__dirname;
   if (process.platform === 'win32') binDir+="\\";

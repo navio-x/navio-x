@@ -18,8 +18,8 @@
             </div>
         </div>
     </div>
-    <div class="grid grid-cols-2 gap-4 p-3">
-        <div>
+    <div class="grid grid-cols-3 gap-4 p-3">
+        <div class="col-span-2">
             <button v-if="!$store.state.is_staking_active" v-on:click="start_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 -ms-1">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
@@ -27,7 +27,7 @@
               </svg>
               Start Staking
           </button>
-          <button v-if="$store.state.is_staking_active" v-on:click="stop_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-zinc-700 rounded-lg hover:bg-zinc-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:focus:ring-zinc-800">
+          <button v-if="$store.state.is_staking_active" v-on:click="stop_staking()" class="inline-flex items-center w-128 px-3 py-2 text-md font-medium text-center text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 -ms-1">>
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 9.563C9 9.252 9.252 9 9.563 9h4.874c.311 0 .563.252.563.563v4.874c0 .311-.252.563-.563.563H9.564A.562.562 0 0 1 9 14.437V9.564Z" />
@@ -37,22 +37,36 @@
   </div>
   <div class="rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 text-white dark:text-white">
     <div v-if="staked_commitments&&Object.keys(staked_commitments).length>0">
-        <div v-for="(commitment,index) in staked_commitments" class="p-3 text-md font-medium dark:text-white text-white"> 
-            {{commitment.amount}} NAV Locked
+        <div v-for="(commitment,index) in staked_commitments" class="p-3 text-md font-medium dark:text-white text-white inline-flex items-center "> 
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 ms-1">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+</svg>
+{{commitment.amount}} NAV Locked
         </div>
     </div>
-    <div v-else>
+    <div v-else class="p-3">
         <p>No commitment found.</p>
     </div>
 </div>
 </div>
-<div v-if="$store.state.is_staking_active" class="w-full mt-3 px-3 py-2 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
+<div class="p-3">
+<div v-if="$store.state.is_staking_active" class="w-full p-3 mt-3 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
   <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
 </svg>
 <span class="sr-only">Info</span>
 <div>
     <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
+</div>
+</div>
+<div v-else class="w-full p-3 mt-3 text-sm text-orange-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-orange-400" role="alert">
+  <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+</svg>
+<span class="sr-only">Info</span>
+<div>
+    <span class="font-medium">Staker not running...</span>
+</div>
 </div>
 </div>
 
@@ -85,7 +99,7 @@
 
 
 <div class="p-5 dark:bg-zinc-900 bg-zinc-900">
-    <apexchart class="w-full" height="300" :options="options" :series="series"></apexchart>
+    <apexchart class="w-full" height="240" :options="options" :series="series"></apexchart>
 </div>
 </div>
 <div class="p-4" v-else>

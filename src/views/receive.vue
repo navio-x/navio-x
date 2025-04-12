@@ -57,9 +57,9 @@
                     <th scope="col" class="px-6 py-3">
                         Address
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <!--<th scope="col" class="px-6 py-3">
                         Balance
-                    </th>
+                    </th>!-->
                     <th scope="col" class="px-6 py-3">
                         <span class="sr-only">Edit</span>
                     </th>
@@ -75,9 +75,9 @@
                       {{address.label}}</span>
                       <label class="whitespace-pre-wrap text-sm text-gray-400 mt-4 ms-2 dark:text-gray-400">{{address.address}}</label>
                   </td>
-                  <td class="px-6 py-4">
-                    {{address.amount}} xNAV
-                </td>
+                  <!--<td class="px-6 py-4">
+                    {{address.amount}} NAV
+                </td>!-->
                 <td class="px-6 py-4 text-right">
                     <button id="button" v-on:click="docopy(address.address)" type="button" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
