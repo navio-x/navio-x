@@ -22,11 +22,11 @@
     </section>
     <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='connection_error'">
         <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
+            <div v-if="!is_downloading">
             <div class="flex justify-center items-center">
                 <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
             </div>
             <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
-            <div v-if="!is_downloading">
                 <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
                 <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
                 <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
@@ -46,7 +46,17 @@
               </div>
           </div>
           <div v-else class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
-            <div class="w-full flex justify-between mt-5">
+            <!-- From Uiverse.io by Z4drus --> 
+<div class="container">
+  <div class="slice"></div>
+  <div class="slice"></div>
+  <div class="slice"></div>
+  <div class="slice"></div>
+  <div class="slice"></div>
+  <div class="slice"></div>
+</div>
+
+            <div class="w-full flex justify-between mt-20">
               <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files from https://releases.nav.io</span>
               <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
           </div>
@@ -865,5 +875,222 @@ body,p,td,tr,th,a,pre,div,span
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
+
+/* From Uiverse.io by Z4drus */ 
+.container {
+  --uib-size: 150px;
+  --uib-speed: 2.5s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: var(--uib-size);
+  width: var(--uib-size);
+}
+
+.slice {
+  position: relative;
+  height: calc(var(--uib-size) / 6);
+  width: 100%;
+}
+
+.slice::before,
+.slice::after {
+  --uib-a: calc(var(--uib-speed) / -2);
+  --uib-b: calc(var(--uib-speed) / -6);
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(50% - var(--uib-size) / 12);
+  height: 100%;
+  width: calc(100% / 6);
+  border-radius: 50%;
+  background-color: var(--uib-color);
+  flex-shrink: 0;
+  animation: orbit var(--uib-speed) linear infinite;
+  transition: background-color 0.3s ease;
+}
+
+.slice:nth-child(1)::after {
+  animation-delay: var(--uib-a);
+}
+
+.slice:nth-child(2)::before {
+  animation-delay: var(--uib-b);
+}
+
+.slice:nth-child(2)::after {
+  animation-delay: calc(var(--uib-a) + var(--uib-b));
+}
+
+.slice:nth-child(3)::before {
+  animation-delay: calc(var(--uib-b) * 2);
+}
+
+.slice:nth-child(3)::after {
+  animation-delay: calc(var(--uib-a) + var(--uib-b) * 2);
+}
+
+.slice:nth-child(4)::before {
+  animation-delay: calc(var(--uib-b) * 3);
+}
+
+.slice:nth-child(4)::after {
+  animation-delay: calc(var(--uib-a) + var(--uib-b) * 3);
+}
+
+.slice:nth-child(5)::before {
+  animation-delay: calc(var(--uib-b) * 4);
+}
+
+.slice:nth-child(5)::after {
+  animation-delay: calc(var(--uib-a) + var(--uib-b) * 4);
+}
+
+.slice:nth-child(6)::before {
+  animation-delay: calc(var(--uib-b) * 5);
+}
+
+.slice:nth-child(6)::after {
+  animation-delay: calc(var(--uib-a) + var(--uib-b) * 5);
+}
+
+@keyframes orbit {
+  0% {
+    transform: translateX(calc(var(--uib-size) * 0.25)) scale(0.73684);
+    opacity: 0.65;
+  }
+
+  5% {
+    transform: translateX(calc(var(--uib-size) * 0.235)) scale(0.684208);
+    opacity: 0.58;
+  }
+
+  10% {
+    transform: translateX(calc(var(--uib-size) * 0.182)) scale(0.631576);
+    opacity: 0.51;
+  }
+
+  15% {
+    transform: translateX(calc(var(--uib-size) * 0.129)) scale(0.578944);
+    opacity: 0.44;
+  }
+
+  20% {
+    transform: translateX(calc(var(--uib-size) * 0.076)) scale(0.526312);
+    opacity: 0.37;
+  }
+
+  25% {
+    transform: translateX(0%) scale(0.47368);
+    opacity: 0.3;
+  }
+
+  30% {
+    transform: translateX(calc(var(--uib-size) * -0.076)) scale(0.526312);
+    opacity: 0.37;
+  }
+
+  35% {
+    transform: translateX(calc(var(--uib-size) * -0.129)) scale(0.578944);
+    opacity: 0.44;
+  }
+
+  40% {
+    transform: translateX(calc(var(--uib-size) * -0.182)) scale(0.631576);
+    opacity: 0.51;
+  }
+
+  45% {
+    transform: translateX(calc(var(--uib-size) * -0.235)) scale(0.684208);
+    opacity: 0.58;
+  }
+
+  50% {
+    transform: translateX(calc(var(--uib-size) * -0.25)) scale(0.73684);
+    opacity: 0.65;
+  }
+
+  55% {
+    transform: translateX(calc(var(--uib-size) * -0.235)) scale(0.789472);
+    opacity: 0.72;
+  }
+
+  60% {
+    transform: translateX(calc(var(--uib-size) * -0.182)) scale(0.842104);
+    opacity: 0.79;
+  }
+
+  65% {
+    transform: translateX(calc(var(--uib-size) * -0.129)) scale(0.894736);
+    opacity: 0.86;
+  }
+
+  70% {
+    transform: translateX(calc(var(--uib-size) * -0.076)) scale(0.947368);
+    opacity: 0.93;
+  }
+
+  75% {
+    transform: translateX(0%) scale(1);
+    opacity: 1;
+  }
+
+  80% {
+    transform: translateX(calc(var(--uib-size) * 0.076)) scale(0.947368);
+    opacity: 0.93;
+  }
+
+  85% {
+    transform: translateX(calc(var(--uib-size) * 0.129)) scale(0.894736);
+    opacity: 0.86;
+  }
+
+  90% {
+    transform: translateX(calc(var(--uib-size) * 0.182)) scale(0.842104);
+    opacity: 0.79;
+  }
+
+  95% {
+    transform: translateX(calc(var(--uib-size) * 0.235)) scale(0.789472);
+    opacity: 0.72;
+  }
+
+  100% {
+    transform: translateX(calc(var(--uib-size) * 0.25)) scale(0.73684);
+    opacity: 0.65;
+  }
+}
+
+.slice:nth-child(1)::before,
+.slice:nth-child(1)::after {
+  background-color: #334dff;
+}
+
+.slice:nth-child(2)::before,
+.slice:nth-child(2)::after {
+  background-color: #333eff;
+}
+
+.slice:nth-child(3)::before,
+.slice:nth-child(3)::after {
+  background-color: #3334ff;
+}
+
+.slice:nth-child(4)::before,
+.slice:nth-child(4)::after {
+  background-color: #4433ff;
+}
+
+.slice:nth-child(5)::before,
+.slice:nth-child(5)::after {
+  background-color: #6633ff;
+}
+
+.slice:nth-child(6)::before,
+.slice:nth-child(6)::after {
+  background-color: #9933ff;
+}
+
 
 </style>

@@ -186,15 +186,15 @@ ipcMain.handle('download-latest', async () => {
 
   // Decompress et
   const extractPath = path.join(__dirname, 'bin'); // hedef klasör: dist-electron/main/bin
-await fs.promises.mkdir(extractPath, { recursive: true });
+  await fs.promises.mkdir(extractPath, { recursive: true });
 
-await decompress(savePath, extractPath, {
-  filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
-  map: file => {
+  await decompress(savePath, extractPath, {
+    filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
+    map: file => {
     // sadece bin/ altını kök dizine çıkar
-    const parts = file.path.split('/');
-    const binIndex = parts.indexOf('bin');
-    if (binIndex !== -1) {
+      const parts = file.path.split('/');
+      const binIndex = parts.indexOf('bin');
+      if (binIndex !== -1) {
       file.path = parts.slice(binIndex + 1).join('/'); // sadece bin içeriği
     }
     return file;
