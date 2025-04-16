@@ -78,6 +78,14 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     },
   })
 
+  // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
+  if (process.platform === 'win32') {
+    try {
+      win.setVibrancy('acrylic'); // Electron >=20'de bazı sürümlerde destekli
+    } catch (e) {
+      console.log('Windows vibrancy desteklemiyor:', e.message);
+    }
+  }
       win.setMenu(null);
       //win.webContents.openDevTools();
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
