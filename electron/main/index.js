@@ -61,16 +61,22 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         title: 'Main window',
         width:1100,
         height:760,
-        icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
-        webPreferences: {
-          preload,
+        transparent: true,
+        frame: false,
+        hasShadow: true,
+        resizable: true,
+    vibrancy: process.platform === 'darwin' ? 'ultra-dark' : undefined, // Sadece macOS için
+    backgroundColor: '#00000000', // Şeffaflık
+    icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
+    webPreferences: {
+      preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-          nodeIntegration: true,
-          contextIsolation: false,
-        },
-      })
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  })
 
       win.setMenu(null);
       //win.webContents.openDevTools();
