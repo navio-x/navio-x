@@ -23,10 +23,10 @@
     <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='connection_error'">
         <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
             <div v-if="!is_downloading">
-            <div class="flex justify-center items-center">
-                <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
-            </div>
-            <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
+                <div class="flex justify-center items-center">
+                    <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
+                </div>
+                <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
                 <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
                 <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
                 <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
@@ -47,16 +47,16 @@
           </div>
           <div v-else class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
             <!-- From Uiverse.io by Z4drus --> 
-<div class="container">
-  <div class="slice"></div>
-  <div class="slice"></div>
-  <div class="slice"></div>
-  <div class="slice"></div>
-  <div class="slice"></div>
-  <div class="slice"></div>
-</div>
+            <div class="container">
+              <div class="slice"></div>
+              <div class="slice"></div>
+              <div class="slice"></div>
+              <div class="slice"></div>
+              <div class="slice"></div>
+              <div class="slice"></div>
+          </div>
 
-            <div class="w-full flex justify-between mt-20">
+          <div class="w-full flex justify-between mt-20">
               <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files from https://releases.nav.io</span>
               <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
           </div>
@@ -543,14 +543,21 @@
     downloadBinaries: function() {
         this.is_downloading=true;
         ipcRenderer.invoke('download-latest').then((extractPath) => {
-         document.getElementById('progress-bar').style.width = '100%';
-         document.getElementById('progress-text').textContent = '100%';
-         console.log("Binaries extracted to : " + extractPath);
-         Toast.fire({
-            icon: 'success',
-            title: "Binaries extracted to " + extractPath,
-        });
-         ipcRenderer.invoke('start-daemon').then((data) => {
+            if (!extractPath)
+            {
+                this.is_downloading=false;
+                return;
+            }
+            console.log("extractPath:"+extractPath)
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('progress-text').textContent = '100%';
+            console.log("Binaries extracted to : " + extractPath);
+            Toast.fire({
+                icon: 'success',
+                title: "Binaries extracted to " + extractPath,
+            });
+            ipcRenderer.invoke('start-daemon').then((data) =>
+            {
              console.log("start-daemon"+data);
          }).catch((err) => {
             alert('Error: ' + err.message);
@@ -633,10 +640,11 @@ mounted()
     console.log("App mounted");
     this.app=getCurrentInstance();
     ipcRenderer.on('download-progress', (e, progress) => {
-     const percentage = Math.floor(progress * 100);
-     document.getElementById('progress-bar').style.width = percentage + '%';
-     document.getElementById('progress-text').textContent  = percentage + '%';
- });
+        console.log("Download progres:"+progress);
+        const percentage = Math.floor(progress);
+        document.getElementById('progress-bar').style.width = percentage + '%';
+        document.getElementById('progress-text').textContent  = percentage + '%';
+    });
 
     ipcRenderer.on('is-daemon-started', (_event, data) =>
     {
@@ -686,6 +694,14 @@ mounted()
     }
     console.log(this.client);
 })
+    ipcRenderer.on('download-error', (event, errorMessage) => {
+        Swal.fire({
+          title: 'Download Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: 'OK'
+      })
+    });
     ipcRenderer.on('stop-daemon', (_event, value) =>
     {
         console.log("stop-daemon");
@@ -959,107 +975,107 @@ body,p,td,tr,th,a,pre,div,span
   0% {
     transform: translateX(calc(var(--uib-size) * 0.25)) scale(0.73684);
     opacity: 0.65;
-  }
+}
 
-  5% {
+5% {
     transform: translateX(calc(var(--uib-size) * 0.235)) scale(0.684208);
     opacity: 0.58;
-  }
+}
 
-  10% {
+10% {
     transform: translateX(calc(var(--uib-size) * 0.182)) scale(0.631576);
     opacity: 0.51;
-  }
+}
 
-  15% {
+15% {
     transform: translateX(calc(var(--uib-size) * 0.129)) scale(0.578944);
     opacity: 0.44;
-  }
+}
 
-  20% {
+20% {
     transform: translateX(calc(var(--uib-size) * 0.076)) scale(0.526312);
     opacity: 0.37;
-  }
+}
 
-  25% {
+25% {
     transform: translateX(0%) scale(0.47368);
     opacity: 0.3;
-  }
+}
 
-  30% {
+30% {
     transform: translateX(calc(var(--uib-size) * -0.076)) scale(0.526312);
     opacity: 0.37;
-  }
+}
 
-  35% {
+35% {
     transform: translateX(calc(var(--uib-size) * -0.129)) scale(0.578944);
     opacity: 0.44;
-  }
+}
 
-  40% {
+40% {
     transform: translateX(calc(var(--uib-size) * -0.182)) scale(0.631576);
     opacity: 0.51;
-  }
+}
 
-  45% {
+45% {
     transform: translateX(calc(var(--uib-size) * -0.235)) scale(0.684208);
     opacity: 0.58;
-  }
+}
 
-  50% {
+50% {
     transform: translateX(calc(var(--uib-size) * -0.25)) scale(0.73684);
     opacity: 0.65;
-  }
+}
 
-  55% {
+55% {
     transform: translateX(calc(var(--uib-size) * -0.235)) scale(0.789472);
     opacity: 0.72;
-  }
+}
 
-  60% {
+60% {
     transform: translateX(calc(var(--uib-size) * -0.182)) scale(0.842104);
     opacity: 0.79;
-  }
+}
 
-  65% {
+65% {
     transform: translateX(calc(var(--uib-size) * -0.129)) scale(0.894736);
     opacity: 0.86;
-  }
+}
 
-  70% {
+70% {
     transform: translateX(calc(var(--uib-size) * -0.076)) scale(0.947368);
     opacity: 0.93;
-  }
+}
 
-  75% {
+75% {
     transform: translateX(0%) scale(1);
     opacity: 1;
-  }
+}
 
-  80% {
+80% {
     transform: translateX(calc(var(--uib-size) * 0.076)) scale(0.947368);
     opacity: 0.93;
-  }
+}
 
-  85% {
+85% {
     transform: translateX(calc(var(--uib-size) * 0.129)) scale(0.894736);
     opacity: 0.86;
-  }
+}
 
-  90% {
+90% {
     transform: translateX(calc(var(--uib-size) * 0.182)) scale(0.842104);
     opacity: 0.79;
-  }
+}
 
-  95% {
+95% {
     transform: translateX(calc(var(--uib-size) * 0.235)) scale(0.789472);
     opacity: 0.72;
-  }
+}
 
-  100% {
+100% {
     transform: translateX(calc(var(--uib-size) * 0.25)) scale(0.73684);
     opacity: 0.65;
-  }
+}
 }
 
 .slice:nth-child(1)::before,

@@ -61,8 +61,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         title: 'Main window',
         width:1100,
         height:760,
-        transparent: true,
-        frame: false,
+        transparent: false,
+        frame: true,
         hasShadow: true,
         resizable: true,
     vibrancy: process.platform === 'darwin' ? 'ultra-dark' : undefined, // Sadece macOS için
@@ -79,14 +79,14 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
   })
 
   // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
-  if (process.platform === 'win32') {
-    try {
+      if (process.platform === 'win32') {
+        try {
       win.setVibrancy('acrylic'); // Electron >=20'de bazı sürümlerde destekli
     } catch (e) {
-      console.log('Windows vibrancy desteklemiyor:', e.message);
+      console.log('Windows vibrancy not supported:', e.message);
     }
   }
-      win.setMenu(null);
+  win.setMenu(null);
       //win.webContents.openDevTools();
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
@@ -182,45 +182,76 @@ ipcMain.handle('shell-open-item', (_, path) => {
 ipcMain.handle('download-latest', async () => {
   const platform = os.platform(); // 'win32', 'darwin', 'linux'
   console.log("Platform:"+platform);
-  let filename=undefined;
-  if (platform==="win32") filename="navio-latest-win64.zip";
-  if (platform==="darwin") filename="navio-latest-x86_64-apple-darwin.tar.gz";
-  if (platform==="linux") filename="navio-latest-x86_64-linux-gnu.tar.gz";
-  if (!filename) throw new Error('Platforma uygun dosya bulunamadı.');
+
+  let filename;
+  if (platform === "win32") filename = "navio-latest-win64.zip";
+  if (platform === "darwin") filename = "navio-latest-x86_64-apple-darwin.tar.gz";
+  if (platform === "linux") filename = "navio-latest-x86_64-linux-gnu.tar.gz";
+
+  if (!filename)
+  {
+    win.webContents.send('download-error', "No file suitable for the platform was found.");
+    return;
+  }
 
   const fullUrl = `https://releases.nav.io/${filename}`;
-  console.log("Filename:"+filename);
-  console.log("Full url:"+fullUrl);
   const savePath = path.join(app.getPath('downloads'), path.basename(filename));
 
-  // Dosya indir
-  await downloadFile(fullUrl, savePath, (progress) => {
-    win.webContents.send('download-progress', progress);
-  });
+  try {
+    // 1. Dosyayı indir
+    await downloadFile(fullUrl, savePath, (progress) => {
+      console.log("Progress:" + progress);
+      win.webContents.send('download-progress', progress);
+    });
 
-  // Decompress et
-  const extractPath = path.join(__dirname, 'bin'); // hedef klasör: dist-electron/main/bin
-  await fs.promises.mkdir(extractPath, { recursive: true });
+    // 2. Klasörü oluştur
+    const extractPath = path.join(__dirname, 'bin');
+    await fs.promises.mkdir(extractPath, { recursive: true });
 
-  await decompress(savePath, extractPath, {
-    filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
-    map: file => {
-    // sadece bin/ altını kök dizine çıkar
-      const parts = file.path.split('/');
-      const binIndex = parts.indexOf('bin');
-      if (binIndex !== -1) {
-      file.path = parts.slice(binIndex + 1).join('/'); // sadece bin içeriği
+    // 3. Arşivi aç
+    await decompress(savePath, extractPath, {
+      filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
+      map: file => {
+        const parts = file.path.split('/');
+        const binIndex = parts.indexOf('bin');
+        if (binIndex !== -1) {
+          file.path = parts.slice(binIndex + 1).join('/');
+        }
+        return file;
+      }
+    });
+
+    return extractPath;
+
+  } catch (error) {
+    let errorMessage = 'An error occurred.';
+
+    if (error.code === 'ENOTFOUND') {
+      errorMessage = 'Could not connect to url : ' + fullUrl;
+    } else if (error.response && error.response.status === 404) {
+      errorMessage = 'File not found (404) : ' +  fullUrl;
+    } else if (error.code === 'ECONNREFUSED') {
+      errorMessage = 'Connection refused.';
+    } else if (error.message) {
+      errorMessage = error.message;
     }
-    return file;
+
+    console.error("Download error:", errorMessage);
+    win.webContents.send('download-error', errorMessage);
+    return null;
   }
 });
-  return extractPath;
-});
+
 
 function downloadFile(url, dest, onProgress) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
+
     https.get(url, (response) => {
+      if (response.statusCode === 404) {
+        return reject({ response: { status: 404 } });
+      }
+
       const total = parseInt(response.headers['content-length'], 10);
       let downloaded = 0;
 
@@ -228,11 +259,18 @@ function downloadFile(url, dest, onProgress) {
 
       response.on('data', (chunk) => {
         downloaded += chunk.length;
-        onProgress(downloaded / total);
+        if (onProgress && total) {
+          const percent = Math.round((downloaded / total) * 100);
+          onProgress(percent);
+        }
       });
 
-      file.on('finish', () => file.close(resolve));
-      response.on('error', reject);
+      file.on('finish', () => {
+        file.close(resolve);
+      });
+
+    }).on('error', (err) => {
+      reject(err);
     });
   });
 }
