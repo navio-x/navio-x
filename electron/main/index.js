@@ -172,7 +172,7 @@ ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
 })
 
 ipcMain.handle('stop-staker', (_, pid) => {
-  stopStaker(pid);
+  if (pid) stopStaker(pid);
 })
 
 ipcMain.handle('shell-open-item', (_, path) => {
