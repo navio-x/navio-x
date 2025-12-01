@@ -429,7 +429,7 @@
           username:"",
           password:"",
           host:"localhost",
-          port:33577,
+          port:33677,
           network:"testnet",
           blocks:0,
           headers:0,
