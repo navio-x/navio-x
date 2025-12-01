@@ -21,15 +21,15 @@
     </div>
     <div>
         <div class="flex items-center mb-4">
-            <input id="add-node-radio-1" type="radio" value="onetry" v-model="node_add_type" name="default-radio" class="w-4 h-4 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:border-brand focus:ring-2 focus:outline-none focus:ring-brand-subtle border border-default appearance-none">
+            <input id="add-node-radio-1" type="radio" value="onetry" v-model="node_add_type" name="default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-gray-800 dark:bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
             <label for="add-node-radio-1" class="select-none ms-2 text-sm font-medium text-heading dark:text-white text-white">Try a connection to the node once</label>
         </div>
         <div class="flex items-center mb-4">
-            <input id="add-node-radio-2" type="radio" value="add" v-model="node_add_type" name="default-radio" class="w-4 h-4 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:border-brand focus:ring-2 focus:outline-none focus:ring-brand-subtle border border-default appearance-none">
+            <input id="add-node-radio-2" type="radio" value="add" v-model="node_add_type" name="default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-gray-800 dark:bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
             <label for="add-node-radio-2" class="select-none ms-2 text-sm font-medium text-heading dark:text-white text-white">Add node to the list</label>
         </div>
         <div class="flex items-center">
-            <input id="add-node-radio-3" type="radio" value="remove" v-model="node_add_type" name="default-radio" class="w-4 h-4 text-neutral-primary border-default-medium bg-neutral-secondary-medium rounded-full checked:border-brand focus:ring-2 focus:outline-none focus:ring-brand-subtle border border-default appearance-none">
+            <input id="add-node-radio-3" type="radio" value="remove" v-model="node_add_type" name="default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-gray-800 dark:bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
             <label for="add-node-radio-3" class="select-none ms-2 text-sm font-medium text-heading dark:text-white text-white">Remove node from the list</label>
         </div>
     </div>
