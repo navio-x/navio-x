@@ -20,7 +20,7 @@
   },
   "scripts": {
     "dev": "vite build && electron .",
-    "build": "vite build && electron-builder --linux --win --x64",
+    "build": "vite build && electron-builder --linux --win --mac --x64",
     "preview": "vite"
   },
   "devDependencies": {
