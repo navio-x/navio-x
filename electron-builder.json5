@@ -3,9 +3,9 @@
  */
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "NavioX",
+  "appId": "com.naviox.app",
   "asar": false,
-  "productName": "Navio X",
+  "productName": "Navio-X",
   "directories": {
     "output": "release/${version}"
   },

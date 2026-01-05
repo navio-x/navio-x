@@ -1,6 +1,6 @@
 {
   "name": "navio-x",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist-electron/main/index.js",
   "description": "navio-x wallet",
   "author": "x",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "dev": "vite build && electron .",
-    "build": "vite build && electron-builder",
+    "build": "vite build && electron-builder --linux --win --x64",
     "preview": "vite"
   },
   "devDependencies": {
