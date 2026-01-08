@@ -620,14 +620,13 @@ v-show="state=='select_daemon_method'"
                 this.is_downloading=false;
                 return;
             }
-            console.log("extractPath:"+extractPath)
             document.getElementById('progress-bar').style.width = '100%';
             document.getElementById('progress-text').textContent = '100%';
             console.log("Binaries extracted to : " + extractPath);
             Toast.fire({
                 theme:'dark',
                 icon: 'success',
-                title: "Binaries extracted to " + extractPath,
+                title: "Binaries ready",
             });
             ipcRenderer.invoke('start-daemon').then((data) =>
             {
