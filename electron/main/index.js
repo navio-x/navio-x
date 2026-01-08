@@ -610,90 +610,80 @@ function stopStaker(pid)
   process.kill(pid, 'SIGTERM');
 }
 
-function startStaker(network,wallet,rpcuser,rpcpassword)
+function startStaker(network, wallet, rpcuser, rpcpassword)
 {
   console.log("Starting staker...");
   console.log(`${network}`);
   console.log(`${wallet}`);
   console.log(`${rpcuser}`);
   console.log(`${rpcpassword}`);
-  let bShell=false;
-  let binDir=__dirname;
-  if (process.platform === 'win32') binDir+="\\";
-  if (process.platform === 'darwin') binDir+="/";
-  if (process.platform === 'linux') binDir+="/";
-  binDir+="bin";
-  let binaryPath="";
-  let coin={
-    "f_linux":"navio-staker",
-    "f_osx":"navio-staker",
-    "f_windows":"navio-staker.exe"
+
+  let binDir = path.join(app.getPath('userData'), 'bin');
+  let bShell = (process.platform !== "win32");
+
+  let filenames = {
+    linux: "navio-staker",
+    darwin: "navio-staker",
+    win32: "navio-staker.exe"
   };
-  let binaryFileName="";
-  let executablePath="";
-  if (process.platform=="win32")
-  {
-    executablePath=binDir+"\\"+coin.f_windows;
-    binaryFileName=coin.f_windows;
-    bShell=false;
-  }
-  if (process.platform=="linux")
-  {
-    executablePath=binDir+"/./"+coin.f_linux;
-    binaryFileName=coin.f_linux;
-    bShell=true;
-  }
-  if (process.platform=="darwin")
-  {
-    executablePath=binDir+"/./"+coin.f_osx;
-    binaryFileName=coin.f_osx;
-    bShell=true;
-  }
-  var parameters = ["-"+network+" -wallet="+wallet+" -rpcuser="+rpcuser+" -rpcpassword="+rpcpassword];
+
+  let executablePath = path.join(binDir, filenames[process.platform]);
+
+  var parameters = [
+    "-" + network,
+    "-wallet=" + wallet,
+    "-rpcuser=" + rpcuser,
+    "-rpcpassword=" + rpcpassword
+  ];
+
   console.log("Binary Parameters : [" + parameters + "]");
-  const defaults = {cwd:binDir,env:process.env,shell:bShell,windowsVerbatimArguments:true};
-  console.log("Platform : "+process.platform);
-  console.log("App Path : "+app.getAppPath());
-  console.log("Architecture : "+process.arch);
+
+  const defaults = {
+    cwd: binDir,
+    env: process.env,
+    shell: bShell,
+    windowsVerbatimArguments: true
+  };
+
+  console.log("Platform : " + process.platform);
+  console.log("App Path : " + app.getAppPath());
+  console.log("Architecture : " + process.arch);
+
   var newProcess;
-  if (process.platform=="linux" || process.platform=="darwin")
+
+  if (process.platform === "linux" || process.platform === "darwin")
   {
-    if (process.platform=="linux") binaryPath=binDir+"/"+coin.f_linux;
-    if (process.platform=="darwin") binaryPath=binDir+"/"+coin.f_osx;
-    console.log("Setting staker file as executable " + binaryPath);
-    var buttons = ['OK', 'Cancel'];
-    var chmodProcess=execFile("chmod +x " + binaryPath, null, defaults, function(err, data)
+    console.log("Setting staker file as executable " + executablePath);
+
+    execFile("chmod", ["+x", executablePath], defaults, function ()
     {
-      newProcess=spawn(executablePath, parameters, defaults, function(err, data)
-      {
-        if (err)
-        {
-          console.log(err);
-          console.log("Staker start failed->"+executablePath+"->"+err.message);
-        }
-      });
+      newProcess = spawn(executablePath, parameters, defaults);
+
       newProcess.on('error', (err) => {
-        console.log('Failed to start staker->'+executablePath+"->"+err.message);
-      });   
-      if (newProcess.pid!=undefined)
+        console.log("Failed to start staker->" + executablePath + "->" + err.message);
+      });
+
+      if (newProcess.pid)
       {
-        win.webContents.send('start-staker-success',newProcess.pid);
+        win.webContents.send('start-staker-success', newProcess.pid);
         console.log("Staker started. PID:" + newProcess.pid);
+
         newProcess.on('exit', (code) => {
-          newProcess=null;
+          newProcess = null;
           win.webContents.send('stop-staker-success');
-          console.log("Staker stopped. Exit Code : "+code);
+          console.log("Staker stopped. Exit Code : " + code);
         });
-        newProcess.stdout.on('data', (data) =>
-        {
+
+        newProcess.stdout.on('data', (data) => {
           console.log(data.toString());
         });
-        newProcess.stderr.on("data", function (stderr) {
+
+        newProcess.stderr.on('data', (stderr) => {
           console.log("stderr : " + stderr);
           if (!stderr.toString().startsWith("Warning"))
           {
-            console.log("Staker start failed->"+stderr.toString());
-          }     
+            console.log("Staker start failed->" + stderr.toString());
+          }
         });
       }
       else
@@ -705,37 +695,35 @@ function startStaker(network,wallet,rpcuser,rpcpassword)
   else
   {
     console.log(executablePath);
-    newProcess=spawn(coin.f_windows, parameters, defaults, function(err, data)
-    {
-      if (err)
-      {
-        console.log(err);
-        console.log("Staker start failed -> "+err.message);
-      }
-    });
+
+    newProcess = spawn(executablePath, parameters, defaults);
+
     newProcess.on('error', (err) => {
-      console.log('Failed to start staker.'+err.message);
+      console.log('Failed to start staker.' + err.message);
       console.log(err);
     });
-    if (newProcess.pid!=undefined)
+
+    if (newProcess.pid)
     {
-      win.webContents.send('start-staker-success',newProcess.pid);
+      win.webContents.send('start-staker-success', newProcess.pid);
       console.log("Staker started. PID:" + newProcess.pid);
+
       newProcess.on('exit', (code) => {
-        newProcess=null;
+        newProcess = null;
         win.webContents.send('stop-staker-success');
-        console.log("Staker stopped. Exit Code : "+code);
+        console.log("Staker stopped. Exit Code : " + code);
       });
-      newProcess.stdout.on('data', (data) =>
-      {
+
+      newProcess.stdout.on('data', (data) => {
         console.log(data.toString());
       });
-      newProcess.stderr.on("data", function (stderr) {
+
+      newProcess.stderr.on('data', (stderr) => {
         console.log("stderr : " + stderr);
         if (!stderr.toString().startsWith("Warning"))
         {
-          console.log("Staker start failed",stderr.toString());
-        }     
+          console.log("Staker start failed", stderr.toString());
+        }
       });
     }
     else

@@ -81,6 +81,7 @@
       {
         localStorage.clear();
         Toast.fire({
+          theme:'dark',
           icon: 'success',
           title: 'Settings cleared',
         });
@@ -90,6 +91,7 @@
         this.client.command([{ method: "stop", parameters: [] }]).then((r) =>
         {
           Toast.fire({
+            theme:'dark',
             icon: 'success',
             title: r,
           });
@@ -107,6 +109,7 @@
       },
 remove_bin_directory() {
   Swal.fire({
+    theme:'dark',
     title: 'Delete binary files?',
     text: 'This action will permanently remove all binary files required for Navio to run.',
     icon: 'warning',
@@ -123,6 +126,7 @@ remove_bin_directory() {
 
       if (response && response.success) {
         Swal.fire({
+          theme:'dark',
           title: 'Deleted',
           text: 'Binary files have been successfully removed.',
           icon: 'success',
@@ -135,6 +139,7 @@ remove_bin_directory() {
       }
 
       Swal.fire({
+        theme:'dark',
         title: 'Error',
         text: response?.error || 'Failed to remove binary files.',
         icon: 'error'
@@ -142,6 +147,7 @@ remove_bin_directory() {
 
     }).catch((err) => {
       Swal.fire({
+        theme:'dark',
         title: 'Error',
         text: err.message || 'An unexpected error occurred.',
         icon: 'error'

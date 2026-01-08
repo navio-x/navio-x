@@ -156,47 +156,47 @@ flex items-center justify-center" v-show="state=='connection_error'">
 </section>
 
 <section
-  class="min-h-screen bg-zinc-900 dark:bg-zinc-900 flex flex-col items-center justify-center"
-  v-show="state=='select_daemon_method'"
+class="min-h-screen bg-zinc-900 dark:bg-zinc-900 flex flex-col items-center justify-center"
+v-show="state=='select_daemon_method'"
 >
-  <div class="mb-10 flex justify-center">
+<div class="mb-10 flex justify-center">
     <img src="./assets/gear.png" class="w-[64px] md:w-[128px] lg:w-[256px] h-auto" />
-  </div>
+</div>
 
-  <div class="px-4 max-w-screen-xl text-center">
+<div class="px-4 max-w-screen-xl text-center">
     <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white brand">
       Choose a method
-    </h1>
+  </h1>
 
-    <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-400">
+  <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-400">
       You can download the official Navio binaries, or manually start the Navio daemon and connect to it.
-    </p>
+  </p>
 
-    <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-5">
+  <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-5">
       <button
-        @click="state='setup'"
-        class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+      @click="state='setup'"
+      class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
       >
-        Manual Node Connection
-        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+      Manual Node Connection
+      <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M1 5h12m0 0L9 1m4 4L9 9"/>
-        </svg>
-      </button>
+          d="M1 5h12m0 0L9 1m4 4L9 9"/>
+      </svg>
+  </button>
 
-      <button
-        @click="downloadBinaries()"
-        class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
-      >
-        Download Official Navio Binaries
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"/>
-        </svg>
-      </button>
-    </div>
-  </div>
+  <button
+  @click="downloadBinaries()"
+  class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+  >
+  Download Official Navio Binaries
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+  stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+  <path stroke-linecap="round" stroke-linejoin="round"
+  d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"/>
+</svg>
+</button>
+</div>
+</div>
 </section>
 
 <section class="h-screen dark:bg-zinc-900 bg-zinc-900 " v-show="state=='setup'">
@@ -580,6 +580,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
         else
         {
             Swal.fire({
+                theme:'dark',
                 title: 'Staking',
                 text: "Staking not started.",
                 icon: 'info',
@@ -595,6 +596,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
             if (r[0].code)
             {
               Toast.fire({
+                theme:'dark',
                 icon: 'info',
                 title: r[0].message,
             });
@@ -602,6 +604,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
           else
           {
               Toast.fire({
+                theme:'dark',
                 icon: 'success',
                 title: r,
             });
@@ -622,6 +625,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
             document.getElementById('progress-text').textContent = '100%';
             console.log("Binaries extracted to : " + extractPath);
             Toast.fire({
+                theme:'dark',
                 icon: 'success',
                 title: "Binaries extracted to " + extractPath,
             });
@@ -695,11 +699,12 @@ flex items-center justify-center" v-show="state=='connection_error'">
         {
             this.state='connection_error';
             Swal.fire({
-              title: 'Connection Error',
-              text: r.message,
-              icon: 'error',
-              confirmButtonText: 'OK'
-          })
+                theme:'dark',
+                title: 'Connection Error',
+                text: r.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
         });
     }
 }
@@ -727,6 +732,7 @@ mounted()
         if (data.started)
         {
           Toast.fire({
+            theme:'dark',
             icon: 'success',
             title: "Daemon successfully started"
         });
@@ -775,11 +781,12 @@ mounted()
 })
     ipcRenderer.on('download-error', (event, errorMessage) => {
         Swal.fire({
-          title: 'Download Error',
-          text: errorMessage,
-          icon: 'error',
-          confirmButtonText: 'OK'
-      })
+            theme:'dark',
+            title: 'Download Error',
+            text: errorMessage,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        })
     });
     ipcRenderer.on('stop-daemon', (_event, value) =>
     {
@@ -792,6 +799,7 @@ mounted()
         this.$store.commit('set_staker_wallet',this.$store.state.active_wallet);
         this.$store.commit('set_staker_pid',pid);
         Toast.fire({
+            theme:'dark',
             icon: 'success',
             title: "Staker successfully started for wallet '"+this.$store.state.active_wallet+"'. PID : " + pid
         });
@@ -801,6 +809,7 @@ mounted()
         this.$store.commit('set_staker_pid',undefined);
         this.$store.commit('set_staking_active',false);
         Toast.fire({
+            theme:'dark',
             icon: 'success',
             title: "Staker successfully stopped for wallet '"+this.$store.state.staker_wallet + "'"
         });

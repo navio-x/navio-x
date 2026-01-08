@@ -145,9 +145,10 @@
             {
                 this.$copyText(t);
                 Toast.fire({
-                  icon: 'success',
-                  title: 'Copied',
-              });
+                    theme:'dark',
+                    icon: 'success',
+                    title: 'Copied',
+                });
             },
             list_all_addresses:function()
             {
@@ -176,6 +177,7 @@
                     {
                         console.log("RpcError");
                         Swal.fire({
+                            theme:'dark',
                             title: 'Error!',
                             text: r[0].message,
                             icon: 'error',
@@ -184,15 +186,16 @@
                     }
                     else
                     {
-                       vm.list_all_addresses();
-                       Swal.fire({
+                     vm.list_all_addresses();
+                     Swal.fire({
+                        theme:'dark',
                         title: 'Success!',
                         text: "New address successfully generated.",
                         icon: 'success',
                         confirmButtonText: 'OK'
                     })
-                   }
-               });
+                 }
+             });
             },
             generate_block : function(n)
             {
@@ -204,6 +207,7 @@
                     {
                         console.log("RpcError");
                         Swal.fire({
+                            theme:'dark',
                             title: 'Error!',
                             text: r[0].message,
                             icon: 'error',
@@ -212,19 +216,20 @@
                     }
                     else
                     {
-                       vm.list_all_addresses();
-                       Swal.fire({
+                     vm.list_all_addresses();
+                     Swal.fire({
+                        theme:'dark',
                         title: 'Success!',
                         text: "New block successfully generated.",
                         icon: 'success',
                         confirmButtonText: 'OK'
                     })
-                   }
-               });
+                 }
+             });
             },
             show: function(address)
             {
-               const qrCode = new QRCodeStyling({
+             const qrCode = new QRCodeStyling({
                 width: 300,
                 height: 300,
                 type: "svg",
@@ -242,15 +247,13 @@
                     margin: 20
                 }
             });
-
-               document.getElementById("canvas").innerHTML="";
-               qrCode.append(document.getElementById("canvas"));
-
-               this.qr_address=address;
-               this.modal.show();
-           },
-           hide: function()
-           {
+             document.getElementById("canvas").innerHTML="";
+             qrCode.append(document.getElementById("canvas"));
+             this.qr_address=address;
+             this.modal.show();
+         },
+         hide: function()
+         {
             this.modal.hide();
         }
     },

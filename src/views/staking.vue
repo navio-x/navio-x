@@ -39,25 +39,25 @@
     <div v-if="staked_commitments&&Object.keys(staked_commitments).length>0">
         <div v-for="(commitment,index) in staked_commitments" class="p-3 text-md font-medium dark:text-white text-white inline-flex items-center "> 
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5 me-2 ms-1">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-</svg>
-{{commitment.amount}} NAV Locked
-        </div>
-    </div>
-    <div v-else class="p-3">
-        <p>No commitment found.</p>
-    </div>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+          {{commitment.amount}} NAV Locked
+      </div>
+  </div>
+  <div v-else class="p-3">
+    <p>No commitment found.</p>
+</div>
 </div>
 </div>
 <div class="p-3">
-<div v-if="$store.state.is_staking_active" class="w-full p-3 mt-3 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
-  <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-</svg>
-<span class="sr-only">Info</span>
-<div>
-    <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
-</div>
+    <div v-if="$store.state.is_staking_active" class="w-full p-3 mt-3 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
+      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <span class="sr-only">Info</span>
+    <div>
+        <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
+    </div>
 </div>
 <div v-else class="w-full p-3 mt-3 text-sm text-orange-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-orange-400" role="alert">
   <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -163,6 +163,7 @@
                 else
                 {
                     Swal.fire({
+                        theme:'dark',
                         title: 'Staking',
                         text: "Please select a wallet for start staking process.",
                         icon: 'info',
@@ -181,6 +182,7 @@
                 else
                 {
                     Swal.fire({
+                        theme:'dark',
                         title: 'Staking',
                         text: "Staking not started.",
                         icon: 'info',
@@ -198,6 +200,7 @@
                     {
                         console.log("RpcError");
                         Swal.fire({
+                            theme:'dark',
                             title: 'Error!',
                             text: r[0].message,
                             icon: 'error',
@@ -206,15 +209,16 @@
                     }
                     else
                     {
-                     vm.list_staked_commitments();
-                     Swal.fire({
+                       vm.list_staked_commitments();
+                       Swal.fire({
+                        theme:'dark',
                         title: 'Success!',
                         text: "Coins successfully locked.",
                         icon: 'success',
                         confirmButtonText: 'OK'
                     })
-                 }
-             });
+                   }
+               });
             },
             unlock_coins : function()
             {
@@ -226,6 +230,7 @@
                     {
                         console.log("RpcError");
                         Swal.fire({
+                            theme:'dark',
                             title: 'Error!',
                             text: r[0].message,
                             icon: 'error',
@@ -234,15 +239,16 @@
                     }
                     else
                     {
-                     vm.list_staked_commitments();
-                     Swal.fire({
+                       vm.list_staked_commitments();
+                       Swal.fire({
+                        theme:'dark',
                         title: 'Success!',
                         text: "Coins successfully unlocked.",
                         icon: 'success',
                         confirmButtonText: 'OK'
                     })
-                 }
-             });
+                   }
+               });
             }
         },
         mounted()

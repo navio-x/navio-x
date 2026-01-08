@@ -139,6 +139,7 @@
       }).catch((r) =>
       {
        Swal.fire({
+        theme:'dark',
         title: 'Error!',
         text: JSON.stringify(r),
         icon: 'error',
@@ -157,8 +158,8 @@
       return true;
     },
     isNumeric:function(value) {
-    return /^-?\d+$/.test(value);
-},
+      return /^-?\d+$/.test(value);
+    },
     jsonPretty:function(value)
     {
       let json = JSON.stringify(JSON.parse(value), null, 2);
@@ -202,10 +203,10 @@
 
       return arr;
     }
-},
-mounted() {
-  this.items=Object.keys(this.client.methods);
-  this.items.push("sendtoblsctaddress","generatetoblsctaddress","getblsctauditkey","getblsctseed","stakelock","stakeunlock","listtokens","createnft","createtoken","getnftbalance","gettokenbalance","mintnft","minttoken","sendnfttoblsctaddress","sendtokentoblsctaddress");
-}
+  },
+  mounted() {
+    this.items=Object.keys(this.client.methods);
+    this.items.push("sendtoblsctaddress","generatetoblsctaddress","getblsctauditkey","getblsctseed","stakelock","stakeunlock","listtokens","createnft","createtoken","getnftbalance","gettokenbalance","mintnft","minttoken","sendnfttoblsctaddress","sendtokentoblsctaddress");
+  }
 }
 </script>

@@ -170,18 +170,20 @@ mounted() {
               {
                 console.log("RpcError");
                 Swal.fire({
-                  title: 'Error!',
-                  text: r[0].message,
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-              })
+                    theme:'dark',
+                    title: 'Error!',
+                    text: r[0].message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
             }
             else
             {
                 Toast.fire({
-                  icon: 'success',
-                  title: "Success",
-              });
+                    theme:'dark',
+                    icon: 'success',
+                    title: "Success",
+                });
             }
         });
             console.log(this.node_name);

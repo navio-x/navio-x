@@ -130,6 +130,7 @@ d="M4 12a8 8 0 018-8v8z" />
               this.isLoading = false;
               if (r[0].name === "RpcError" || r[0].code) {
                 Swal.fire({
+                  theme:'dark',
                   title: 'Error!',
                   text: r[0].message,
                   icon: 'error',
@@ -140,6 +141,7 @@ d="M4 12a8 8 0 018-8v8z" />
                 this.amount = "";
                 this.showModal = false;
                 Swal.fire({
+                  theme:'dark',
                   title: 'Success!',
                   text: r[0],
                   icon: 'success',
@@ -150,6 +152,7 @@ d="M4 12a8 8 0 018-8v8z" />
             .catch((err) => {
               this.isLoading = false;
               Swal.fire({
+                theme:'dark',
                 title: 'Error!',
                 text: err.message,
                 icon: 'error',
@@ -162,6 +165,7 @@ d="M4 12a8 8 0 018-8v8z" />
             this.isLoading = false;
             this.showModal = false;            
             Swal.fire({
+              theme:'dark',
               title: 'Address Validation Error',
               text: "Invalid or non-BLSCT address. Double-check the address and try again.",
               icon: 'error',
@@ -172,6 +176,7 @@ d="M4 12a8 8 0 018-8v8z" />
         .catch((err) => {
           this.isLoading = false;
           Swal.fire({
+            theme:'dark',
             title: 'Error!',
             text: err.message,
             icon: 'error',
