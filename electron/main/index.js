@@ -61,8 +61,10 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         title: 'Main window',
         width:1100,
         height:760,
+        backgroundColor: '#121212',
         transparent: false,
         frame: true,
+        show: false,
         hasShadow: true,
         resizable: true,
     vibrancy: process.platform === 'darwin' ? 'ultra-dark' : undefined, // Sadece macOS için
@@ -77,6 +79,10 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       contextIsolation: false,
     },
   })
+
+win.once('ready-to-show', () => {
+  win.show();
+});
 
   // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
       if (process.platform === 'win32') {
