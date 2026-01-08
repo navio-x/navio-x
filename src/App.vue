@@ -3,40 +3,73 @@
 </script>
 
 <template>
-    <section
-    class="h-screen dark:bg-zinc-900 bg-zinc-900
-    flex items-center justify-center"
-    v-show="state=='welcome'"
+<section
+  class="h-screen bg-zinc-900 flex items-center justify-center"
+  v-show="state === 'welcome'"
+>
+  <div class="px-6 mx-auto max-w-screen-md text-center">
+
+    <!-- Illustration -->
+    <div class="flex justify-center mb-6">
+ <img
+  src="./assets/navio-x.png"
+  alt="Navio X"
+  class="
+    w-[256px]
+    h-[256px]
+    object-contain
+    select-none
+    pointer-events-none
+  "
+>
+
+    </div>
+
+    <!-- Title -->
+    <h1
+      class="mb-3 text-4xl font-extrabold tracking-tight md:text-5xl text-white brand"
     >
-    <div class="px-4 mx-auto max-w-screen-xl text-center">
-        <div class="flex justify-center items-center">
-          <img src="./assets/nav_illustraion_01.png" style="width:400px;height:auto;">
-      </div>
+      Navio X
+    </h1>
 
-      <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl dark:text-white text-white brand">
-          Navio X
-      </h1>
+    <!-- Subtitle -->
+    <p class="text-lg text-gray-300">
+      Secure desktop wallet for the Navio network
+    </p>
 
-      <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400 text-gray-400">
-          Your path to freedom
-      </p>
+    <!-- Mini description -->
+    <p class="mt-2 mb-8 text-sm text-gray-500">
+      Runs locally on your computer. No cloud services. No user accounts.
+    </p>
 
-      <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-          <button
-          v-on:click="get_started()"
-          class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg
-          bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
-          >
-          Get started
-          <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M1 5h12m0 0L9 1m4 4L9 9"/>
-      </svg>
-  </button>
-</div>
-</div>
+    <!-- Single Action -->
+    <div class="flex justify-center">
+      <button
+        @click="get_started()"
+        class="inline-flex justify-center items-center px-7 py-3 text-base font-medium
+        text-white rounded-lg bg-blue-600 hover:bg-blue-700
+        focus:ring-4 focus:ring-blue-500/40 transition"
+      >
+        Continue
+        <svg
+          class="w-3.5 h-3.5 ml-2"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 10"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
 </section>
+
 <section class="h-screen dark:bg-zinc-900 bg-zinc-900
 flex items-center justify-center" v-show="state=='connection_error'">
 <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
@@ -160,7 +193,7 @@ class="min-h-screen bg-zinc-900 dark:bg-zinc-900 flex flex-col items-center just
 v-show="state=='select_daemon_method'"
 >
 <div class="mb-10 flex justify-center">
-    <img src="./assets/gear.png" class="w-[64px] md:w-[128px] lg:w-[256px] h-auto" />
+    <img src="./assets/setup.svg" class="w-[64px] md:w-[128px] lg:w-[256px] h-auto" />
 </div>
 
 <div class="px-4 max-w-screen-xl text-center">
@@ -276,7 +309,7 @@ v-show="state=='select_daemon_method'"
 
 <div id="nav" v-show="state=='ready'">
   <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto bg-gradient-to-br from-zinc-800 via-zinc-800 to-zinc-900">
+   <div class="h-full px-3 py-4 overflow-y-auto dark:bg-zinc-800">
       <a class="flex items-center ps-2.5" style="margin-top:15px;margin-bottom:30px;">
          <img src="./assets/logo.svg" style="width:128px;" alt="Navio Logo"/>
          <!--<span class="ml-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">Navio</span>!-->
