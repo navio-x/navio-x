@@ -164,7 +164,7 @@ remove_bin_directory() {
       ipcRenderer.invoke('get-bin-dir').then((binDir) => {
         if (binDir)
         {
-          this.binDir=binDir+"/";
+          this.binDir=binDir;
           return;
         }
       });
