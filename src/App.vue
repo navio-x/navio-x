@@ -3,68 +3,87 @@
 </script>
 
 <template>
-    <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='welcome'" >
-        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
-            <div class="flex justify-center items-center">
-                <img src="./assets/nav_illustraion_01.png" style="width:400px;height:auto;">
-            </div>
-            <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl dark:text-white text-white brand">Navio X</h1>
-            <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400 text-gray-400">Your path to freedom</p>
-            <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-                <button v-on:click="get_started()" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                    Get started
-                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </section>
-    <section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='connection_error'">
-        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
-            <div v-if="!is_downloading">
-                <div class="flex justify-center items-center">
-                    <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
-                </div>
-                <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
-                <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
-                <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-                <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
-                <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-                    <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                        Connect
-                        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                        </svg>
-                    </button>
-                    <button v-on:click="downloadBinaries()" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                        Download binaries
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
-                      </svg>
-                  </button>
-              </div>
-          </div>
-          <div v-else class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
-            <!-- From Uiverse.io by Z4drus --> 
-            <div class="container">
-              <div class="slice"></div>
-              <div class="slice"></div>
-              <div class="slice"></div>
-              <div class="slice"></div>
-              <div class="slice"></div>
-              <div class="slice"></div>
-          </div>
+    <section
+    class="h-screen dark:bg-zinc-900 bg-zinc-900
+    flex items-center justify-center"
+    v-show="state=='welcome'"
+    >
+    <div class="px-4 mx-auto max-w-screen-xl text-center">
+        <div class="flex justify-center items-center">
+          <img src="./assets/nav_illustraion_01.png" style="width:400px;height:auto;">
+      </div>
 
-          <div class="w-full flex justify-between mt-20">
-              <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files from https://releases.nav.io</span>
-              <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-              <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-          </div>
+      <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl dark:text-white text-white brand">
+          Navio X
+      </h1>
+
+      <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400 text-gray-400">
+          Your path to freedom
+      </p>
+
+      <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+          <button
+          v-on:click="get_started()"
+          class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg
+          bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+          >
+          Get started
+          <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M1 5h12m0 0L9 1m4 4L9 9"/>
+      </svg>
+  </button>
+</div>
+</div>
+</section>
+<section class="h-screen dark:bg-zinc-900 bg-zinc-900
+flex items-center justify-center" v-show="state=='connection_error'">
+<div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
+    <div class="flex justify-center items-center">
+        <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
+    </div>
+    <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
+    <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
+    <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
+    <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+    <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+        <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+            Connect
+            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+        </button>
+        <button v-on:click="downloadBinaries()" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+            Download binaries
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
+          </svg>
+      </button>
+  </div>
+</div>
+</section>
+<section class="h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='download_progress'">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
+      <div class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
+        <!-- From Uiverse.io by Z4drus --> 
+        <div class="container">
+          <div class="slice"></div>
+          <div class="slice"></div>
+          <div class="slice"></div>
+          <div class="slice"></div>
+          <div class="slice"></div>
+          <div class="slice"></div>
+      </div>
+      <div class="w-full flex justify-between mt-20">
+          <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files for <b>{{fileinfo.platform}}</b> from https://releases.nav.io</span>
+          <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
       </div>
   </div>
+</div>
 </section>
 <section class="h-full w-full dark:bg-zinc-900 bg-zinc-900" v-show="state=='agreement'">
     <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16 dark:bg-zinc-900 bg-zinc-900">
@@ -136,12 +155,56 @@
 </div>
 </section>
 
-<section class="bg-white h-screen dark:bg-zinc-900 bg-zinc-900 " v-show="state=='setup'">
+<section
+  class="min-h-screen bg-zinc-900 dark:bg-zinc-900 flex flex-col items-center justify-center"
+  v-show="state=='select_daemon_method'"
+>
+  <div class="mb-10 flex justify-center">
+    <img src="./assets/gear.png" class="w-[64px] md:w-[128px] lg:w-[256px] h-auto" />
+  </div>
+
+  <div class="px-4 max-w-screen-xl text-center">
+    <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white brand">
+      Choose a method
+    </h1>
+
+    <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-400">
+      You can download the official Navio binaries, or manually start the Navio daemon and connect to it.
+    </p>
+
+    <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-5">
+      <button
+        @click="state='setup'"
+        class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+      >
+        Manual Node Connection
+        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9"/>
+        </svg>
+      </button>
+
+      <button
+        @click="downloadBinaries()"
+        class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+      >
+        Download Official Navio Binaries
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="h-screen dark:bg-zinc-900 bg-zinc-900 " v-show="state=='setup'">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <a class="flex items-center ps-2.5" style="margin-bottom:24px;">
          <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
      </a>       
-     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-zinc-800 bg-zinc-800 dark:border-zinc-700 border-zinc-700">
+     <div class="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-zinc-800 bg-zinc-800 dark:border-zinc-700 border-zinc-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl dark:text-white text-white">
               Setup
@@ -190,6 +253,7 @@
     </div>
 </div>
 <button :disabled="!username||!password" v-on:click="connect()" class="w-full text-white bg-primary-600 disabled:bg-blue-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Connect</button>
+<button v-on:click="select_daemon_method()" class="w-full text-white bg-zinc-600 disabled:bg-zinc-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-zinc-700 dark:bg-primary-600 dark:hover:bg-zinc-700 dark:focus:ring-primary-800">Back</button>
 </div>
 </div>
 </div>
@@ -437,7 +501,8 @@
           networkinfo:{},
           remember:false,
           auto_login:false,
-          is_downloading:false
+          is_downloading:false,
+          fileinfo:{},
       }
   },
   methods: {
@@ -446,6 +511,9 @@
     },
     get_sync_percent: function() {
         return (this.blocks?parseFloat((this.blocks*100)/this.headers).toFixed(2):0);
+    },
+    select_daemon_method: function() {
+        this.state='select_daemon_method';
     },
     accept_agreement: function() {
         localStorage.setItem('agreement_accepted', 1);
@@ -457,7 +525,7 @@
         }
         else
         {
-            this.state='setup';
+            this.state='select_daemon_method';
         }
     },
     getBlockChainInfo: function() {
@@ -541,6 +609,7 @@
       });
     },
     downloadBinaries: function() {
+        this.state="download_progress";
         this.is_downloading=true;
         ipcRenderer.invoke('download-latest').then((extractPath) => {
             if (!extractPath)
@@ -605,7 +674,7 @@
             {
                 if (localStorage.getItem("agreement_accepted"))
                 {
-                    this.state='connected';
+                    this.state='ready';
                 }
                 else
                 {
@@ -639,6 +708,10 @@ mounted()
 {
     console.log("App mounted");
     this.app=getCurrentInstance();
+    ipcRenderer.on('download-file', (e, fileinfo) => {
+        this.fileinfo=fileinfo;
+    });
+
     ipcRenderer.on('download-progress', (e, progress) => {
         console.log("Download progres:"+progress);
         const percentage = Math.floor(progress);
@@ -674,7 +747,7 @@ mounted()
     {
         this.remember=true;
         this.host=(localStorage.getItem("host")?localStorage.getItem("host"):"localhost");
-        this.port=(localStorage.getItem("port")?localStorage.getItem("port"):"33477");
+        this.port=(localStorage.getItem("port")?localStorage.getItem("port"):"33677");
         this.username=localStorage.getItem("username");
         this.password=localStorage.getItem("password");
         if (localStorage.getItem("auto_login"))
@@ -684,12 +757,18 @@ mounted()
         }
         else
         {
-            this.state='setup';
+            if (!data.started)
+            {
+                this.state="select_daemon_method";
+            }
+            else
+            {
+                this.connect();
+            }
         }
     }
     else
     {
-        if (data.started) this.connect();
         this.state="welcome";
     }
     console.log(this.client);

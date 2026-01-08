@@ -163,6 +163,27 @@ app.on('activate', () => {
   }
 })
 
+ipcMain.handle('get-bin-dir', () => {
+  return path.join(app.getPath('userData'), 'bin');
+});
+
+ipcMain.handle('remove-bin-dir', async () => {
+  const fs = require('fs');
+  const path = require('path');
+  const { app } = require('electron');
+
+  const binDir = path.join(app.getPath('userData'), 'bin');
+
+  try {
+    if (fs.existsSync(binDir)) {
+      fs.rmSync(binDir, { recursive: true, force: true });
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 ipcMain.handle('start-daemon', (_) => {
   startDaemon();
 })
@@ -179,6 +200,10 @@ ipcMain.handle('shell-open-item', (_, path) => {
   shell.showItemInFolder(`${path}`);
 })
 
+ipcMain.handle('shell-open-folder', async (_, folderPath) => {
+  return await shell.openPath(folderPath);
+});
+
 ipcMain.handle('download-latest', async () => {
   const platform = os.platform(); // 'win32', 'darwin', 'linux'
   console.log("Platform:"+platform);
@@ -187,6 +212,13 @@ ipcMain.handle('download-latest', async () => {
   if (platform === "win32") filename = "navio-latest-win64.zip";
   if (platform === "darwin") filename = "navio-latest-x86_64-apple-darwin.tar.gz";
   if (platform === "linux") filename = "navio-latest-x86_64-linux-gnu.tar.gz";
+  
+  const fileInfo = {
+    filename: filename,
+    platform: platform
+  };
+
+  win.webContents.send('download-file', fileInfo);
 
   if (!filename)
   {
@@ -205,7 +237,8 @@ ipcMain.handle('download-latest', async () => {
     });
 
     // 2. Klasörü oluştur
-    const extractPath = path.join(__dirname, 'bin');
+    const extractPath = path.join(app.getPath('userData'), 'bin');
+
     await fs.promises.mkdir(extractPath, { recursive: true });
 
     // 3. Arşivi aç
@@ -284,15 +317,134 @@ function downloadFile(url, dest, onProgress) {
 })
 childWindow.loadURL(`${arg}`);*/
 
+
 function startDaemon()
+{
+  const filenames = {
+    win32: 'naviod.exe',
+    linux: 'naviod',
+    darwin: 'naviod'
+  };
+  const binDir = path.join(app.getPath('userData'), 'bin');
+  const binaryName = filenames[process.platform];
+  if (!binaryName) {
+    console.error('Unsupported platform:', process.platform);
+    return;
+  }
+  const executablePath = path.join(binDir, binaryName);
+
+  console.log('Starting daemon...');
+  console.log("Platform : "+process.platform);
+  console.log("Architecture : "+process.arch);
+  console.log("App Path : "+app.getAppPath());
+  console.log("Bin directory : " + binDir);
+  console.log("Executable path : " + executablePath);
+  fs.mkdirSync(binDir, { recursive: true });
+
+  if (!fs.existsSync(executablePath))
+  {
+    console.error('Daemon binary not found:', executablePath);
+
+    daemonBinaryStarted = false;
+
+    win.webContents.send('is-daemon-started', {
+      started: false,
+      error: 'binary_not_found',
+      path: executablePath,
+      network,
+      rpcuser,
+      rpcpassword
+    });
+    return;
+  }
+  else
+  {
+    console.error('Daemon binary found:', executablePath);
+  }
+
+  const parameters = [
+    `--${network}`,
+    '--printtoconsole',
+    '--walletcrosschain',
+    '-rpcworkqueue=64',
+    `-rpcuser=${rpcuser}`,
+    `-rpcpassword=${rpcpassword}`,
+    '-txindex=1',
+    '-addnode=testnet-navio.nav.community',
+    '-debug=1',
+    '-debugexclude=libevent',
+    '-debugexclude=http',
+    '-debugexclude=rpc',
+    '-debugexclude=leveldb',
+    '-debugexclude=bench',
+    '-debugexclude=net',
+    '-debugexclude=addrman'
+  ];
+  console.log("Daemon Parameters : [" + parameters + "]");
+
+  const spawnOptions = {
+    cwd: binDir,
+    env: process.env,
+    shell: false,
+    windowsVerbatimArguments: process.platform === 'win32'
+  };
+
+  const startProcess = () => {
+    console.log('Executable:', executablePath);
+    console.log('Params:', parameters.join(' '));
+
+    const proc = spawn(executablePath, parameters, spawnOptions);
+
+    proc.on('error', (err) => {
+      daemonBinaryStarted = false;
+      console.error('Daemon start failed:', err);
+      win.webContents.send('is-daemon-started', { started: false, network, rpcuser, rpcpassword });
+    });
+
+    proc.on('exit', (code) => {
+      daemonBinaryStarted = false;
+      console.log('Daemon exited with code:', code);
+      app.quit();
+      process.exit(0);
+    });
+
+    proc.stdout.on('data', (data) => {
+      const out = data.toString();
+      console.log('*', out);
+
+      if (out.includes('Starting HTTP server')) {
+        daemonBinaryStarted = true;
+        win.webContents.send('is-daemon-started', { started: true, network, rpcuser, rpcpassword });
+      }
+    });
+
+    proc.stderr.on('data', (data) => {
+      const err = data.toString();
+      if (!err.startsWith('Warning')) {
+        console.error('stderr:', err);
+      }
+    });
+  };
+
+  // macOS / Linux required chmod
+  if (process.platform === 'linux' || process.platform === 'darwin') {
+    execFile('chmod', ['+x', executablePath], (err) => {
+      if (err) {
+        console.error('chmod failed:', err);
+        return;
+      }
+      startProcess();
+    });
+  } else {
+    startProcess();
+  }
+}
+
+function startDaemon_v1()
 {
   console.log("Starting daemon...");
   let bShell=false;
-  let binDir=__dirname;
-  if (process.platform === 'win32') binDir+="\\";
-  if (process.platform === 'darwin') binDir+="/";
-  if (process.platform === 'linux') binDir+="/";
-  binDir+="bin";
+  let binDir = path.join(app.getPath('userData'), 'bin');
   let binaryPath="";
   let coin={
     "f_linux":"naviod",
