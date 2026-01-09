@@ -41,7 +41,12 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 // This warning only shows in development mode
 // Read more on https://www.electronjs.org/docs/latest/tutorial/security
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
+    console.log({
+      electron: process.versions.electron,
+      chrome: process.versions.chrome,
+      node: process.versions.node,
+      v8: process.versions.v8
+    });
     let win=null;
 // Here, you can also use other preload
     const preload = join(__dirname, '../preload/index.js')
@@ -58,13 +63,14 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     var stakerPID=undefined;
     async function createWindow() {
       win = new BrowserWindow({
-        title: 'Main window',
+        title: 'Navio X',
+        center:true,
         width:1100,
-        height:760,
+        height:820,
         backgroundColor: '#121212',
         transparent: false,
         frame: true,
-        show: false,
+        show: true,
         hasShadow: true,
         resizable: true,
     vibrancy: process.platform === 'darwin' ? 'ultra-dark' : undefined, // Sadece macOS için
@@ -80,9 +86,9 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     },
   })
 
-win.once('ready-to-show', () => {
-  win.show();
-});
+      win.once('ready-to-show', () => {
+        win.show();
+      });
 
   // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
       if (process.platform === 'win32') {
@@ -208,6 +214,15 @@ ipcMain.handle('shell-open-item', (_, path) => {
 
 ipcMain.handle('shell-open-folder', async (_, folderPath) => {
   return await shell.openPath(folderPath);
+});
+
+ipcMain.handle('get-process-variables', async (_, folderPath) => {
+  return {
+      electron: process.versions.electron,
+      chrome: process.versions.chrome,
+      node: process.versions.node,
+      v8: process.versions.v8
+    }
 });
 
 ipcMain.handle('download-latest', async () => {

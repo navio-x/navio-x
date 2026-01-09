@@ -3,71 +3,71 @@
 </script>
 
 <template>
-<section
-  class="h-screen bg-zinc-900 flex items-center justify-center"
-  v-show="state === 'welcome'"
->
-  <div class="px-6 mx-auto max-w-screen-md text-center">
-
-    <!-- Illustration -->
-    <div class="flex justify-center mb-6">
- <img
-  src="./assets/navio-x.png"
-  alt="Navio X"
-  class="
-    w-[256px]
-    h-[256px]
-    object-contain
-    select-none
-    pointer-events-none
-  "
->
-
-    </div>
-
-    <!-- Title -->
-    <h1
-      class="mb-3 text-4xl font-extrabold tracking-tight md:text-5xl text-white brand"
+    <section
+    class="h-screen bg-zinc-900 flex items-center justify-center"
+    v-show="state === 'welcome'"
     >
-      Navio X
-    </h1>
+    <div class="px-6 mx-auto max-w-screen-md text-center">
 
-    <!-- Subtitle -->
-    <p class="text-lg text-gray-300">
-      Secure desktop wallet for the Navio network
-    </p>
+        <!-- Illustration -->
+        <div class="flex justify-center mb-6">
+         <img
+         src="./assets/navio-x.png"
+         alt="Navio X"
+         class="
+         w-[256px]
+         h-[256px]
+         object-contain
+         select-none
+         pointer-events-none
+         "
+         >
 
-    <!-- Mini description -->
-    <p class="mt-2 mb-8 text-sm text-gray-500">
-      Runs locally on your computer. No cloud services. No user accounts.
-    </p>
+     </div>
 
-    <!-- Single Action -->
-    <div class="flex justify-center">
-      <button
-        @click="get_started()"
-        class="inline-flex justify-center items-center px-7 py-3 text-base font-medium
-        text-white rounded-lg bg-blue-600 hover:bg-blue-700
-        focus:ring-4 focus:ring-blue-500/40 transition"
-      >
-        Continue
-        <svg
-          class="w-3.5 h-3.5 ml-2"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M1 5h12m0 0L9 1m4 4L9 9"
-          />
-        </svg>
-      </button>
-    </div>
-  </div>
+     <!-- Title -->
+     <h1
+     class="mb-3 text-4xl font-extrabold tracking-tight md:text-5xl text-white brand"
+     >
+     Navio X
+ </h1>
+
+ <!-- Subtitle -->
+ <p class="text-lg text-gray-300">
+  Secure desktop wallet for the Navio network
+</p>
+
+<!-- Mini description -->
+<p class="mt-2 mb-8 text-sm text-gray-500">
+  Runs locally on your computer. No cloud services. No user accounts.
+</p>
+
+<!-- Single Action -->
+<div class="flex justify-center">
+  <button
+  @click="get_started()"
+  class="inline-flex justify-center items-center px-7 py-3 text-base font-medium
+  text-white rounded-lg bg-blue-600 hover:bg-blue-700
+  focus:ring-4 focus:ring-blue-500/40 transition"
+  >
+  Continue
+  <svg
+  class="w-3.5 h-3.5 ml-2"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 14 10"
+  >
+  <path
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  d="M1 5h12m0 0L9 1m4 4L9 9"
+  />
+</svg>
+</button>
+</div>
+</div>
 </section>
 
 <section class="h-screen dark:bg-zinc-900 bg-zinc-900
@@ -432,7 +432,7 @@ v-show="state=='select_daemon_method'"
 
 
 <div class="relative h-32 w-full" v-if="chain">
-  <div class="flex items-center p-2 mt-3 space-x-4 justify-self-end">
+  <div class="flex items-center p-2 mt-3 space-x-4">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
   </svg>
@@ -484,14 +484,16 @@ v-show="state=='select_daemon_method'"
     <div class="bg-blue-600 h-1 rounded-full" :style="{ width: get_sync_percent() + '%' }"></div>
 </div>
 </div>
-<div class="relative h-32 w-32" v-else>
-    <div class="flex items-center p-2 mt-3 space-x-4 justify-self-end">
-        <div class="loader-container">
-          <div class="loader"></div>
-      </div>
-      <div class="w-32">
-        <span class="text-sm dark:text-white text-white whitespace-nowrap" v-if="client">Initializing...</span>
-    </div>
+<div v-else class="relative">
+  <div class="flex items-center p-2 mt-3 space-x-4">
+    <div class="loader-container">
+      <div class="loader"></div>
+  </div>
+  <div>
+      <span v-if="client" class="text-sm text-white whitespace-nowrap">
+        Initializing...
+    </span>
+</div>
 </div>
 </div>
 </div>

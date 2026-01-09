@@ -1,39 +1,122 @@
 <template>
   <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
-    <div v-if="$store.state.active_wallet">
-      <div class="p-4">
-        <h3>Send</h3>
-      </div>
-      <div class="w-full mx-auto">
-        <div class="p-3 mx-auto">
-          <div class="relative z-10 bg-white rounded-xl p-4 dark:bg-zinc-800 bg-zinc-800">
-            <div class="mb-4 sm:mb-8">
-              <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Address (xNAV)</label>
-              <div class="mt-1">
-                <textarea v-model="address" id="hs-feedback-post-comment-textarea-1" rows="3"
-                class="py-3 px-4 block w-full border-zinc-200 rounded-lg text-sm dark:bg-zinc-900 bg-zinc-900 dark:border-zinc-700 border-zinc-700 dark:text-zinc-400 text-zinc-400"></textarea>
-              </div>
-            </div>
-            <div>
-              <label for="hs-feedback-post-comment-name-1" class="block mb-2 text-sm font-medium dark:text-white">Amount</label>
-              <input v-model="amount" type="number" id="hs-feedback-post-comment-name-1"
-              class="py-3 px-4 block w-full border-zinc-200 rounded-lg text-sm dark:bg-zinc-900 bg-zinc-900 dark:border-zinc-700 border-zinc-700 dark:text-zinc-400 text-zinc-400">
-            </div>
-            <div class="mt-5">
-              <button :disabled="!address || !amount" @click="submit"
-              class="px-5 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round"
-              d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-            </svg>
-            &nbsp;Send
-          </button>
-        </div>
-      </div>
+<div v-if="$store.state.active_wallet"
+     class="max-w-2xl mx-auto p-6">
+
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-xl font-semibold text-white">Send</h3>
+      <p class="text-xs text-zinc-400">
+        Transfer funds to another wallet
+      </p>
     </div>
   </div>
+
+  <!-- Card -->
+  <div
+    class="relative bg-gradient-to-br from-zinc-900 to-zinc-800
+    rounded-2xl p-5 border border-white/5">
+
+    <!-- Address -->
+    <div class="mb-6">
+      <label class="block mb-2 text-sm font-medium text-white">
+        Recipient Address (NAV)
+      </label>
+
+      <div class="relative">
+        <span class="absolute left-3 top-3.5 text-zinc-500">
+          🔗
+        </span>
+
+        <textarea
+          v-model="address"
+          rows="3"
+          placeholder="Enter recipient address"
+          class="pl-10 py-3 px-4 w-full rounded-xl text-sm
+          bg-zinc-900 border border-zinc-700 text-zinc-300
+          focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+          resize-none"></textarea>
+      </div>
+
+      <p class="mt-1 text-xs text-zinc-500">
+        Double-check the address. Transactions cannot be reversed.
+      </p>
+    </div>
+
+    <!-- Amount -->
+    <div class="mb-6">
+      <label class="block mb-2 text-sm font-medium text-white">
+        Amount
+      </label>
+
+      <div class="relative">
+        <input
+          v-model="amount"
+          type="number"
+          min="0"
+          placeholder="0.00"
+          class="py-4 px-4 pr-16 w-full rounded-xl
+          text-lg font-semibold
+          bg-zinc-900 border border-zinc-700 text-white
+          focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+        <span class="absolute right-4 top-4 text-lg text-zinc-400">
+          xNAV
+        </span>
+      </div>
+    </div>
+
+    <!-- Send Button -->
+<button
+  :disabled="!address || !amount"
+  @click="submit"
+  class="
+    w-full py-4 rounded-xl
+    text-md font-semibold text-white
+
+    /* Primary */
+    bg-blue-600
+
+    /* Hover */
+    hover:bg-blue-500
+    hover:shadow-lg hover:shadow-blue-600/30
+    hover:-translate-y-[1px]
+
+    /* Active */
+    active:bg-blue-700
+    active:translate-y-0
+    active:shadow-blue-600/10
+
+    /* Focus */
+    focus:outline-none
+    focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    focus:ring-offset-zinc-900
+
+    /* Disabled */
+    disabled:opacity-40
+    disabled:pointer-events-none
+    disabled:shadow-none
+
+    transition-all duration-200 ease-out
+    flex items-center justify-center gap-2
+  "
+>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+       viewBox="0 0 24 24" stroke-width="1.5"
+       stroke="currentColor" class="w-5 h-5">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12
+             59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/>
+  </svg>
+
+  Send
+</button>
+
+  </div>
 </div>
+
 
 <div class="p-4" v-else>
   <p>No wallet loaded or selected.</p>
