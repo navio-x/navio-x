@@ -4,7 +4,7 @@
       <img class="mx-auto" src="../assets/navio-x.png" style="width:128px;" alt="Navio-X Wallet"/>
       <h1 class="mt-10 text-2xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white">Navio X Wallet</h1>
       <p class="mt-5 max-w-lg mx-auto text-lg font-normal text-gray-500 dark:text-gray-400">
-        Navio X Wallet is an open-source, cross-platform desktop wallet designed to support the Navio blockchain.
+        Navio X Wallet is an open-source, cross-platform desktop wallet built to securely interact with the Navio blockchain.
       </p>
       <p class="mt-3 max-w-lg mx-auto text-md font-normal text-gray-500 dark:text-gray-400">
         The project is driven by Navio community developers and contributors. Join our Discord server to get support, share feedback, and follow development updates.
