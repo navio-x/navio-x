@@ -66,7 +66,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         title: 'Navio X',
         center:true,
         width:1100,
-        height:820,
+        height:780,
         backgroundColor: '#121212',
         transparent: false,
         frame: true,
