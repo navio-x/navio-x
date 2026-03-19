@@ -133,7 +133,7 @@
                 active_address: undefined,
                 qr_address:undefined,
                 modal:undefined,
-                prefix:'navcoin:'
+                prefix:'nav:'
             }
         },
         methods:{

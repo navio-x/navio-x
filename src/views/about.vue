@@ -39,7 +39,6 @@
   <div class="rounded-xl border border-white/10 bg-white/5 p-4 text-left backdrop-blur">
     <div class="flex items-center justify-between">
       <div class="text-sm font-semibold text-white">Runtime Versions</div>
-      <div class="text-xs text-gray-400">Detected from Electron</div>
     </div>
 
     <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
@@ -51,16 +50,6 @@
       <div class="rounded-lg bg-black/20 p-3 border border-white/5">
         <div class="text-gray-400">Node.js</div>
         <div class="mt-1 font-mono text-white">{{ versions.node || '-' }}</div>
-      </div>
-
-      <div class="rounded-lg bg-black/20 p-3 border border-white/5">
-        <div class="text-gray-400">Chromium</div>
-        <div class="mt-1 font-mono text-white">{{ versions.chrome || '-' }}</div>
-      </div>
-
-      <div class="rounded-lg bg-black/20 p-3 border border-white/5">
-        <div class="text-gray-400">V8</div>
-        <div class="mt-1 font-mono text-white">{{ versions.v8 || '-' }}</div>
       </div>
     </div>
 
