@@ -8,7 +8,7 @@
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Create Wallet
           </h3>
-          <button id="closeButton" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+          <button id="closeButton" type="button" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -63,7 +63,7 @@
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Wallet Seed
           </h3>
-          <button id="closeButton-1" data-modal-hide="modal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+          <button id="closeButton-1" data-modal-hide="modal" type="button" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -95,7 +95,7 @@
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Audit Key
           </h3>
-          <button id="closeButton-2" data-modal-hide="modal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+          <button id="closeButton-2" data-modal-hide="modal" type="button" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -118,39 +118,34 @@
     </div>
   </div>
 
-  <div id="modal-3" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative w-full max-w-2xl max-h-full">
-      <!-- Modal content -->
-      <div class="relative rounded-xl shadow-2xl glass-modal">
-        <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
-          <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
-            Rescan Blockchain
-          </h3>
-          <button id="closeButton-3" data-modal-hide="modal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+  <!-- Rescan Modal (Vue-native) -->
+  <transition name="fade">
+    <div v-if="showRescanModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="relative rounded-xl shadow-2xl glass-modal w-full max-w-lg mx-4 p-6">
+        <div class="flex items-start justify-between mb-5">
+          <h3 class="text-xl font-semibold text-white">Rescan Blockchain</h3>
+          <button @click="showRescanModal = false" class="text-white/40 hover:text-white/80 transition-colors focus:outline-none">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
           </button>
         </div>
-        <!-- Modal body -->
-        <div class="p-6 space-y-6">
-          <p class="font-medium dark:text-white text-white">Rescan the local blockchain for wallet related transactions.</p>
+        <p class="text-sm text-white/60 mb-5">Rescan the local blockchain for wallet related transactions.</p>
+        <div class="space-y-4 mb-6">
           <div>
-            <label for="scan_start_height" class="block mb-2 text-sm font-medium dark:text-white text-white">Start Height</label>
-            <input type="number" autofocus id="scan_start_height" v-model="scan_start_height" class="glass-input text-sm block w-full p-2.5">
+            <label class="block mb-2 text-sm font-medium text-white">Start Height</label>
+            <input type="number" v-model="scan_start_height" class="glass-input text-sm block w-full p-2.5">
           </div>
           <div>
-            <label for="scan_stop_height" class="block mb-2 text-sm font-medium dark:text-white text-white">Stop Height</label>
-            <input type="number" autofocus id="scan_stop_height" v-model="scan_stop_height" class="glass-input text-sm block w-full p-2.5">
+            <label class="block mb-2 text-sm font-medium text-white">Stop Height</label>
+            <input type="number" v-model="scan_stop_height" class="glass-input text-sm block w-full p-2.5">
           </div>
         </div>
-        <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.08] rounded-b">
-          <button :disabled="scan_start_height==''" type="button" id="confirmButton-3" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Rescan</button>
-
+        <div class="flex gap-3 border-t border-white/[0.08] pt-5">
+          <button @click="showRescanModal = false" class="flex-1 px-4 py-2.5 rounded-lg text-sm glass-btn-secondary transition duration-200">Cancel</button>
+          <button @click="rescanblockchain(); showRescanModal = false" :disabled="scan_start_height === ''" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-700 hover:bg-blue-600 disabled:opacity-50 transition duration-200">Rescan</button>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
   <div class="h-full w-full text-white bg-transparent">
     <div class="w-full mb-5">
       <h3 class="p-4">Wallets</h3>
@@ -169,7 +164,7 @@
     </svg>
     &nbsp;Audit Key
   </button>
-  <button id="button-rescan-blockchain" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <button @click="showRescanModal = true" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
   </svg>
   &nbsp;Rescan Blockchain
@@ -291,7 +286,8 @@
         import_seed_phrase:'',
         wallet_load_on_startup:1,
         scan_start_height:0,
-        scan_stop_height:0
+        scan_stop_height:0,
+        showRescanModal: false
       }
     },
     methods:{
@@ -588,30 +584,6 @@
           this.new_wallet_name="";
         });
       }
-      let $buttonElement3 = document.querySelector('#button-rescan-blockchain');
-      let $modalElement3 = document.querySelector('#modal-3');
-      let $confirmButton3 = document.querySelector('#confirmButton-3');
-      let $closeButton3 = document.querySelector('#closeButton-3');
-      let modalOptions3 = {
-        backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
-      }
-      if ($modalElement3)
-      {
-        let modal3 = new Modal($modalElement3, modalOptions3);
-        $buttonElement3.addEventListener('click', () => {
-          modal3.toggle();
-        });
-        $confirmButton3.addEventListener('click', () => 
-        {
-          console.log(this.scan_start_height);
-          console.log(this.scan_stop_height);
-          this.rescanblockchain();
-          modal3.hide();
-        });
-        $closeButton3.addEventListener('click', () => {
-          modal3.hide();
-        });
-      }
 
     },
     beforeUnmount()
@@ -621,3 +593,7 @@
   }
 </script>
 
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: scale(0.97); }
+</style>

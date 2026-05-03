@@ -449,6 +449,14 @@ v-show="state=='select_daemon_method'"
             {{ networkinfo.connections ? networkinfo.connections + ' peer' + (networkinfo.connections > 1 ? 's' : '') : 'No peers' }}
           </router-link>
         </div>
+        <div class="border-t border-white/[0.06] pt-2 flex items-center justify-between">
+          <span class="text-[11px] text-white/25">Blocks</span>
+          <span class="text-[11px] font-mono">
+            <span class="text-white/50">{{ blocks.toLocaleString() }}</span>
+            <span class="text-white/20 mx-1">/</span>
+            <span :class="blocks == headers ? 'text-emerald-400/70' : 'text-violet-400/70'">{{ headers.toLocaleString() }}</span>
+          </span>
+        </div>
       </div>
       <div v-else class="flex items-center gap-2.5 px-1 py-2">
         <svg class="w-4 h-4 text-violet-400 animate-spin shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
