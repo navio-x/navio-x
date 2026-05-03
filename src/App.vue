@@ -4,7 +4,7 @@
 
 <template>
     <section
-    class="h-screen bg-zinc-900 flex items-center justify-center"
+    class="h-screen bg-transparent flex items-center justify-center"
     v-show="state === 'welcome'"
     >
     <div class="px-6 mx-auto max-w-screen-md text-center">
@@ -70,8 +70,7 @@
 </div>
 </section>
 
-<section class="h-screen dark:bg-zinc-900 bg-zinc-900
-flex items-center justify-center" v-show="state=='connection_error'">
+<section class="h-screen bg-transparent flex items-center justify-center" v-show="state=='connection_error'">
 <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
     <div class="flex justify-center items-center">
         <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
@@ -79,7 +78,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
     <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
     <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
     <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-    <code class="mt-10 p-5 text-sm border text-white dark:text-white bg-zinc-800 border-zinc-700">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+    <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
     <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
         <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
             Connect
@@ -96,7 +95,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
   </div>
 </div>
 </section>
-<section class="h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='download_progress'">
+<section class="h-screen bg-transparent" v-show="state=='download_progress'">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
       <div class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
         <!-- From Uiverse.io by Z4drus --> 
@@ -112,16 +111,16 @@ flex items-center justify-center" v-show="state=='connection_error'">
           <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files for <b>{{fileinfo.platform}}</b> from https://releases.nav.io</span>
           <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-          <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+      <div class="w-full bg-white/[0.08] rounded-full h-2">
+          <div id="progress-bar" class="h-2 rounded-full transition-all" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #3b82f6);"></div>
       </div>
   </div>
 </div>
 </section>
-<section class="h-full w-full dark:bg-zinc-900 bg-zinc-900" v-show="state=='agreement'">
-    <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16 dark:bg-zinc-900 bg-zinc-900">
-        <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none dark:text-white text-white">License Agreement</p>
-        <div class="w-full h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+<section class="h-full w-full bg-transparent" v-show="state=='agreement'">
+    <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16">
+        <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
+        <div class="w-full h-full text-white">
           <p>
             This is a binding Agreement between Navio Developers (“Navio” or “We”) and the person, persons, or entity (“You” or “Your”) using the service, Software, or application (“Software”).
         </p>
@@ -197,7 +196,7 @@ flex items-center justify-center" v-show="state=='connection_error'">
 />
 
 <section
-class="min-h-screen bg-zinc-900 dark:bg-zinc-900 flex flex-col items-center justify-center"
+class="min-h-screen bg-transparent flex flex-col items-center justify-center"
 v-show="state=='select_daemon_method'"
 >
 <div class="mb-10 flex justify-center">
@@ -240,12 +239,12 @@ v-show="state=='select_daemon_method'"
 </div>
 </section>
 
-<section class="h-screen dark:bg-zinc-900 bg-zinc-900 " v-show="state=='setup'">
+<section class="h-screen bg-transparent" v-show="state=='setup'">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <a class="flex items-center ps-2.5" style="margin-bottom:24px;">
          <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
-     </a>       
-     <div class="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-zinc-800 bg-zinc-800 dark:border-zinc-700 border-zinc-700">
+     </a>
+     <div class="w-full rounded-xl border md:mt-0 sm:max-w-md xl:p-0" style="background: linear-gradient(160deg, rgba(17,10,35,0.95) 0%, rgba(10,14,30,0.95) 100%); border-color: rgba(255,255,255,0.08); backdrop-filter: blur(16px);">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl dark:text-white text-white">
               Setup
@@ -265,28 +264,28 @@ v-show="state=='select_daemon_method'"
               <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full group">
                   <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
-                  <input type="text" v-model="host" id="host" class="bg-zinc-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-zinc-900 dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-zinc-900 border-zinc-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="" required="">
+                  <input type="text" v-model="host" id="host" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
               </div>
               <div class="relative z-0 w-full group">
 
                   <label for="port" class="block mb-2 text-sm font-medium dark:text-white text-white">Port</label>
-                  <input type="text" v-model="port" id="port" class="bg-zinc-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-zinc-900 dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-zinc-900 border-zinc-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="" required="">
+                  <input type="text" v-model="port" id="port" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
               </div>
           </div>
           <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full group">
               <label for="username" class="block mb-2 text-sm font-medium dark:text-white text-white">Username</label>
-              <input type="text" v-model="username" id="username" class="bg-zinc-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-zinc-900 dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-zinc-900 border-zinc-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="" required="">
+              <input type="text" v-model="username" id="username" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
           </div>
           <div class="relative z-0 w-full group">
               <label for="password" class="block mb-2 text-sm font-medium dark:text-white text-white">Password</label>
-              <input type="password" v-model="password" id="password" placeholder="" class="bg-zinc-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-zinc-900 dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-zinc-900 border-zinc-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" required="">
+              <input type="password" v-model="password" id="password" placeholder="" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" required="">
           </div>
       </div>
       <div class="flex items-center justify-between">
           <div class="flex items-start">
               <div class="flex items-center h-5">
-                <input id="remember" v-model="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-zincy-300 rounded bg-zinc-700 focus:ring-3 focus:ring-primary-300 dark:bg-zinc-700 dark:border-zinc-600 border-zinc-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
+                <input id="remember" v-model="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
             </div>
             <div class="ml-3 text-sm">
                 <label for="remember" class="dark:text-white text-white">Remember me</label>
@@ -296,7 +295,7 @@ v-show="state=='select_daemon_method'"
     <div class="flex items-center justify-between">
       <div class="flex items-start">
           <div class="flex items-center h-5">
-            <input id="auto_login" v-model="auto_login" aria-describedby="auto_login" type="checkbox" class="w-4 h-4 border border-zincy-300 rounded bg-zinc-700 focus:ring-3 focus:ring-primary-300 dark:bg-zinc-700 dark:border-zinc-600 border-zinc-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
+            <input id="auto_login" v-model="auto_login" aria-describedby="auto_login" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
         </div>
         <div class="ml-3 text-sm">
             <label for="auto_login" class="dark:text-white text-white">Auto login</label>
@@ -304,15 +303,15 @@ v-show="state=='select_daemon_method'"
     </div>
 </div>
 <button :disabled="!username||!password" v-on:click="connect()" class="w-full text-white bg-primary-600 disabled:bg-blue-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Connect</button>
-<button v-on:click="select_daemon_method()" class="w-full text-white bg-zinc-600 disabled:bg-zinc-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-zinc-700 dark:bg-primary-600 dark:hover:bg-zinc-700 dark:focus:ring-primary-800">Back</button>
+<button v-on:click="select_daemon_method()" class="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center glass-btn-secondary focus:outline-none">Back</button>
 </div>
 </div>
 </div>
 </div>
 </section>
 
-<div class="flex items-center justify-center h-screen dark:bg-zinc-900 bg-zinc-900" v-show="state=='connected'">
-    <div class="relative p-4 text-center rounded-lg shadow sm:p-5 dark:bg-zinc-800 bg-zinc-800">
+<div class="flex items-center justify-center h-screen bg-transparent" v-show="state=='connected'">
+    <div class="relative p-6 text-center rounded-2xl shadow-2xl sm:p-8 glass-card">
         <div class="w-14 h-14 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
             <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
             <span class="sr-only">Success</span>
@@ -487,11 +486,11 @@ v-show="state=='select_daemon_method'"
       components: { NetworkSelector },
       data() {
         const networks = [
-          { name: 'mainnet', label: 'Mainnet', port: 44444, description: 'The live Navio network. Transactions here use real NAV with real value.' },
+          { name: 'mainnet', label: 'Mainnet', port: 48471, description: 'The live Navio network. Transactions here use real NAV with real value.' },
           { name: 'testnet', label: 'Testnet', port: 33677, description: 'Development and testing network. Use this to try features without risking real NAV.' },
         ];
         const savedNetwork = localStorage.getItem('network') || 'mainnet';
-        const savedPort    = localStorage.getItem('port')    || (networks.find(n => n.name === savedNetwork)?.port ?? 44444);
+        const savedPort    = localStorage.getItem('port')    || (networks.find(n => n.name === savedNetwork)?.port ?? 48471);
         return {
           networks,
           app:null,
