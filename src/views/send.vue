@@ -1,185 +1,151 @@
 <template>
-  <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
-<div v-if="$store.state.active_wallet"
-     class="max-w-2xl mx-auto p-6">
+  <div class="h-full bg-transparent text-white overflow-auto">
 
+    <div v-if="$store.state.active_wallet" class="max-w-lg mx-auto px-6 py-8">
 
-  <!-- Header -->
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h3 class="text-xl font-semibold text-white">Send</h3>
-      <p class="text-xs text-zinc-400">
-        Transfer funds to another wallet
-      </p>
-    </div>
-  </div>
-
-  <!-- Card -->
-  <div
-    class="relative bg-gradient-to-br from-zinc-900 to-zinc-800
-    rounded-2xl p-5 border border-white/5">
-
-    <!-- Address -->
-    <div class="mb-6">
-      <label class="block mb-2 text-sm font-medium text-white">
-        Recipient Address (NAV)
-      </label>
-
-      <div class="relative">
-        <span class="absolute left-3 top-3.5 text-zinc-500">
-          🔗
-        </span>
-
-        <textarea
-          v-model="address"
-          rows="3"
-          placeholder="Enter recipient address"
-          class="pl-10 py-3 px-4 w-full rounded-xl text-sm
-          bg-zinc-900 border border-zinc-700 text-zinc-300
-          focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-          resize-none"></textarea>
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-1">
+          <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/25">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white">Send NAV</h3>
+        </div>
+        <p class="text-xs text-white/40 ml-12">Transfer funds to another wallet</p>
       </div>
 
-      <p class="mt-1 text-xs text-zinc-500">
-        Double-check the address. Transactions cannot be reversed.
-      </p>
-    </div>
+      <!-- Card -->
+      <div class="relative overflow-hidden rounded-2xl border border-white/[0.07] p-6"
+        style="background: linear-gradient(160deg, rgba(17,10,35,0.8) 0%, rgba(10,14,30,0.8) 100%); backdrop-filter: blur(16px);">
 
-    <!-- Amount -->
-    <div class="mb-6">
-      <label class="block mb-2 text-sm font-medium text-white">
-        Amount
-      </label>
+        <!-- subtle glow -->
+        <div class="pointer-events-none absolute -top-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-10 -left-10 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
 
-      <div class="relative">
-        <input
-          v-model="amount"
-          type="number"
-          min="0"
-          placeholder="0.00"
-          class="py-4 px-4 pr-16 w-full rounded-xl
-          text-lg font-semibold
-          bg-zinc-900 border border-zinc-700 text-white
-          focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <!-- Address -->
+        <div class="mb-5">
+          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/40">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+            </svg>
+            Recipient Address
+          </label>
+          <textarea
+            v-model="address"
+            rows="3"
+            placeholder="Enter NAV recipient address..."
+            class="w-full rounded-xl text-sm font-mono resize-none px-4 py-3 leading-relaxed glass-input"></textarea>
+          <p class="mt-1.5 text-xs text-white/25 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            Double-check the address — transactions cannot be reversed.
+          </p>
+        </div>
 
-        <span class="absolute right-4 top-4 text-lg text-zinc-400">
-          NAV
-        </span>
+        <!-- Divider -->
+        <div class="border-t border-white/[0.06] my-5"></div>
+
+        <!-- Amount -->
+        <div class="mb-6">
+          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/40">
+            Amount
+          </label>
+          <div class="relative">
+            <input
+              v-model="amount"
+              type="number"
+              min="0"
+              placeholder="0.00"
+              class="w-full rounded-xl text-2xl font-bold px-4 py-4 pr-20 glass-input">
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-white/30 tracking-wider">NAV</span>
+          </div>
+        </div>
+
+        <!-- Send Button -->
+        <button
+          :disabled="!address || !amount"
+          @click="submit"
+          class="w-full py-3.5 rounded-xl text-sm font-semibold text-white
+            bg-gradient-to-r from-blue-600 to-violet-600
+            hover:from-blue-500 hover:to-violet-500
+            hover:shadow-lg hover:shadow-blue-600/25
+            hover:-translate-y-[1px]
+            active:translate-y-0
+            disabled:opacity-30 disabled:pointer-events-none
+            transition-all duration-200 ease-out
+            flex items-center justify-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/>
+          </svg>
+          Send
+        </button>
       </div>
     </div>
 
-    <!-- Send Button -->
-<button
-  :disabled="!address || !amount"
-  @click="submit"
-  class="
-    w-full py-4 rounded-xl
-    text-md font-semibold text-white
+    <NoWalletSelected v-else />
 
-    /* Primary */
-    bg-blue-600
+    <!-- Modal -->
+    <transition name="fade" appear>
+      <div v-if="showModal" @keydown.esc="showModal = false" tabindex="0"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="relative text-white rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl border border-white/[0.09] transition-all duration-300"
+          :class="{ 'scale-100': showModal, 'scale-95': !showModal }"
+          style="background: linear-gradient(160deg, rgba(17,10,35,0.98) 0%, rgba(10,14,30,0.98) 100%); backdrop-filter: blur(24px);">
 
-    /* Hover */
-    hover:bg-blue-500
-    hover:shadow-lg hover:shadow-blue-600/30
-    hover:-translate-y-[1px]
+          <!-- glow -->
+          <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 w-48 h-24 bg-blue-600/15 rounded-full blur-3xl"></div>
 
-    /* Active */
-    active:bg-blue-700
-    active:translate-y-0
-    active:shadow-blue-600/10
+          <!-- Close -->
+          <button @click="showModal = false" class="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-    /* Focus */
-    focus:outline-none
-    focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-    focus:ring-offset-zinc-900
+          <h2 class="text-lg font-semibold mb-5">Confirm Transaction</h2>
 
-    /* Disabled */
-    disabled:opacity-40
-    disabled:pointer-events-none
-    disabled:shadow-none
+          <div class="space-y-3 mb-6">
+            <div class="rounded-xl p-3 border border-white/[0.07]" style="background: rgba(255,255,255,0.04)">
+              <p class="text-xs text-white/40 mb-1 uppercase tracking-widest">Recipient</p>
+              <p class="text-sm font-mono break-all text-white/80">{{ address }}</p>
+            </div>
+            <div class="rounded-xl p-3 border border-blue-500/20" style="background: rgba(37,99,235,0.08)">
+              <p class="text-xs text-blue-400/60 mb-1 uppercase tracking-widest">Amount</p>
+              <p class="text-2xl font-bold text-white">{{ amount }} <span class="text-base text-white/50">NAV</span></p>
+            </div>
+          </div>
 
-    transition-all duration-200 ease-out
-    flex items-center justify-center gap-2
-  "
->
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-       viewBox="0 0 24 24" stroke-width="1.5"
-       stroke="currentColor" class="w-5 h-5">
-    <path stroke-linecap="round" stroke-linejoin="round"
-          d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12
-             59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/>
-  </svg>
-
-  Send
-</button>
-
+          <div class="flex gap-3">
+            <button @click="showModal = false"
+              class="flex-1 px-4 py-2.5 rounded-xl text-sm glass-btn-secondary transition duration-200">
+              Cancel
+            </button>
+            <button @click="confirmTransaction" :disabled="isLoading"
+              class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50">
+              <svg v-if="isLoading" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+              </svg>
+              <span v-if="!isLoading">Confirm</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
-</div>
-
-
-<div class="p-4" v-else>
-  <p>No wallet loaded or selected.</p>
-  <p>You can create, load and activate a wallet in Wallets page.</p>
-  <router-link to="/wallets">
-    <a class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-      stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round"
-      d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-    </svg>
-    <span class="ms-3">Wallets</span>
-  </a>
-</router-link>
-</div>
-
-<!-- Modal -->
-<transition name="fade" appear>
-  <div v-if="showModal" @keydown.esc="showModal = false" tabindex="0"
-  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-  <div
-  class="relative bg-zinc-800 text-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl transform transition-all duration-300 scale-95"
-  :class="{ 'scale-100': showModal }">
-  <!-- Close button -->
-  <button @click="showModal = false"
-  class="absolute top-2 right-2 text-white hover:text-zinc-400 focus:outline-none">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-  viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-  d="M6 18L18 6M6 6l12 12" />
-</svg>
-</button>
-<h2 class="text-xl font-semibold mb-4">Confirm Transaction</h2>
-<p class="mb-2"><strong>Address:</strong></p>
-<p class="mb-2 break-words text-sm text-zinc-300">{{ address }}</p>
-<p class="mb-4"><strong>Amount:</strong> {{ amount }} NAV</p>
-<div class="flex justify-end space-x-3 mt-6">
-  <button @click="showModal = false"
-  class="px-4 py-2 rounded-lg bg-zinc-600 hover:bg-zinc-700 transition duration-200">
-  Cancel
-</button>
-<button @click="confirmTransaction" :disabled="isLoading"
-class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition duration-200 flex items-center justify-center min-w-[100px]">
-<svg v-if="isLoading" class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg"
-fill="none" viewBox="0 0 24 24">
-<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-<path class="opacity-75" fill="currentColor"
-d="M4 12a8 8 0 018-8v8z" />
-</svg>
-<span v-if="!isLoading">Confirm</span>
-</button>
-</div>
-</div>
-</div>
-</transition>
-</div>
 </template>
 
 <script>
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
+  import NoWalletSelected from '../components/NoWalletSelected.vue';
 
   export default {
+    components: { NoWalletSelected },
     data() {
       return {
         address: "",

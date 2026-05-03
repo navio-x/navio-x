@@ -2,13 +2,13 @@
   <div id="modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
       <!-- Modal content -->
-      <div class="relative rounded-lg shadow dark:bg-zinc-800 bg-zinc-800">
+      <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-zinc-700 border-zinc-700">
+        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Create Wallet
           </h3>
-          <button id="closeButton" data-modal-hide="modal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+          <button id="closeButton" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -33,11 +33,11 @@
 
           <div>
             <label for="wallet_name" class="block mb-2 text-sm font-medium dark:text-white text-white">Wallet Name</label>
-            <input type="text" autofocus id="wallet_name" v-model="new_wallet_name" class="bg-zinc-800 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <input type="text" autofocus id="wallet_name" v-model="new_wallet_name" class="glass-input text-sm block w-full p-2.5">
           </div>
           <div v-if="wallet_type_id==2">
             <label for="import_seed_phrase" class="block mb-2 text-sm font-medium dark:text-white text-white">Wallet Seed Phrase or Audit Key</label>
-            <input type="text" autofocus id="import_seed_phrase" v-model="import_seed_phrase" class="bg-zinc-800 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <input type="text" autofocus id="import_seed_phrase" v-model="import_seed_phrase" class="glass-input text-sm block w-full p-2.5">
           </div>
           <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" true-value="1" false-value="0" v-model="wallet_load_on_startup" class="sr-only peer">
@@ -46,8 +46,8 @@
           </label>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-zinc-700 rounded-b dark:border-zinc-700">
-          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Create</button>
+        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.08] rounded-b">
+          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Create</button>
 
         </div>
       </div>
@@ -57,9 +57,9 @@
   <div id="modal-1" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
       <!-- Modal content -->
-      <div class="relative rounded-lg shadow dark:bg-zinc-800 bg-zinc-800">
+      <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-zinc-700 border-zinc-700">
+        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Wallet Seed
           </h3>
@@ -78,7 +78,7 @@
           </div>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-zinc-700 rounded-b dark:border-zinc-700">
+        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.08] rounded-b">
           <button type="button" id="confirmButton-1" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Copy</button>
 
         </div>
@@ -89,9 +89,9 @@
   <div id="modal-2" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
       <!-- Modal content -->
-      <div class="relative rounded-lg shadow dark:bg-zinc-800 bg-zinc-800">
+      <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-zinc-700 border-zinc-700">
+        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Audit Key
           </h3>
@@ -110,7 +110,7 @@
           </div>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-zinc-700 rounded-b dark:border-zinc-700">
+        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.08] rounded-b">
           <button type="button" id="confirmButton-2" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Copy</button>
 
         </div>
@@ -121,9 +121,9 @@
   <div id="modal-3" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
       <!-- Modal content -->
-      <div class="relative rounded-lg shadow dark:bg-zinc-800 bg-zinc-800">
+      <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-zinc-700 border-zinc-700">
+        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Rescan Blockchain
           </h3>
@@ -136,27 +136,28 @@
           <p class="font-medium dark:text-white text-white">Rescan the local blockchain for wallet related transactions.</p>
           <div>
             <label for="scan_start_height" class="block mb-2 text-sm font-medium dark:text-white text-white">Start Height</label>
-            <input type="number" autofocus id="scan_start_height" v-model="scan_start_height" class="bg-zinc-800 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <input type="number" autofocus id="scan_start_height" v-model="scan_start_height" class="glass-input text-sm block w-full p-2.5">
           </div>
           <div>
             <label for="scan_stop_height" class="block mb-2 text-sm font-medium dark:text-white text-white">Stop Height</label>
-            <input type="number" autofocus id="scan_stop_height" v-model="scan_stop_height" class="bg-zinc-800 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <input type="number" autofocus id="scan_stop_height" v-model="scan_stop_height" class="glass-input text-sm block w-full p-2.5">
           </div>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-zinc-700 rounded-b dark:border-zinc-700">
+        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.08] rounded-b">
           <button :disabled="scan_start_height==''" type="button" id="confirmButton-3" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Rescan</button>
 
         </div>
       </div>
     </div>
   </div>
-  <div class="h-full w-full text-white bg-zinc-900">
+  <div class="h-full w-full text-white bg-transparent">
     <div class="w-full mb-5">
       <h3 class="p-4">Wallets</h3>
-      <button id="button" data-modal-toggle="modal" data-modal-target="modal" type="button" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <button id="button" type="button" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>&nbsp;Create Wallet
       </button>
+      <template v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
       <button v-on:click="getblsctseed()" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
       </svg>
@@ -168,13 +169,14 @@
     </svg>
     &nbsp;Audit Key
   </button>
-  <button id="button-rescan-blockchain"  class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <button id="button-rescan-blockchain" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
   </svg>
   &nbsp;Rescan Blockchain
 </button>
+      </template>
 </div>
-<div class="w-full p-4 bg-zinc-900">
+<div class="w-full p-4 bg-transparent" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
   <h3>Wallet Info</h3>
   <div class="flex mt-5" v-if="is_wallet_loaded&&wallet_info">
     <div>
@@ -216,11 +218,11 @@
     <!--<pre class="text-white dark:text-white" v-if="is_wallet_loaded&&wallet_info">{{wallet_info}}</pre>!-->
   </div>
 
-  <div class="p-4 overflow-auto text-white bg-zinc-900">
+  <div class="p-4 overflow-auto text-white bg-transparent">
 
 <!--<div class="w-48 text-white dark:text-white" v-if="loaded_wallets&&Object.keys(loaded_wallets).length>0">
 <p>Loaded wallet : {{Object.keys(loaded_wallets).length}}</p>
-<button v-for="wallet in loaded_wallets" type="button" class="relative inline-flex items-center w-full px-4 py-2 text-sm font-medium border-b border-gray-200 bg-zinc-700 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+<button v-for="wallet in loaded_wallets" type="button" class="relative inline-flex items-center w-full px-4 py-2 text-sm font-medium border-b border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.1] text-white transition-colors">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
 </svg>
@@ -232,7 +234,7 @@
 </div>!-->
 
 <p v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">Click on the wallet you want to load or unload</p>
-<div class="w-48 mt-3 space-y-3 text-white dark:text-white bg-zinc-900" v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">
+<div class="w-48 mt-3 space-y-3 text-white dark:text-white bg-transparent" v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">
   <!--<p>All wallets : {{Object.keys(all_wallets.wallets).length}}</p>!-->
   <label class="w-full relative inline-flex items-center cursor-pointer" v-for="wallet in all_wallets.wallets">
     <input type="checkbox" id="wallet_name" value="" class="sr-only peer" v-model="wallet.checked" v-on:change="manage_wallet(wallet)">
@@ -248,8 +250,14 @@
 
 
 </div>
-<div v-else class="dark:text-gray-400 text-gray-400 bg-zinc-900">
-  <p>No available wallet found.</p>
+<div v-else class="flex flex-col items-center justify-center py-16 px-6">
+  <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white/40">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
+    </svg>
+  </div>
+  <h2 class="text-lg font-semibold text-white mb-2">No Wallets Found</h2>
+  <p class="text-sm text-white/40 text-center max-w-xs">You haven't created any wallets yet. Click <span class="text-white font-medium">Create Wallet</span> to get started.</p>
 </div>
 
 </div>
@@ -427,7 +435,7 @@
             let $confirmButton = document.querySelector('#confirmButton-1');
             let $closeButton = document.querySelector('#closeButton-1');
             let modalOptions = {
-              backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
+              backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
             }
             if ($modalElement)
             {
@@ -473,7 +481,7 @@
             let $confirmButton = document.querySelector('#confirmButton-2');
             let $closeButton = document.querySelector('#closeButton-2');
             let modalOptions = {
-              backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
+              backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
             }
             if ($modalElement)
             {
@@ -501,10 +509,11 @@
         let vm=this;
         console.log("Creating wallet :" + this.new_wallet_name);
         console.log("Seed :" + this.import_seed_phrase);
+        const isFirstWallet = !vm.all_wallets || Object.keys(vm.all_wallets.wallets).length === 0;
         let parameters={};
         if (this.wallet_type_id==1) parameters={"wallet_name":this.new_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
         if (this.wallet_type_id==2) parameters={"wallet_name":this.new_wallet_name,"blsct":true,"seed":this.import_seed_phrase,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
-        this.client.command([{ method: "createwallet", parameters: parameters }]).then((r) => 
+        this.client.command([{ method: "createwallet", parameters: parameters }]).then((r) =>
         {
           vm.new_wallet_name="";
           console.log(r);
@@ -521,6 +530,10 @@
           }
           else
           {
+           if (isFirstWallet)
+           {
+             vm.set_active_wallet({ name: r[0].name });
+           }
            vm.listwalletdir();
            Swal.fire({
             theme:'dark',
@@ -549,7 +562,8 @@
       const $closeButton = document.querySelector('#closeButton');
 
       const modalOptions = {
-        backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
+        backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40',
+        closable: false
       }
 
       if ($modalElement)
@@ -579,7 +593,7 @@
       let $confirmButton3 = document.querySelector('#confirmButton-3');
       let $closeButton3 = document.querySelector('#closeButton-3');
       let modalOptions3 = {
-        backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
+        backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
       }
       if ($modalElement3)
       {

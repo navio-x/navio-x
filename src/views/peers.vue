@@ -2,9 +2,9 @@
   <div id="modal-add-node" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
       <!-- Modal content -->
-      <div class="relative rounded-lg shadow dark:bg-zinc-800 bg-zinc-800">
+      <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-zinc-700 border-zinc-700">
+        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             Manage Nodes
         </h3>
@@ -17,7 +17,7 @@
       <p class="font-medium dark:text-white text-white">To connect with a peer, fill out the fields below.</p>
       <div>
         <label for="node_name" class="block mb-2 text-sm font-medium dark:text-white text-white">The address of the peer to connect to</label>
-        <input type="text" autofocus id="node_name" v-model="node_name" class="bg-zinc-800 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-zinc-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <input type="text" autofocus id="node_name" v-model="node_name" class="glass-input text-sm block w-full p-2.5">
     </div>
     <div>
         <div class="flex items-center mb-4">
@@ -36,14 +36,14 @@
 
 </div>
 <!-- Modal footer -->
-<div class="flex items-center p-6 space-x-2 border-t border-zinc-700 rounded-b dark:border-zinc-700">
+<div class="flex items-center p-6 space-x-2 border-t border-white/[0.08] rounded-b">
   <button :disabled="node_name==''" type="button" id="confirmButton" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">{{(node_add_type=="remove"?"Remove Node":"Add Node")}}</button>
 
 </div>
 </div>
 </div>
 </div>
-<div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+<div class="h-full bg-transparent text-white">
     <div class="p-4">
         <h3>Peers</h3>
         <p>You are currently connected to {{peers.length}} peer(s).</p>
@@ -54,10 +54,10 @@
       &nbsp;Manage Nodes
   </button>
 </div>
-<div class="p-4 overflow-auto dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+<div class="p-4 overflow-auto bg-transparent text-white">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="peers.length>0">
         <table class="w-full text-sm text-left rtl:text-right dark:text-gray-400 text-gray-400">
-            <thead class="text-xs uppercase bg-zinc-800 dark:bg-zinc-800 dark:text-gray-400 text-gray-400">
+            <thead class="text-xs uppercase text-white/30">
                 <tr>
                     <th scope="col" class="px-6 py-3">
                         ID
@@ -80,7 +80,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="peer in peers" class="bg-zinc-800 border-b border-zinc-950 dark:bg-zinc-800 dark:border-zinc-950 hover:bg-zinc-900 dark:hover:bg-zinc-900">
+                <tr v-for="peer in peers" class="bg-zinc-800 border-b border-zinc-950 glass-card border-white/[0.06] hover:bg-white/[0.05]">
                     <td class="px-6 py-3">{{peer.id}}</td>
                     <td class="px-6 py-3">
                         <p>{{peer.addr}}</p>
@@ -153,7 +153,7 @@ mounted() {
     let $confirmButton = document.querySelector('#confirmButton');
     let $closeButton = document.querySelector('#closeButton');
     let modalOptions = {
-        backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
+        backdropClasses: 'bg-black/60 backdrop-blur-sm fixed inset-0 z-40'
     }
     if ($modalElement)
     {

@@ -1,15 +1,15 @@
 <template>
   <div class="autocomplete shadow w-full text-white">
-    <ul id="autocomplete-results" v-show="isOpen" class="autocomplete-results bg-zinc-900 border border-zinc-800">
+    <ul id="autocomplete-results" v-show="isOpen" class="autocomplete-results">
       <li class="p-3 loading" v-if="isLoading">
         Loading results...
       </li>
-      <li v-else v-for="(result, i) in results" :key="i" @click="setResult(result)" class="autocomplete-result p-3 hover:bg-zinc-800" :class="{ 'is-active': i === arrowCounter }">
+      <li v-else v-for="(result, i) in results" :key="i" @click="setResult(result)" class="autocomplete-result p-3" :class="{ 'is-active': i === arrowCounter }">
         {{ result }}
       </li>
-    </ul>  
+    </ul>
     <input
-      autofocus class="h-10 w-full shadow border border-zinc-800 rounded text-gray-50 leading-tight focus:outline-none focus:shadow-outline bg-zinc-800"
+      autofocus class="glass-input h-10 w-full rounded leading-tight focus:outline-none"
       type="text" :placeholder="placeholder"
       @input="onChange"
       v-model="search"
@@ -114,19 +114,30 @@
   }
 
   .autocomplete-results {
-    position:absolute;
-    top:-245px;
+    position: absolute;
+    top: -245px;
     padding: 0;
     margin: 0;
     height: 235px;
-    width:100%;
+    width: 100%;
     overflow: auto;
+    background: rgba(17, 10, 35, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 0.5rem;
+    color: white;
   }
 
   .autocomplete-result {
     list-style: none;
     text-align: left;
     cursor: pointer;
+  }
+
+  .autocomplete-result:hover,
+  .autocomplete-result.is-active {
+    background: rgba(139, 92, 246, 0.15);
   }
 
 </style>

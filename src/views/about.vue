@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full bg-zinc-900 text-white">
-    <div class="h-full p-4 overflow-auto bg-zinc-900 text-center text-white">
+  <div class="h-full bg-transparent text-white">
+    <div class="h-full p-4 overflow-auto bg-transparent text-center text-white">
       <img class="mx-auto" src="../assets/navio-x.png" style="width:128px;" alt="Navio-X Wallet"/>
       <h1 class="mt-10 text-2xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white">Navio X Wallet</h1>
       <p class="mt-5 max-w-lg mx-auto text-lg font-normal text-gray-500 dark:text-gray-400">

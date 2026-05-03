@@ -2,9 +2,9 @@
   <div id="modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
       <!-- Modal content -->
-      <div class="relative rounded-lg shadow dark:bg-zinc-800 bg-zinc-800">
+      <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-zinc-800 border-zinc-800">
+        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.08]">
           <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
             QRCode
         </h3>
@@ -26,7 +26,7 @@
 </div>
 </div>
 </div>
-<div class="h-full bg-zinc-900 text-white">
+<div class="h-full bg-transparent text-white">
     <div v-if="$store.state.active_wallet">
         <div class="w-full mb-5">
           <h3 class="p-4">Receive</h3>
@@ -47,10 +47,10 @@
   &nbsp;Generate 1</button>!-->
 </div>
 
-<div class="p-4 overflow-auto bg-zinc-900 text-white">
+<div class="p-4 overflow-auto bg-transparent text-white">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="all_addresses&&Object.keys(all_addresses).length>0">
         <table class="w-full text-sm text-left rtl:text-right dark:text-gray-400 text-gray-400">
-            <thead class="text-xs uppercase dark:bg-zinc-800 dark:text-gray-400 bg-zinc-800 text-gray-400">
+            <thead class="text-xs uppercase text-white/30">
                 <tr>
                     <th scope="col" class="px-6 py-3">
                     </th>
@@ -66,7 +66,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-on:click="set_active_address(address)" v-for="address in all_addresses" class="bg-zinc-800 border-b border-zinc-950 dark:bg-zinc-800 dark:border-zinc-950 hover:bg-zinc-900 dark:hover:bg-zinc-900">
+                <tr v-on:click="set_active_address(address)" v-for="address in all_addresses" class="border-b border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer">
                     <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap dark:text-white text-white">
                         <input :ref="'lr_'+address.address" type="radio" name="hs-default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" :id="'lr_'+address.address" v-bind:value="address.address" v-model="active_address">
                     </th>
@@ -95,30 +95,28 @@
   </tbody>
 </table>
 </div>
-<div v-else>
-    <p>No available address found.</p>
-</div>
-</div>
-</div>
-<div class="p-4" v-else>
-  <p>No wallet loaded or selected.</p>
-  <p>You can create, load and activate a wallet in Wallets page.</p>
-  <router-link to="/wallets">
-    <a href="" class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+<div v-else class="flex flex-col items-center justify-center py-16 px-6">
+  <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white/40">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
     </svg>
-
-    <span class="ms-3">Wallets</span>
-</a>
-</router-link>
+  </div>
+  <h2 class="text-lg font-semibold text-white mb-2">No Address Generated Yet</h2>
+  <p class="text-sm text-white/40 text-center max-w-xs">
+    You don't have any receive addresses yet. Use the <span class="text-white font-medium">Generate New Address</span> button above to create your first address.
+  </p>
 </div>
+</div>
+</div>
+<NoWalletSelected v-else />
 </div>
 </template>
 <script>
     import QRCodeStyling from "qr-code-styling";
     import Swal from 'sweetalert2';
     import '@sweetalert2/theme-dark/dark.scss';
+    import NoWalletSelected from '../components/NoWalletSelected.vue';
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -127,6 +125,7 @@
         timerProgressBar: true,
     })
     export default {
+        components: { NoWalletSelected },
         data() {
             return {
                 all_addresses:undefined,
@@ -262,7 +261,7 @@
         initFlowbite();
         this.modal=new Modal(document.querySelector('#modal'),
         {
-            backdropClasses: 'bg-zinc-900/50 dark:bg-zinc-900/80 fixed inset-0 z-40'
+            backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
         });
     }
 }

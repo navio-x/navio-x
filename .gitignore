@@ -3,3 +3,5 @@ dist-electron/
 dist/
 dist/assets/
 release/
+/repo
+navio-x.flatpak

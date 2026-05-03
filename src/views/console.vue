@@ -1,13 +1,13 @@
 <template>
-  <div class="h-screen w-full flex flex-col p-4 bg-zinc-900">
-    <header class="flex h-12 w-full bg-zinc-900 text-white">
+  <div class="h-screen w-full flex flex-col p-4 bg-transparent">
+    <header class="flex h-12 w-full bg-transparent text-white">
       <h3>Console</h3>
     </header>
-    <div id="result" class="flex flex-1 bg-zinc-900 text-white overflow-auto border border-zinc-800 p-4">
+    <div id="result" class="flex flex-1 text-white overflow-auto glass-card rounded-xl p-4">
       <div v-html="result" class="scroll-auto scroll-smooth">
       </div>
     </div>
-    <footer class="flex bg-zinc-900 mt-3 h-18 w-full">
+    <footer class="flex bg-transparent mt-3 h-18 w-full">
       <div class="flex w-full rounded-lg shadow-sm">
         <autocomplete ref="autocomplete" class="w-10/12" @selected="cmd = $event" @input="cmd = $event.target.value" @keyup.enter="run()" :items="items" />
         <button class="ml-3 h-10 bg-blue-500 hover:bg-blue-700 text-white w-2/12 font-bold rounded focus:outline-none focus:shadow-outline" v-on:click="run()"><center><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

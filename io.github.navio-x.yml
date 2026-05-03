@@ -1,0 +1,34 @@
+app-id: io.github.navio-x
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '24.08'
+command: run.sh
+separate-locales: false
+
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+  - --talk-name=org.freedesktop.DBus  # dbus fix
+  - --system-talk-name=org.freedesktop.DBus
+  - --env=PATH=/app/bin:/usr/bin:/bin  # /bin/sh erişimi
+
+modules:
+  - name: navio-x
+    buildsystem: simple
+    build-commands:
+      - cp -ra . /app/main/
+      - chmod +x /app/main/navio-x
+      - |
+        cat > /app/bin/run.sh << 'EOF'
+        #!/bin/bash
+        exec zypak-wrapper /app/main/navio-x "$@"
+        EOF
+      - chmod +x /app/bin/run.sh
+    sources:
+      - type: dir
+        path: /home/dev/Desktop/navio-x/release/0.0.3/linux-unpacked

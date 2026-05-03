@@ -41,8 +41,10 @@
   "linux": {
     "icon": "src/assets/navio-x.png",
     "target": [
-      "AppImage"
+      "AppImage",
+       "dir"
     ],
-    "artifactName": "${productName}-Linux-${version}.${ext}"
+    "artifactName": "${productName}-Linux-${version}.${ext}",
+    "executableArgs": ["--ozone-platform=x11"]
   }
 }

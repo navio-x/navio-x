@@ -188,6 +188,14 @@ flex items-center justify-center" v-show="state=='connection_error'">
 </div>
 </section>
 
+<NetworkSelector
+  v-show="state=='select_network'"
+  :networks="networks"
+  :current="network"
+  @select="on_network_selected"
+  @back="state='agreement'"
+/>
+
 <section
 class="min-h-screen bg-zinc-900 dark:bg-zinc-900 flex flex-col items-center justify-center"
 v-show="state=='select_daemon_method'"
@@ -244,6 +252,16 @@ v-show="state=='select_daemon_method'"
           </h1>
           <p class="dark:text-white text-white">Enter the RPC connection details you specified when starting the Navio daemon.</p>
           <div class="space-y-4 md:space-y-6">
+              <div>
+                <label class="block mb-2 text-sm font-medium text-white">Network</label>
+                <div class="flex gap-4">
+                  <label v-for="net in networks" :key="net.name" class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" v-model="network" :value="net.name" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2">
+                    <span class="text-sm text-white">{{ net.label }}</span>
+                    <span class="text-xs text-zinc-400">({{ net.port }})</span>
+                  </label>
+                </div>
+              </div>
               <div class="grid md:grid-cols-2 md:gap-6">
                 <div class="relative z-0 w-full group">
                   <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
@@ -308,200 +326,144 @@ v-show="state=='select_daemon_method'"
 </div>
 
 <div id="nav" v-show="state=='ready'">
-  <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto dark:bg-zinc-800">
-      <a class="flex items-center ps-2.5" style="margin-top:15px;margin-bottom:30px;">
-         <img src="./assets/logo.svg" style="width:128px;" alt="Navio Logo"/>
-         <!--<span class="ml-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">Navio</span>!-->
-     </a>       
-     <ul class="space-y-2 text-md">
-         <li>
-             <router-link to="/home">
-                <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                  </svg>
+  <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen flex flex-col sidebar-glass" aria-label="Sidebar">
 
-                  <span class="ms-3">Home</span>
-              </a>
-          </router-link>
-      </li>
-      <li>
-         <router-link to="/wallets">
-            <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-              </svg>
+    <!-- Ambient glow blobs -->
+    <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-none">
+      <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-violet-600/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-32 -left-8 w-36 h-36 bg-blue-600/15 rounded-full blur-3xl"></div>
+    </div>
 
-              <span class="ms-3">Wallets</span>
-          </a>
+    <!-- Logo -->
+    <div class="relative px-5 pt-6 pb-5 shrink-0">
+      <img src="./assets/logo.svg" class="w-24" alt="Navio Logo"/>
+    </div>
+
+    <!-- Main nav -->
+    <nav class="relative flex-1 overflow-y-auto px-3 pb-2">
+      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Wallet</p>
+
+      <router-link to="/home"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        </svg>
+        <span>Home</span>
       </router-link>
-  </li>
-  <li>
-     <router-link to="/send">
-        <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-          </svg>
-          <span class="ms-3">Send</span>
-      </a>
-  </router-link>
-</li>
-<li>
- <router-link to="/receive">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+
+      <router-link to="/wallets"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+        </svg>
+        <span>Wallets</span>
+      </router-link>
+
+      <router-link to="/send"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        </svg>
+        <span>Send</span>
+      </router-link>
+
+      <router-link to="/receive"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-      </svg>
-      <span class="ms-3">Receive</span>
-  </a>
-</router-link>
-</li>           
-<li>
- <router-link to="/history">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
-      </svg>
-      <span class="ms-3">History</span>
-  </a>
-</router-link>
-</li>
-<li>
- <router-link to="/staking">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        </svg>
+        <span>Receive</span>
+      </router-link>
+
+      <router-link to="/history"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span>History</span>
+      </router-link>
+
+      <router-link to="/staking"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-      </svg>
+        </svg>
+        <span>Staking</span>
+      </router-link>
 
-      <span class="ms-3">Staking</span>
-  </a>
-</router-link>
-</li>
-</ul>
-<ul class="mt-2 space-y-2 text-md border-t border-zinc-700 dark:border-zinc-700">
-  <li style="display:none">
-     <router-link to="/help">
-        <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />
-          </svg>
+      <div class="my-3 border-t border-white/[0.06]"></div>
+      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Tools</p>
 
-          <span class="ms-3">Help</span>
-      </a>
-  </router-link>
-</li> 
-
-<li>
- <router-link to="/console">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <router-link to="/console"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-      </svg>
+        </svg>
+        <span>Console</span>
+      </router-link>
 
-      <span class="ms-3">Console</span>
-  </a>
-</router-link>
-</li> 
-
-<li>
- <router-link to="/settings">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <router-link to="/settings"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
-      </svg>
-      <span class="ms-3">Settings</span>
-  </a>
-</router-link>
-</li> 
+        </svg>
+        <span>Settings</span>
+      </router-link>
 
-<li>
- <router-link to="/about">
-    <a href="" class="flex items-center p-2 rounded-lg dark:text-white text-white hover:bg-zinc-900 dark:hover:bg-zinc-900 group focus:bg-zinc-900 focus:ring focus:ring-zinc-900 focus-within:ring-1">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <router-link to="/about"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
+        active-class="nav-item-active !text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-      </svg>
+        </svg>
+        <span>About</span>
+      </router-link>
+    </nav>
 
-      <span class="ms-3">About</span>
-  </a>
-</router-link>
-</li> 
+    <!-- Status card -->
+    <div class="relative px-3 py-4 border-t border-white/[0.06] shrink-0">
+      <div v-if="chain" class="status-glass rounded-xl px-3 py-3 space-y-2.5">
+        <div class="flex items-center gap-2 min-w-0">
+          <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
+          <span class="text-xs text-white/70 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] text-white/30">{{ blocks == headers ? 'Synced' : 'Syncing...' }}</span>
+            <span :class="blocks == headers ? 'text-emerald-400' : 'text-violet-400'" class="text-[11px] font-semibold">{{ get_sync_percent() }}%</span>
+          </div>
+          <div class="bg-white/[0.08] rounded-full h-1">
+            <div class="h-1 rounded-full transition-all duration-500 progress-gradient" :style="{ width: get_sync_percent() + '%' }"></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] text-white/25 capitalize font-medium">{{ chain }}</span>
+          <router-link to="/peers" class="text-[11px] text-white/40 hover:text-white/80 transition-colors" :title="'Protocol: ' + networkinfo.protocolversion">
+            {{ networkinfo.connections ? networkinfo.connections + ' peer' + (networkinfo.connections > 1 ? 's' : '') : 'No peers' }}
+          </router-link>
+        </div>
+      </div>
+      <div v-else class="flex items-center gap-2.5 px-1 py-2">
+        <svg class="w-4 h-4 text-violet-400 animate-spin shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+        <span class="text-xs text-white/40">Initializing...</span>
+      </div>
+    </div>
 
-</ul>
-
-
-
-<div class="relative h-32 w-full" v-if="chain">
-  <div class="flex items-center p-2 mt-3 space-x-4">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-  </svg>
-  <div class="w-16">
-    <span title="Active Wallet" class="text-xs dark:text-white text-white whitespace-nowrap" v-if="client">{{($store.state.active_wallet?$store.state.active_wallet:"No active wallet")}}</span>
-    <span class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400 whitespace-nowrap">
-        {{(blocks==headers?"Synced":"Syncing...")}}
-    </span>
-</div>
-
-</div>
-
-<div class="flex items-center p-2 space-x-4" title="Current block height">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-500">
-      <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-  </svg>
-
-  <div class="w-16">
-    <span title="Active Chain" class="flex items-center space-x-1 text-xs dark:text-gray-400 text-white whitespace-nowrap">
-        {{chain}}
-    </span>
-    <span title="Current Block Number/Latest Block Number" class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400 whitespace-nowrap">
-        {{blocks}}/{{headers}}
-    </span>
-</div>
-</div>
-
-<div class="w-full flex items-center p-2 space-x-4" title="Network Details">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
-      <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
-  </svg>
-
-  <div class="w-16" :title="'Protocol version : '+networkinfo.protocolversion">
-    <router-link to="/peers">
-        <span class="flex items-center space-x-1 text-xs dark:text-gray-400 text-white whitespace-nowrap">
-            {{networkinfo.connections?networkinfo.connections+" Connection":"No connection"}}
-        </span>
-        <span v-if="networkinfo.version" class="flex items-center space-x-1 text-xs dark:text-gray-400 text-gray-400">
-            v{{networkinfo.version}}
-        </span>
-    </router-link>
-</div>
-</div>
-<div class="flex ml-3 mr-3 justify-between mb-1">
-  <span class="text-base font-medium text-blue-700 dark:text-white"></span>
-  <span class="text-sm font-medium text-white dark:text-white">{{get_sync_percent()}}%</span>
-</div>
-<div class="ml-3 mr-3 bg-gray-700 rounded-full h-1 dark:bg-gray-700">
-    <div class="bg-blue-600 h-1 rounded-full" :style="{ width: get_sync_percent() + '%' }"></div>
-</div>
-</div>
-<div v-else class="relative">
-  <div class="flex items-center p-2 mt-3 space-x-4">
-    <div class="loader-container">
-      <div class="loader"></div>
-  </div>
-  <div>
-      <span v-if="client" class="text-sm text-white whitespace-nowrap">
-        Initializing...
-    </span>
-</div>
-</div>
-</div>
-</div>
-
-</aside>
+  </aside>
 
 <div class="sm:ml-64 h-screen">
-   <router-view />
+  <router-view />
 </div>
 </div>
 
@@ -513,6 +475,7 @@ v-show="state=='select_daemon_method'"
     import Swal from 'sweetalert2';
     import '@sweetalert2/theme-dark/dark.scss';
     import Client from 'bitcoin-core';
+    import NetworkSelector from './views/network.vue';
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -521,15 +484,23 @@ v-show="state=='select_daemon_method'"
         timerProgressBar: true,
     })
     export default {
+      components: { NetworkSelector },
       data() {
+        const networks = [
+          { name: 'mainnet', label: 'Mainnet', port: 44444, description: 'The live Navio network. Transactions here use real NAV with real value.' },
+          { name: 'testnet', label: 'Testnet', port: 33677, description: 'Development and testing network. Use this to try features without risking real NAV.' },
+        ];
+        const savedNetwork = localStorage.getItem('network') || 'mainnet';
+        const savedPort    = localStorage.getItem('port')    || (networks.find(n => n.name === savedNetwork)?.port ?? 44444);
         return {
+          networks,
           app:null,
           state: "",
           username:"",
           password:"",
-          host:"localhost",
-          port:33677,
-          network:"testnet",
+          host: localStorage.getItem('host') || "localhost",
+          port: savedPort,
+          network: savedNetwork,
           blocks:0,
           headers:0,
           chain:undefined,
@@ -539,6 +510,12 @@ v-show="state=='select_daemon_method'"
           is_downloading:false,
           fileinfo:{},
       }
+  },
+  watch: {
+    network(val) {
+      const found = this.networks.find(n => n.name === val);
+      if (found) this.port = found.port;
+    }
   },
   methods: {
     get_started: function() {
@@ -560,8 +537,14 @@ v-show="state=='select_daemon_method'"
         }
         else
         {
-            this.state='select_daemon_method';
+            this.state='select_network';
         }
+    },
+    on_network_selected: function(net) {
+        this.network = net.name;
+        this.port    = net.port;
+        localStorage.setItem('network', net.name);
+        this.state = 'select_daemon_method';
     },
     getBlockChainInfo: function() {
         const batch = [{ method: "getblockchaininfo" }];
@@ -606,6 +589,7 @@ v-show="state=='select_daemon_method'"
     },
     stop_staking : function()
     {
+        if (this.state !== 'ready') return;
         let vm=this;
         if (vm.$store.state.active_wallet)
         {
@@ -692,16 +676,18 @@ v-show="state=='select_daemon_method'"
             {
                 localStorage.setItem('host', this.host);
                 localStorage.setItem('port', this.port);
+                localStorage.setItem('network', this.network);
                 localStorage.setItem('username', this.username);
                 localStorage.setItem('password', this.password);
                 if (this.auto_login) localStorage.setItem('auto_login', true);
             }
             else
             {
-                localStorage.removeItem('host', this.host);
-                localStorage.removeItem('port', this.port);
-                localStorage.removeItem('username', this.username);
-                localStorage.removeItem('password', this.password);
+                localStorage.removeItem('host');
+                localStorage.removeItem('port');
+                localStorage.removeItem('network');
+                localStorage.removeItem('username');
+                localStorage.removeItem('password');
             }
             console.log(r);
             if (this.auto_login)
@@ -786,14 +772,19 @@ mounted()
     if (localStorage.getItem("agreement_accepted"))
     {
         this.remember=true;
-        this.host=(localStorage.getItem("host")?localStorage.getItem("host"):"localhost");
-        this.port=(localStorage.getItem("port")?localStorage.getItem("port"):"33677");
-        this.username=localStorage.getItem("username");
-        this.password=localStorage.getItem("password");
+        this.host    = localStorage.getItem('host')    || 'localhost';
+        this.network = localStorage.getItem('network') || 'testnet';
+        this.port    = localStorage.getItem('port')    || (this.networks.find(n => n.name === this.network)?.port ?? 33677);
+        this.username= localStorage.getItem('username');
+        this.password= localStorage.getItem('password');
         if (localStorage.getItem("auto_login"))
         {
             this.auto_login=true;
             this.connect();
+        }
+        else if (!localStorage.getItem("network"))
+        {
+            this.state="select_network";
         }
         else
         {
@@ -825,6 +816,10 @@ mounted()
     ipcRenderer.on('stop-daemon', (_event, value) =>
     {
         console.log("stop-daemon");
+        if (this.state !== 'ready') {
+            ipcRenderer.invoke('force-quit');
+            return;
+        }
         this.stop_staking();
         this.stop_daemon();
     })
@@ -852,6 +847,48 @@ mounted()
 }
 </script>
 <style scoped>
+
+.sidebar-glass {
+  background: linear-gradient(160deg, rgba(17, 10, 35, 0.97) 0%, rgba(10, 14, 30, 0.97) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-item {
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-item-active {
+  position: relative;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%) !important;
+  border-color: rgba(139, 92, 246, 0.25) !important;
+}
+.nav-item-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 55%;
+  background: linear-gradient(to bottom, #a78bfa, #60a5fa);
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+.status-glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.progress-gradient {
+  background: linear-gradient(90deg, #7c3aed, #3b82f6);
+}
+
 
     .loader-container {
       display: flex;

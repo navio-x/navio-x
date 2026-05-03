@@ -1,11 +1,11 @@
 <template>
-    <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+    <div class="h-full bg-transparent text-white">
         <div v-if="$store.state.active_wallet">
             <div class="w-full mb-1">
               <h3 class="p-4">Staking</h3>
           </div>
           <div class="p-3 w-full">
-              <div id="alert-additional-content-5" class="p-4 rounded-lg bg-zinc-800 dark:bg-zinc-800" role="alert">
+              <div id="alert-additional-content-5" class="p-4 rounded-lg glass-card" role="alert">
                   <div class="flex items-center">
                     <svg class="flex-shrink-0 w-4 h-4 me-2 dark:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"></path>
@@ -50,7 +50,7 @@
 </div>
 </div>
 <div class="p-3">
-    <div v-if="$store.state.is_staking_active" class="w-full p-3 mt-3 text-sm text-green-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-green-400" role="alert">
+    <div v-if="$store.state.is_staking_active" class="w-full p-3 mt-3 text-sm text-green-400 rounded-lg glass-card dark:text-green-400" role="alert">
       <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
     </svg>
@@ -59,7 +59,7 @@
         <span class="font-medium">Staker running for wallet '{{$store.state.staker_wallet}}'...</span>
     </div>
 </div>
-<div v-else class="w-full p-3 mt-3 text-sm text-orange-400 rounded-lg bg-zinc-800 dark:bg-zinc-800 dark:text-orange-400" role="alert">
+<div v-else class="w-full p-3 mt-3 text-sm text-orange-400 rounded-lg glass-card dark:text-orange-400" role="alert">
   <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
 </svg>
@@ -74,7 +74,7 @@
     <div class="w-1/2">
       <label for="hs-trailing-button-add-on" class="sr-only">Label</label>
       <div class="flex rounded-lg shadow-sm">
-        <input v-model="amount_lock" type="number" min="0" class="py-3 px-4 block w-full border-gray-200 shadow-sm rounded-s-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 text-zinc-400 border-zinc-700">
+        <input v-model="amount_lock" type="number" min="0" class="py-3 px-4 block w-full rounded-s-lg text-sm glass-input disabled:opacity-50 disabled:pointer-events-none">
         <button type="button" :disabled="!amount_lock" v-on:click="lock_coins()" class="py-3 px-4 text-nowrap whitespace-nowrap inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-e-md border border-transparent text-white disabled:opacity-50 disabled:pointer-events-none bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -83,10 +83,10 @@
       </button>
   </div>
 </div>
-<div class="w-1/2 ml-5 dark:bg-zinc-800 dark:border-zinc-600 ">
+<div class="w-1/2 ml-5 ">
   <label for="hs-trailing-button-add-on" class="sr-only">Label</label>
   <div class="flex rounded-lg shadow-sm">
-    <input v-model="amount_unlock" type="number" min="0" class="py-3 px-4 block w-full border-gray-200 shadow-sm rounded-s-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 text-zinc-400 border-zinc-700">
+    <input v-model="amount_unlock" type="number" min="0" class="py-3 px-4 block w-full rounded-s-lg text-sm glass-input disabled:opacity-50 disabled:pointer-events-none">
     <button :disabled="!amount_unlock" type="button" v-on:click="unlock_coins()" class="py-3 px-4 text-nowrap whitespace-nowrap inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-e-md border border-transparent text-white disabled:opacity-50 disabled:pointer-events-none bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -98,23 +98,11 @@
 </div>
 
 
-<div class="p-5 dark:bg-zinc-900 bg-zinc-900">
+<div class="p-5">
     <apexchart class="w-full" height="240" :options="options" :series="series"></apexchart>
 </div>
 </div>
-<div class="p-4" v-else>
-  <p>No wallet loaded or selected.</p>
-  <p>You can create, load and activate a wallet in Wallets page.</p>
-  <router-link to="/wallets">
-    <a href="" class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-    </svg>
-
-    <span class="ms-3">Wallets</span>
-</a>
-</router-link>
-</div>
+<NoWalletSelected v-else />
 </div>
 </template>
 
@@ -123,7 +111,9 @@
     import ApexCharts from 'apexcharts';
     import Swal from 'sweetalert2';
     import '@sweetalert2/theme-dark/dark.scss';
+    import NoWalletSelected from '../components/NoWalletSelected.vue';
     export default {
+        components: { NoWalletSelected },
         data() {
             return {
                 staked_commitments:undefined,
@@ -209,6 +199,7 @@
                     }
                     else
                     {
+                       vm.amount_lock=0;
                        vm.list_staked_commitments();
                        Swal.fire({
                         theme:'dark',

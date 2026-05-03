@@ -59,36 +59,29 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     //const rpcpassword="y";
     const network="testnet";
     var daemonBinaryStarted=false;
+    var daemonProcess=null;
     var daemonPID=undefined;
     var stakerPID=undefined;
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Navio X',
-        center:true,
-        width:1100,
-        height:760,
+        width: 1100,
+        height: 810,
+        center: true,
         backgroundColor: '#121212',
         transparent: false,
         frame: true,
         show: true,
         hasShadow: true,
         resizable: true,
-    vibrancy: process.platform === 'darwin' ? 'ultra-dark' : undefined, // Sadece macOS için
-    backgroundColor: '#00000000', // Şeffaflık
-    icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
-    webPreferences: {
-      preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  })
-
-      win.once('ready-to-show', () => {
-        win.show();
-      });
+        vibrancy: process.platform === 'darwin' ? 'ultra-dark' : undefined,
+        icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
+        webPreferences: {
+          preload,
+          nodeIntegration: true,
+          contextIsolation: false,
+        },
+      })
 
   // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
       if (process.platform === 'win32') {
@@ -206,6 +199,16 @@ ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
 
 ipcMain.handle('stop-staker', (_, pid) => {
   if (pid) stopStaker(pid);
+})
+
+ipcMain.handle('force-quit', () => {
+  if (daemonProcess) {
+    try { daemonProcess.kill(); } catch (e) { console.error('force-quit kill error:', e); }
+    daemonProcess = null;
+  }
+  daemonBinaryStarted = false;
+  app.quit();
+  process.exit(0);
 })
 
 ipcMain.handle('shell-open-item', (_, path) => {
@@ -415,6 +418,7 @@ function startDaemon()
     console.log('Params:', parameters.join(' '));
 
     const proc = spawn(executablePath, parameters, spawnOptions);
+    daemonProcess = proc;
 
     proc.on('error', (err) => {
       daemonBinaryStarted = false;

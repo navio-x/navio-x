@@ -1,5 +1,5 @@
 <template>
-    <div class="h-full dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+    <div class="h-full bg-transparent text-white">
         <div v-if="$store.state.active_wallet && ready">
             <div class="p-4">
                 <h3>Transaction History</h3>
@@ -13,7 +13,7 @@
                     <select
                     id="categoryFilter"
                     v-model="selectedCategory"
-                    class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 p-2.5"
+                    class="glass-input text-sm block w-64 p-2.5"
                     >
                     <option value="">All Categories</option>
                     <option v-for="cat in uniqueCategories" :key="cat" :value="cat">{{ cat }}</option>
@@ -22,12 +22,12 @@
 
             <div>
                 <label for="startDate" class="block mb-2 text-sm font-medium text-white">Start Date</label>
-                <input type="date" id="startDate" v-model="startDate" class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg p-2.5 [&::-webkit-calendar-picker-indicator]:invert">
+                <input type="date" id="startDate" v-model="startDate" class="glass-input text-sm p-2.5 [&::-webkit-calendar-picker-indicator]:invert">
             </div>
 
             <div>
                 <label for="endDate" class="block mb-2 text-sm font-medium text-white">End Date</label>
-                <input type="date" id="endDate" v-model="endDate" class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg p-2.5 [&::-webkit-calendar-picker-indicator]:invert">
+                <input type="date" id="endDate" v-model="endDate" class="glass-input text-sm p-2.5 [&::-webkit-calendar-picker-indicator]:invert">
             </div>
 
             <div>
@@ -35,7 +35,7 @@
                 <select
                 id="quickRange"
                 @change="applyQuickRange($event.target.value)"
-                class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg p-2.5"
+                class="glass-input text-sm p-2.5"
                 >
                 <option value="">Select</option>
                 <option value="today">Today</option>
@@ -46,7 +46,7 @@
 
         <button
         @click="resetFilters"
-        class="mt-7 inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-zinc-700 rounded-lg hover:bg-zinc-600 focus:ring-4 focus:outline-none focus:ring-zinc-500"
+        class="mt-7 inline-flex items-center px-3 py-2 text-sm font-medium text-white glass-btn-secondary rounded-lg focus:outline-none"
         >
         Clear Filters
     </button>
@@ -64,10 +64,10 @@
 </div>
 
 <!-- Table -->
-<div class="p-4 overflow-auto dark:bg-zinc-900 bg-zinc-900 dark:text-white text-white">
+<div class="p-4 overflow-auto bg-transparent text-white">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs && Object.keys(txs).length > 0">
         <table class="w-full text-sm text-left rtl:text-right dark:text-gray-400 text-gray-400">
-            <thead class="text-xs uppercase bg-zinc-800 dark:bg-zinc-800 dark:text-gray-400 text-gray-400 border-b dark:border-zinc-950">
+            <thead class="text-xs uppercase glass-card dark:text-gray-400 text-gray-400 border-b border-white/[0.06]">
                 <tr>
                     <th class="px-3 py-3">Generated</th>
                     <th class="px-3 py-3">Height</th>
@@ -81,7 +81,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="tx in filteredTxs" :key="tx.txid" class="bg-zinc-800 border-b border-zinc-950 dark:bg-zinc-800 dark:border-zinc-950 hover:bg-zinc-900 dark:hover:bg-zinc-900">
+                <tr v-for="tx in filteredTxs" :key="tx.txid" class="border-b border-white/[0.06] hover:bg-white/[0.04] transition-colors">
                     <td><center>{{ tx.generated }}</center></td>
                     <td><center>{{ tx.blockheight }}</center></td>
                     <td><center>{{ tx.confirmations }}</center></td>
@@ -114,23 +114,14 @@
 </div>
 </div>
 </div>
-<div class="p-4" v-else>
-    <p>No wallet loaded or selected.</p>
-    <p>You can create, load and activate a wallet on the Wallets page.</p>
-    <router-link to="/wallets">
-        <a class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-            </svg>
-            <span class="ms-3">Wallets</span>
-        </a>
-    </router-link>
-</div>
+<NoWalletSelected v-else />
 </div>
 </template>
 
 <script>
+    import NoWalletSelected from '../components/NoWalletSelected.vue';
     export default {
+        components: { NoWalletSelected },
         data() {
             return {
                 txs: [],
