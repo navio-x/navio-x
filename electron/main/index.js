@@ -66,7 +66,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       win = new BrowserWindow({
         title: 'Navio X',
         width: 1100,
-        height: 810,
+        height: 780,
         center: true,
         backgroundColor: '#121212',
         transparent: false,
