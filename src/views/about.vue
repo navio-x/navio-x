@@ -4,6 +4,7 @@
 
       <img class="mx-auto" src="../assets/navio-x.png" style="width:108px;" alt="Navio-X Wallet"/>
       <h1 class="mt-8 text-2xl font-extrabold tracking-tight text-white">Navio X Wallet</h1>
+      <p class="mt-1 text-xs font-mono text-white/30">v{{ appVersion }}</p>
       <p class="mt-4 text-sm font-normal text-white/50 leading-relaxed">
         Navio X Wallet is an open-source, cross-platform desktop wallet built to securely interact with the Navio blockchain.
       </p>
@@ -54,12 +55,14 @@
 
 <script>
   import { ipcRenderer } from 'electron';
+  import { version } from '../../package.json';
 
   export default {
     name: 'RuntimeVersions',
 
     data() {
       return {
+        appVersion: version,
         versions: {
           electron: '',
           node: '',
