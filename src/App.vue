@@ -884,12 +884,91 @@ mounted()
   background: linear-gradient(90deg, #7c3aed, #3b82f6) !important;
 }
 
-/* Icon renkleri */
+/* Toast icon renkleri */
 .swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring { border-color: rgba(52, 211, 153, 0.3) !important; }
 .swal2-popup.swal2-toast .swal2-icon.swal2-success [class^='swal2-success-line'] { background-color: #34d399 !important; }
-.swal2-popup.swal2-toast .swal2-icon.swal2-error { border-color: rgba(248, 113, 113, 0.4) !important; color: #f87171 !important; }
-.swal2-popup.swal2-toast .swal2-icon.swal2-warning { border-color: rgba(251, 191, 36, 0.4) !important; color: #fbbf24 !important; }
-.swal2-popup.swal2-toast .swal2-icon.swal2-info { border-color: rgba(96, 165, 250, 0.4) !important; color: #60a5fa !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-error   { border-color: rgba(248, 113, 113, 0.4) !important; color: #f87171 !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-warning { border-color: rgba(251, 191, 36,  0.4) !important; color: #fbbf24 !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-info    { border-color: rgba(96,  165, 250, 0.4) !important; color: #60a5fa !important; }
+
+/* ── Modal (Swal.fire) theme ───────────────────────────────────── */
+
+/* Backdrop */
+.swal2-container:not(.swal2-top-end):not(.swal2-top-right):not(.swal2-top-start):not(.swal2-top-left):not(.swal2-top) {
+  background: rgba(5, 3, 15, 0.72) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+}
+
+/* Popup box */
+.swal2-popup:not(.swal2-toast) {
+  background: linear-gradient(160deg, rgba(20, 12, 42, 0.98) 0%, rgba(10, 14, 32, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.08) !important;
+  border-radius: 16px !important;
+}
+
+/* Title */
+.swal2-popup:not(.swal2-toast) .swal2-title {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+}
+
+/* Body text */
+.swal2-popup:not(.swal2-toast) .swal2-html-container,
+.swal2-popup:not(.swal2-toast) .swal2-content {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 0.9rem !important;
+}
+
+/* Confirm button → violet→blue gradient */
+.swal2-popup:not(.swal2-toast) .swal2-confirm {
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 1.4rem !important;
+  color: #fff !important;
+  transition: opacity 0.15s ease !important;
+}
+.swal2-popup:not(.swal2-toast) .swal2-confirm:hover { opacity: 0.85 !important; }
+.swal2-popup:not(.swal2-toast) .swal2-confirm:focus { box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4) !important; }
+
+/* Cancel / Deny button → glass secondary */
+.swal2-popup:not(.swal2-toast) .swal2-cancel,
+.swal2-popup:not(.swal2-toast) .swal2-deny {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 1.4rem !important;
+  transition: background 0.15s ease !important;
+}
+.swal2-popup:not(.swal2-toast) .swal2-cancel:hover,
+.swal2-popup:not(.swal2-toast) .swal2-deny:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+}
+
+/* Actions area gap */
+.swal2-popup:not(.swal2-toast) .swal2-actions { gap: 10px !important; }
+
+/* Icon renkleri */
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-success { border-color: rgba(52, 211, 153, 0.35) !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-success .swal2-success-ring { border-color: rgba(52, 211, 153, 0.25) !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-success [class^='swal2-success-line'] { background: #34d399 !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-error   { border-color: rgba(248, 113, 113, 0.4) !important; color: #f87171 !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-error [class^='swal2-x-mark-line'] { background: #f87171 !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-warning { border-color: rgba(251, 191, 36, 0.4) !important; color: #fbbf24 !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-info    { border-color: rgba(96, 165, 250, 0.4) !important; color: #60a5fa !important; }
+.swal2-popup:not(.swal2-toast) .swal2-icon.swal2-question { border-color: rgba(139, 92, 246, 0.4) !important; color: #a78bfa !important; }
 </style>
 
 <style scoped>
