@@ -68,7 +68,7 @@
             <tbody>
                 <tr v-on:click="set_active_address(address)" v-for="address in all_addresses" class="border-b border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer">
                     <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap dark:text-white text-white">
-                        <input :ref="'lr_'+address.address" type="radio" name="hs-default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" :id="'lr_'+address.address" v-bind:value="address.address" v-model="active_address">
+                        <input :ref="'lr_'+address.address" type="radio" name="hs-default-radio" class="theme-radio" :id="'lr_'+address.address" v-bind:value="address.address" v-model="active_address">
                     </th>
                     <td class="px-6 py-4" style="width:320px;height:auto;display:inline-block;overflow-wrap: break-word;">
                       <span v-if="address.label" class="inline-flex justify-center items-center bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-1 rounded dark:bg-indigo-900 dark:text-indigo-300">
@@ -112,6 +112,30 @@
 <NoWalletSelected v-else />
 </div>
 </template>
+
+<style scoped>
+.theme-radio {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+.theme-radio:hover:not(:checked) {
+  border-color: rgba(139, 92, 246, 0.45);
+}
+.theme-radio:checked {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+  box-shadow: inset 0 0 0 3px rgba(13, 7, 28, 0.92);
+}
+</style>
+
 <script>
     import QRCodeStyling from "qr-code-styling";
     import Swal from 'sweetalert2';

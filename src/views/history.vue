@@ -22,12 +22,12 @@
 
             <div>
                 <label for="startDate" class="block mb-2 text-sm font-medium text-white">Start Date</label>
-                <input type="date" id="startDate" v-model="startDate" class="glass-input text-sm p-2.5 [&::-webkit-calendar-picker-indicator]:invert">
+                <input type="date" id="startDate" v-model="startDate" class="glass-input text-sm p-2.5 w-40 [&::-webkit-calendar-picker-indicator]:invert">
             </div>
 
             <div>
                 <label for="endDate" class="block mb-2 text-sm font-medium text-white">End Date</label>
-                <input type="date" id="endDate" v-model="endDate" class="glass-input text-sm p-2.5 [&::-webkit-calendar-picker-indicator]:invert">
+                <input type="date" id="endDate" v-model="endDate" class="glass-input text-sm p-2.5 w-40 [&::-webkit-calendar-picker-indicator]:invert">
             </div>
 
             <div>
@@ -35,7 +35,7 @@
                 <select
                 id="quickRange"
                 @change="applyQuickRange($event.target.value)"
-                class="glass-input text-sm p-2.5"
+                class="glass-input text-sm p-2.5 w-40"
                 >
                 <option value="">Select</option>
                 <option value="today">Today</option>

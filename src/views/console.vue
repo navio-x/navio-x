@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-full flex flex-col p-4 bg-transparent">
+  <div class="h-full w-full flex flex-col p-4 bg-transparent">
     <header class="flex h-12 w-full bg-transparent text-white">
       <h3>Console</h3>
     </header>

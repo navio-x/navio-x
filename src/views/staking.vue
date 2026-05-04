@@ -70,31 +70,36 @@
 </div>
 </div>
 
-<div class="flex p-3">
-    <div class="w-1/2">
-      <label for="hs-trailing-button-add-on" class="sr-only">Label</label>
-      <div class="flex rounded-lg shadow-sm">
-        <input v-model="amount_lock" type="number" min="0" class="py-3 px-4 block w-full rounded-s-lg text-sm glass-input disabled:opacity-50 disabled:pointer-events-none">
-        <button type="button" :disabled="!amount_lock" v-on:click="lock_coins()" class="py-3 px-4 text-nowrap whitespace-nowrap inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-e-md border border-transparent text-white disabled:opacity-50 disabled:pointer-events-none bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-          </svg>
-          &nbsp;Lock coins
+<div class="flex gap-4 p-3">
+
+  <!-- Lock group -->
+  <div class="flex-1">
+    <label class="stk-label">NAV to Lock</label>
+    <div class="stk-row">
+      <input v-model="amount_lock" type="number" min="0" placeholder="0.00" class="stk-input">
+      <button type="button" :disabled="!amount_lock" @click="lock_coins()" class="stk-btn stk-lock">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+        Lock Coins
       </button>
+    </div>
   </div>
-</div>
-<div class="w-1/2 ml-5 ">
-  <label for="hs-trailing-button-add-on" class="sr-only">Label</label>
-  <div class="flex rounded-lg shadow-sm">
-    <input v-model="amount_unlock" type="number" min="0" class="py-3 px-4 block w-full rounded-s-lg text-sm glass-input disabled:opacity-50 disabled:pointer-events-none">
-    <button :disabled="!amount_unlock" type="button" v-on:click="unlock_coins()" class="py-3 px-4 text-nowrap whitespace-nowrap inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-e-md border border-transparent text-white disabled:opacity-50 disabled:pointer-events-none bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+
+  <!-- Unlock group -->
+  <div class="flex-1">
+    <label class="stk-label">NAV to Unlock</label>
+    <div class="stk-row">
+      <input v-model="amount_unlock" type="number" min="0" placeholder="0.00" class="stk-input">
+      <button type="button" :disabled="!amount_unlock" @click="unlock_coins()" class="stk-btn stk-unlock">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-      </svg>
-      &nbsp;Unlock coins
-  </button>
-</div>
-</div>
+        </svg>
+        Unlock Coins
+      </button>
+    </div>
+  </div>
+
 </div>
 
 
@@ -422,4 +427,62 @@ ipcRenderer.on('start-staker-success', (_event, pid) =>
 }
 }
 </script>
+
+<style scoped>
+.stk-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+
+.stk-row {
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.stk-row:focus-within {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.stk-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 0.65rem 0.875rem;
+  font-size: 0.875rem;
+}
+.stk-input::placeholder { color: rgba(255, 255, 255, 0.22); }
+.stk-input::-webkit-inner-spin-button,
+.stk-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.stk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.65rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: white;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+.stk-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.stk-btn:not(:disabled):hover { opacity: 0.82; }
+
+.stk-lock   { background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); }
+.stk-unlock { background: linear-gradient(135deg, #db2777 0%, #f97316 100%); }
+</style>
 
