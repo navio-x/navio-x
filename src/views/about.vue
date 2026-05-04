@@ -33,60 +33,20 @@
         </a>
       </div>
 
-      <div class="mt-8">
-        <div class="rounded-xl border border-white/10 bg-white/[0.04] p-4 text-left">
-          <div class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-3">Runtime</div>
-          <div class="grid grid-cols-2 gap-3 text-sm">
-            <div class="rounded-lg bg-black/20 p-3 border border-white/5">
-              <div class="text-white/40 text-xs">Electron</div>
-              <div class="mt-1 font-mono text-white/80">{{ versions.electron || '-' }}</div>
-            </div>
-            <div class="rounded-lg bg-black/20 p-3 border border-white/5">
-              <div class="text-white/40 text-xs">Node.js</div>
-              <div class="mt-1 font-mono text-white/80">{{ versions.node || '-' }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>
 </template>
 
 <script>
-  import { ipcRenderer } from 'electron';
   import { version } from '../../package.json';
 
   export default {
-    name: 'RuntimeVersions',
-
+    name: 'About',
     data() {
       return {
         appVersion: version,
-        versions: {
-          electron: '',
-          node: '',
-          chrome: '',
-          v8: '',
-        },
       };
-    },
-
-    mounted() {
-      ipcRenderer
-      .invoke('get-process-variables')
-      .then((response) => {
-        if (response)
-        {
-          this.versions.electron  = response.electron || '';
-          this.versions.node      = response.node || '';
-          this.versions.chrome  = response.chrome || '';
-          this.versions.v8        = response.v8 || '';
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to get process variables:', err);
-      });
     },
   };
 </script>

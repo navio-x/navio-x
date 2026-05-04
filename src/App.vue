@@ -5,7 +5,7 @@
 <template>
     <TitleBar :network="state === 'ready' ? chain : null" />
 
-<section
+    <section
     class="h-screen bg-transparent flex items-center justify-center pt-9"
     v-show="state === 'welcome'"
     >
@@ -73,29 +73,29 @@
 </section>
 
 <section class="h-screen bg-transparent flex items-center justify-center pt-9" v-show="state=='connection_error'">
-<div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
-    <div class="flex justify-center items-center">
-        <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
-    </div>
-    <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
-    <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
-    <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-    <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
-    <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-        <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-            Connect
-            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-            </svg>
-        </button>
-        <button v-on:click="downloadBinaries()" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-            Download binaries
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
-          </svg>
-      </button>
+    <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
+        <div class="flex justify-center items-center">
+            <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
+        </div>
+        <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
+        <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
+        <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
+        <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+        <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+            <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                Connect
+                <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </button>
+            <button v-on:click="downloadBinaries()" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                Download binaries
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
+              </svg>
+          </button>
+      </div>
   </div>
-</div>
 </section>
 <section class="h-screen bg-transparent pt-9" v-show="state=='download_progress'">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
@@ -121,6 +121,10 @@
 </section>
 <section class="h-full w-full bg-transparent pt-9" v-show="state=='agreement'">
     <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16">
+        <div class="flex items-center gap-3 mb-6 rounded-xl border border-violet-500/20 bg-violet-500/10 px-5 py-4">
+          <span class="text-xl">🚀</span>
+          <p class="text-sm text-violet-200/70 leading-relaxed">You're using an early version of Navio X Wallet. We'd love your feedback — join us on <a href="https://discord.gg/9P52VBSt44" target="_blank" class="text-violet-400 hover:text-violet-300 underline underline-offset-2">Discord</a> to share your experience.</p>
+        </div>
         <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
         <div class="w-full h-full text-white">
           <p>
@@ -190,11 +194,11 @@
 </section>
 
 <NetworkSelector
-  v-show="state=='select_network'"
-  :networks="networks"
-  :current="network"
-  @select="on_network_selected"
-  @back="state='agreement'"
+v-show="state=='select_network'"
+:networks="networks"
+:current="network"
+@select="on_network_selected"
+@back="state='agreement'"
 />
 
 <section
@@ -260,49 +264,49 @@ v-show="state=='select_daemon_method'"
                     <input type="radio" v-model="network" :value="net.name" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2">
                     <span class="text-sm text-white">{{ net.label }}</span>
                     <span class="text-xs text-zinc-400">({{ net.port }})</span>
-                  </label>
-                </div>
-              </div>
-              <div class="grid md:grid-cols-2 md:gap-6">
-                <div class="relative z-0 w-full group">
-                  <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
-                  <input type="text" v-model="host" id="host" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
-              </div>
-              <div class="relative z-0 w-full group">
-
-                  <label for="port" class="block mb-2 text-sm font-medium dark:text-white text-white">Port</label>
-                  <input type="text" v-model="port" id="port" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
-              </div>
-          </div>
-          <div class="grid md:grid-cols-2 md:gap-6">
+                </label>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full group">
-              <label for="username" class="block mb-2 text-sm font-medium dark:text-white text-white">Username</label>
-              <input type="text" v-model="username" id="username" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
+              <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
+              <input type="text" v-model="host" id="host" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
           </div>
           <div class="relative z-0 w-full group">
-              <label for="password" class="block mb-2 text-sm font-medium dark:text-white text-white">Password</label>
-              <input type="password" v-model="password" id="password" placeholder="" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" required="">
+
+              <label for="port" class="block mb-2 text-sm font-medium dark:text-white text-white">Port</label>
+              <input type="text" v-model="port" id="port" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
           </div>
       </div>
-      <div class="flex items-center justify-between">
-          <div class="flex items-start">
-              <div class="flex items-center h-5">
-                <input id="remember" v-model="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
-            </div>
-            <div class="ml-3 text-sm">
-                <label for="remember" class="dark:text-white text-white">Remember me</label>
-            </div>
-        </div>
-    </div>
-    <div class="flex items-center justify-between">
+      <div class="grid md:grid-cols-2 md:gap-6">
+        <div class="relative z-0 w-full group">
+          <label for="username" class="block mb-2 text-sm font-medium dark:text-white text-white">Username</label>
+          <input type="text" v-model="username" id="username" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
+      </div>
+      <div class="relative z-0 w-full group">
+          <label for="password" class="block mb-2 text-sm font-medium dark:text-white text-white">Password</label>
+          <input type="password" v-model="password" id="password" placeholder="" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" required="">
+      </div>
+  </div>
+  <div class="flex items-center justify-between">
       <div class="flex items-start">
           <div class="flex items-center h-5">
-            <input id="auto_login" v-model="auto_login" aria-describedby="auto_login" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
+            <input id="remember" v-model="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
         </div>
         <div class="ml-3 text-sm">
-            <label for="auto_login" class="dark:text-white text-white">Auto login</label>
+            <label for="remember" class="dark:text-white text-white">Remember me</label>
         </div>
     </div>
+</div>
+<div class="flex items-center justify-between">
+  <div class="flex items-start">
+      <div class="flex items-center h-5">
+        <input id="auto_login" v-model="auto_login" aria-describedby="auto_login" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
+    </div>
+    <div class="ml-3 text-sm">
+        <label for="auto_login" class="dark:text-white text-white">Auto login</label>
+    </div>
+</div>
 </div>
 <button :disabled="!username||!password" v-on:click="connect()" class="w-full text-white bg-primary-600 disabled:bg-blue-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Connect</button>
 <button v-on:click="select_daemon_method()" class="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center glass-btn-secondary focus:outline-none">Back</button>
@@ -333,143 +337,143 @@ v-show="state=='select_daemon_method'"
     <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-none">
       <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-violet-600/20 rounded-full blur-3xl"></div>
       <div class="absolute bottom-32 -left-8 w-36 h-36 bg-blue-600/15 rounded-full blur-3xl"></div>
-    </div>
+  </div>
 
-    <!-- Logo -->
-    <div class="relative px-5 pt-6 pb-5 shrink-0">
+  <!-- Logo -->
+  <div class="relative px-5 pt-6 pb-5 shrink-0">
       <img src="./assets/logo.svg" class="w-24" alt="Navio Logo"/>
-    </div>
+  </div>
 
-    <!-- Main nav -->
-    <nav class="relative flex-1 overflow-y-auto px-3 pb-2">
+  <!-- Main nav -->
+  <nav class="relative flex-1 overflow-y-auto px-3 pb-2">
       <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Wallet</p>
 
       <router-link to="/home"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active !text-white">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-        </svg>
-        <span>Home</span>
-      </router-link>
+      </svg>
+      <span>Home</span>
+  </router-link>
 
-      <router-link to="/wallets"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-        </svg>
-        <span>Wallets</span>
-      </router-link>
+  <router-link to="/wallets"
+  class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+  active-class="nav-item-active !text-white">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+  </svg>
+  <span>Wallets</span>
+</router-link>
 
-      <router-link to="/send"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-        </svg>
-        <span>Send</span>
-      </router-link>
+<router-link to="/send"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+</svg>
+<span>Send</span>
+</router-link>
 
-      <router-link to="/receive"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-        </svg>
-        <span>Receive</span>
-      </router-link>
+<router-link to="/receive"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+</svg>
+<span>Receive</span>
+</router-link>
 
-      <router-link to="/history"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-        <span>History</span>
-      </router-link>
+<router-link to="/history"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
+<span>History</span>
+</router-link>
 
-      <router-link to="/staking"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-        </svg>
-        <span>Staking</span>
-      </router-link>
+<router-link to="/staking"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+</svg>
+<span>Staking</span>
+</router-link>
 
-      <div class="my-3 border-t border-white/[0.06]"></div>
-      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Tools</p>
+<div class="my-3 border-t border-white/[0.06]"></div>
+<p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Tools</p>
 
-      <router-link to="/console"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-        <span>Console</span>
-      </router-link>
+<router-link to="/console"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+</svg>
+<span>Console</span>
+</router-link>
 
-      <router-link to="/settings"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
-        </svg>
-        <span>Settings</span>
-      </router-link>
+<router-link to="/settings"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+</svg>
+<span>Settings</span>
+</router-link>
 
-      <router-link to="/about"
-        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
-        active-class="nav-item-active !text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-        </svg>
-        <span>About</span>
-      </router-link>
-    </nav>
+<router-link to="/about"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
+active-class="nav-item-active !text-white">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+</svg>
+<span>About</span>
+</router-link>
+</nav>
 
-    <!-- Status card -->
-    <div class="relative px-3 py-4 border-t border-white/[0.06] shrink-0">
-      <div v-if="chain" class="status-glass rounded-xl px-3 py-3 space-y-2.5">
-        <div class="flex items-center gap-2 min-w-0">
-          <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
-          <span class="text-xs text-white/70 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
-        </div>
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <span class="text-[11px] text-white/30">{{ blocks == headers ? 'Synced' : 'Syncing...' }}</span>
-            <span :class="blocks == headers ? 'text-emerald-400' : 'text-violet-400'" class="text-[11px] font-semibold">{{ get_sync_percent() }}%</span>
-          </div>
-          <div class="bg-white/[0.08] rounded-full h-1">
-            <div class="h-1 rounded-full transition-all duration-500 progress-gradient" :style="{ width: get_sync_percent() + '%' }"></div>
-          </div>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] text-white/25 capitalize font-medium">{{ chain }}</span>
-          <router-link to="/peers" class="text-[11px] text-white/40 hover:text-white/80 transition-colors" :title="'Protocol: ' + networkinfo.protocolversion">
-            {{ networkinfo.connections ? networkinfo.connections + ' peer' + (networkinfo.connections > 1 ? 's' : '') : 'No peers' }}
-          </router-link>
-        </div>
-        <div class="border-t border-white/[0.06] pt-2 flex items-center justify-between">
-          <span class="text-[11px] text-white/25">Blocks</span>
-          <span class="text-[11px] font-mono">
-            <span class="text-white/50">{{ blocks.toLocaleString() }}</span>
-            <span class="text-white/20 mx-1">/</span>
-            <span :class="blocks == headers ? 'text-emerald-400/70' : 'text-violet-400/70'">{{ headers.toLocaleString() }}</span>
-          </span>
-        </div>
-      </div>
-      <div v-else class="flex items-center gap-2.5 px-1 py-2">
-        <svg class="w-4 h-4 text-violet-400 animate-spin shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-        </svg>
-        <span class="text-xs text-white/40">Initializing...</span>
-      </div>
+<!-- Status card -->
+<div class="relative px-3 py-4 border-t border-white/[0.06] shrink-0">
+  <div v-if="chain" class="status-glass rounded-xl px-3 py-3 space-y-2.5">
+    <div class="flex items-center gap-2 min-w-0">
+      <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
+      <span class="text-xs text-white/70 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
+  </div>
+  <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[11px] text-white/30">{{ blocks == headers ? 'Synced' : 'Syncing...' }}</span>
+        <span :class="blocks == headers ? 'text-emerald-400' : 'text-violet-400'" class="text-[11px] font-semibold">{{ get_sync_percent() }}%</span>
     </div>
+    <div class="bg-white/[0.08] rounded-full h-1">
+        <div class="h-1 rounded-full transition-all duration-500 progress-gradient" :style="{ width: get_sync_percent() + '%' }"></div>
+    </div>
+</div>
+<div class="flex items-center justify-between">
+  <span class="text-[11px] text-white/25 capitalize font-medium">{{ chain }}</span>
+  <router-link to="/peers" class="text-[11px] text-white/40 hover:text-white/80 transition-colors" :title="'Protocol: ' + networkinfo.protocolversion">
+    {{ networkinfo.connections ? networkinfo.connections + ' peer' + (networkinfo.connections > 1 ? 's' : '') : 'No peers' }}
+</router-link>
+</div>
+<div class="border-t border-white/[0.06] pt-2 flex items-center justify-between">
+  <span class="text-[11px] text-white/25">Blocks</span>
+  <span class="text-[11px] font-mono">
+    <span class="text-white/50">{{ blocks.toLocaleString() }}</span>
+    <span class="text-white/20 mx-1">/</span>
+    <span :class="blocks == headers ? 'text-emerald-400/70' : 'text-violet-400/70'">{{ headers.toLocaleString() }}</span>
+</span>
+</div>
+</div>
+<div v-else class="flex items-center gap-2.5 px-1 py-2">
+    <svg class="w-4 h-4 text-violet-400 animate-spin shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+  </svg>
+  <span class="text-xs text-white/40">Initializing...</span>
+</div>
+</div>
 
-  </aside>
+</aside>
 
 <div class="sm:ml-64 h-[calc(100vh-36px)] mt-9">
   <router-view />
@@ -499,10 +503,10 @@ v-show="state=='select_daemon_method'"
         const networks = [
           { name: 'mainnet', label: 'Mainnet', port: 48471, description: 'The live Navio network. Transactions here use real NAV with real value.' },
           { name: 'testnet', label: 'Testnet', port: 33677, description: 'Development and testing network. Use this to try features without risking real NAV.' },
-        ];
-        const savedNetwork = localStorage.getItem('network') || 'mainnet';
-        const savedPort    = localStorage.getItem('port')    || (networks.find(n => n.name === savedNetwork)?.port ?? 48471);
-        return {
+      ];
+      const savedNetwork = localStorage.getItem('network') || 'mainnet';
+      const savedPort    = localStorage.getItem('port')    || (networks.find(n => n.name === savedNetwork)?.port ?? 48471);
+      return {
           networks,
           app:null,
           state: "",
@@ -525,9 +529,9 @@ v-show="state=='select_daemon_method'"
     network(val) {
       const found = this.networks.find(n => n.name === val);
       if (found) this.port = found.port;
-    }
-  },
-  methods: {
+  }
+},
+methods: {
     get_started: function() {
         this.state='agreement';
     },
@@ -973,49 +977,49 @@ mounted()
 
 <style scoped>
 
-.sidebar-glass {
-  background: linear-gradient(160deg, rgba(17, 10, 35, 0.97) 0%, rgba(10, 14, 30, 0.97) 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
+    .sidebar-glass {
+      background: linear-gradient(160deg, rgba(17, 10, 35, 0.97) 0%, rgba(10, 14, 30, 0.97) 100%);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+  }
 
-.nav-item {
-  border: 1px solid transparent;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
+  .nav-item {
+      border: 1px solid transparent;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
 
-.nav-item-active {
-  position: relative;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%) !important;
-  border-color: rgba(139, 92, 246, 0.25) !important;
-}
-.nav-item-active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 55%;
-  background: linear-gradient(to bottom, #a78bfa, #60a5fa);
-  border-radius: 0 3px 3px 0;
-  box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
-}
+  .nav-item-active {
+      position: relative;
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%) !important;
+      border-color: rgba(139, 92, 246, 0.25) !important;
+  }
+  .nav-item-active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 55%;
+      background: linear-gradient(to bottom, #a78bfa, #60a5fa);
+      border-radius: 0 3px 3px 0;
+      box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+  }
 
-.status-glass {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
+  .status-glass {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+  }
 
-.progress-gradient {
-  background: linear-gradient(90deg, #7c3aed, #3b82f6);
-}
+  .progress-gradient {
+      background: linear-gradient(90deg, #7c3aed, #3b82f6);
+  }
 
 
-    .loader-container {
+  .loader-container {
       display: flex;
       justify-content: center;
       align-items: center;
