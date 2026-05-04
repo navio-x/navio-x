@@ -1,129 +1,141 @@
 <template>
-    <div class="h-full bg-transparent text-white">
-        <div v-if="$store.state.active_wallet && ready">
-            <div class="p-4">
-                <h3>Transaction History</h3>
-                <p class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs && Object.keys(txs).length > 0">{{ Object.keys(txs).length }} Transactions</p>
-            </div>
+  <div class="h-full flex flex-col bg-transparent text-white overflow-hidden">
+    <div v-if="$store.state.active_wallet && ready" class="flex flex-col h-full min-h-0">
 
-            <!-- Filters -->
-            <div class="p-4 flex items-center gap-4 flex-wrap">
-                <div>
-                    <label for="categoryFilter" class="block mb-2 text-sm font-medium text-white">Filter by Category</label>
-                    <select
-                    id="categoryFilter"
-                    v-model="selectedCategory"
-                    class="glass-input text-sm block w-64 p-2.5"
-                    >
-                    <option value="">All Categories</option>
-                    <option v-for="cat in uniqueCategories" :key="cat" :value="cat">{{ cat }}</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="startDate" class="block mb-2 text-sm font-medium text-white">Start Date</label>
-                <input type="date" id="startDate" v-model="startDate" class="glass-input text-sm p-2.5 w-40 [&::-webkit-calendar-picker-indicator]:invert">
-            </div>
-
-            <div>
-                <label for="endDate" class="block mb-2 text-sm font-medium text-white">End Date</label>
-                <input type="date" id="endDate" v-model="endDate" class="glass-input text-sm p-2.5 w-40 [&::-webkit-calendar-picker-indicator]:invert">
-            </div>
-
-            <div>
-                <label for="quickRange" class="block mb-2 text-sm font-medium text-white">Quick Range</label>
-                <select
-                id="quickRange"
-                @change="applyQuickRange($event.target.value)"
-                class="glass-input text-sm p-2.5 w-40"
-                >
-                <option value="">Select</option>
-                <option value="today">Today</option>
-                <option value="7">Last 7 Days</option>
-                <option value="30">Last 30 Days</option>
-            </select>
+      <!-- ── Header ── -->
+      <div class="flex items-center justify-between px-6 pt-5 pb-3 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <h2 class="text-sm font-semibold text-white/85">Transaction History</h2>
+          <span v-if="txs.length" class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/[0.07] text-white/40">
+            {{ txs.length }}
+          </span>
         </div>
+        <button @click="exportToCSV" class="hst-export-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Export CSV
+        </button>
+      </div>
 
-        <button
-        @click="resetFilters"
-        class="mt-7 inline-flex items-center px-3 py-2 text-sm font-medium text-white glass-btn-secondary rounded-lg focus:outline-none"
-        >
-        Clear Filters
-    </button>
+      <!-- ── Filter bar ── -->
+      <div class="px-6 pb-4 shrink-0">
+        <div class="flex items-center gap-2 flex-wrap">
 
-    <button
-    @click="exportToCSV"
-    class="mt-7 inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-500"
-    >
-    Export CSV
-</button>
-</div>
+          <select v-model="selectedCategory" class="hst-filter">
+            <option value="">All types</option>
+            <option v-for="cat in uniqueCategories" :key="cat" :value="cat">{{ cat }}</option>
+          </select>
 
-<div class="px-4 pb-2 text-sm text-gray-300">
-    Filtered: {{ filteredTxs.length }} records
-</div>
+          <input type="date" v-model="startDate" class="hst-filter [&::-webkit-calendar-picker-indicator]:invert" title="Start date">
+          <input type="date" v-model="endDate"   class="hst-filter [&::-webkit-calendar-picker-indicator]:invert" title="End date">
 
-<!-- Table -->
-<div class="p-4 overflow-auto bg-transparent text-white">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg" v-if="txs && Object.keys(txs).length > 0">
-        <table class="w-full text-sm text-left rtl:text-right dark:text-gray-400 text-gray-400">
-            <thead class="text-xs uppercase glass-card dark:text-gray-400 text-gray-400 border-b border-white/[0.06]">
-                <tr>
-                    <th class="px-3 py-3">Generated</th>
-                    <th class="px-3 py-3">Height</th>
-                    <th class="px-3 py-3">Confirmations</th>
-                    <th class="px-3 py-3"></th>
-                    <th class="px-3 py-3">Type</th>
-                    <th class="px-3 py-3">Category</th>
-                    <th class="px-3 py-3">Amount</th>
-                    <th class="px-3 py-3">Date</th>
-                    <th class="px-3 py-3">Address</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="tx in filteredTxs" :key="tx.txid" class="border-b border-white/[0.06] hover:bg-white/[0.04] transition-colors">
-                    <td><center>{{ tx.generated }}</center></td>
-                    <td><center>{{ tx.blockheight }}</center></td>
-                    <td><center>{{ tx.confirmations }}</center></td>
-                    <td>                                                
-                        <svg v-if="tx.category == 'receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-                        </svg>
-                        <svg v-if="tx.category == 'generate'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-violet-400">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                      <svg v-if="tx.category == 'send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                    </svg>
-                </td>
-                <td>
-                    {{ tx.label }}
-                </td>
-                <td><center>{{ tx.category }}</center></td>
-                <td><center>{{ tx.amount }}</center></td>
-                <td><center>{{ new Date(tx.time * 1000).toLocaleString('sv-SE').replace('T', ' ') }}</center></td>
-                <td>
-                    <span v-if="tx.address">{{ tx.address.substring(0, 5) }}...{{ tx.address.slice(-5) }}</span>
-                </td>
+          <div class="flex gap-1">
+            <button @click="applyQuickRange('today')" class="hst-range-pill">Today</button>
+            <button @click="applyQuickRange('7')"     class="hst-range-pill">7d</button>
+            <button @click="applyQuickRange('30')"    class="hst-range-pill">30d</button>
+          </div>
+
+          <button v-if="selectedCategory || startDate || endDate" @click="resetFilters" class="hst-clear-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+            </svg>
+            Clear
+          </button>
+
+          <span class="ml-auto text-[11px] text-white/25">{{ filteredTxs.length }} results</span>
+        </div>
+      </div>
+
+      <!-- ── Table ── -->
+      <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
+        <table v-if="filteredTxs.length" class="w-full border-collapse">
+          <thead class="sticky top-0 z-10">
+            <tr class="hst-thead-row">
+              <th class="hst-th text-left">Type</th>
+              <th class="hst-th text-left">Date</th>
+              <th class="hst-th text-right">Amount</th>
+              <th class="hst-th text-right">Conf.</th>
+              <th class="hst-th text-right">Block</th>
+              <th class="hst-th text-right">Address</th>
             </tr>
-        </tbody>
-    </table>
-</div>
-<div v-else class="empty-state">
-  <div class="empty-icon-ring">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" class="empty-icon">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-    </svg>
+          </thead>
+          <tbody>
+            <tr v-for="tx in filteredTxs" :key="tx.txid + tx.time" class="hst-row">
+
+              <!-- Type badge -->
+              <td class="hst-td">
+                <span :class="['hst-badge', `hst-badge--${tx.category}`]">
+                  <!-- receive -->
+                  <svg v-if="tx.category === 'receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"/>
+                  </svg>
+                  <!-- send -->
+                  <svg v-else-if="tx.category === 'send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/>
+                  </svg>
+                  <!-- generate / stake -->
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                  </svg>
+                  {{ tx.category }}
+                </span>
+              </td>
+
+              <!-- Date -->
+              <td class="hst-td hst-td--muted text-sm whitespace-nowrap">
+                {{ formatDate(tx.time) }}
+              </td>
+
+              <!-- Amount -->
+              <td class="hst-td text-right whitespace-nowrap">
+                <span :class="['hst-amount', tx.category === 'send' ? 'hst-amount--out' : 'hst-amount--in']">
+                  {{ tx.category === 'send' ? '−' : '+' }}{{ Math.abs(tx.amount).toFixed(4) }}
+                </span>
+                <span class="text-[11px] text-white/25 ml-1">NAV</span>
+              </td>
+
+              <!-- Confirmations -->
+              <td class="hst-td text-right">
+                <span :class="['hst-conf', tx.confirmations >= 6 ? 'hst-conf--ok' : 'hst-conf--pending']">
+                  {{ tx.confirmations > 999 ? '999+' : tx.confirmations }}
+                </span>
+              </td>
+
+              <!-- Block height -->
+              <td class="hst-td hst-td--muted text-right font-mono text-xs">
+                {{ tx.blockheight || '—' }}
+              </td>
+
+              <!-- Address -->
+              <td class="hst-td text-right">
+                <span v-if="tx.address" class="font-mono text-xs text-white/35">
+                  {{ tx.address.substring(0, 6) }}…{{ tx.address.slice(-4) }}
+                </span>
+                <span v-else class="text-white/20 text-xs">—</span>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Empty state -->
+        <div v-else class="empty-state">
+          <div class="empty-icon-ring">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" class="empty-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <h2 class="empty-title">No Transactions Found</h2>
+          <p class="empty-desc">
+            No transactions match your current filters,<br>or this wallet has no history yet.
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <NoWalletSelected v-else />
   </div>
-  <h2 class="empty-title">No Transactions Found</h2>
-  <p class="empty-desc">
-    No transactions match your current filters,<br>or this wallet has no transaction history yet.
-  </p>
-</div>
-</div>
-</div>
-<NoWalletSelected v-else />
-</div>
 </template>
 
 <script>
@@ -141,8 +153,7 @@
         },
         computed: {
             uniqueCategories() {
-                const cats = this.txs.map(tx => tx.category);
-                return [...new Set(cats)];
+                return [...new Set(this.txs.map(tx => tx.category))];
             },
             filteredTxs() {
                 return this.txs.filter(tx => {
@@ -155,11 +166,16 @@
             }
         },
         methods: {
+            formatDate(ts) {
+                return new Date(ts * 1000).toLocaleString('en-GB', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            },
             listtransactions() {
                 this.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) => {
                     if (r[0].name === "RpcError" || r[0].code) {
                         this.ready = true;
-                        console.log("RpcError", r);
                     } else {
                         this.txs = r[0].reverse();
                         this.ready = true;
@@ -174,50 +190,183 @@
             applyQuickRange(value) {
                 const today = new Date();
                 if (value === 'today') {
-                    const dateStr = today.toISOString().split('T')[0];
-                    this.startDate = dateStr;
-                    this.endDate = dateStr;
-                } else if (value === '7') {
+                    const d = today.toISOString().split('T')[0];
+                    this.startDate = d; this.endDate = d;
+                } else {
+                    const days = parseInt(value);
                     const past = new Date();
-                    past.setDate(today.getDate() - 6);
+                    past.setDate(today.getDate() - days + 1);
                     this.startDate = past.toISOString().split('T')[0];
-                    this.endDate = today.toISOString().split('T')[0];
-                } else if (value === '30') {
-                    const past = new Date();
-                    past.setDate(today.getDate() - 29);
-                    this.startDate = past.toISOString().split('T')[0];
-                    this.endDate = today.toISOString().split('T')[0];
+                    this.endDate   = today.toISOString().split('T')[0];
                 }
             },
             exportToCSV() {
-                const header = ['Generated', 'Height', 'Confirmations', 'Type', 'Category', 'Amount', 'Date', 'Address'];
+                const header = ['Category', 'Amount', 'Date', 'Confirmations', 'Block', 'Address'];
                 const rows = this.filteredTxs.map(tx => [
-                    tx.generated,
-                    tx.blockheight,
-                    tx.confirmations,
-                    tx.label || '',
                     tx.category,
                     tx.amount,
-                    new Date(tx.time * 1000).toLocaleString('sv-SE').replace('T', ' '),
+                    this.formatDate(tx.time),
+                    tx.confirmations,
+                    tx.blockheight || '',
                     tx.address || ''
                 ]);
-                const csvContent = [header, ...rows].map(e => e.join(",")).join("\n");
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const csv = [header, ...rows].map(r => r.join(",")).join("\n");
                 const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
+                link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
                 link.setAttribute("download", "transactions.csv");
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             }
         },
-        mounted() {
-            this.listtransactions();
-        }
+        mounted() { this.listtransactions(); }
     };
 </script>
 
 <style scoped>
+/* ── Filter controls ──────────────────────────── */
+.hst-filter {
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s;
+}
+.hst-filter:focus { border-color: rgba(139,92,246,0.5); }
+select.hst-filter {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='rgba(255,255,255,0.35)' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 26px;
+}
+select.hst-filter option { background: #110a23; color: white; }
+
+.hst-range-pill {
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s, border-color 0.13s;
+}
+.hst-range-pill:hover {
+  background: rgba(139,92,246,0.15);
+  border-color: rgba(139,92,246,0.3);
+  color: rgba(255,255,255,0.85);
+}
+
+.hst-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: color 0.13s, border-color 0.13s;
+}
+.hst-clear-btn:hover { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.18); }
+
+.hst-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s;
+}
+.hst-export-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.85); }
+
+/* ── Table ────────────────────────────────────── */
+.hst-thead-row {
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hst-th {
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  white-space: nowrap;
+}
+
+.hst-row {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.12s;
+}
+.hst-row:hover { background: rgba(255,255,255,0.03); }
+.hst-row:last-child { border-bottom: none; }
+
+.hst-td {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  vertical-align: middle;
+}
+.hst-td--muted { color: rgba(255,255,255,0.38); }
+
+/* Category badge */
+.hst-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 5px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+.hst-badge--receive  { background: rgba(52,211,153,0.1);  color: #34d399; }
+.hst-badge--send     { background: rgba(248,113,113,0.1); color: #f87171; }
+.hst-badge--generate { background: rgba(167,139,250,0.12); color: #a78bfa; }
+.hst-badge--stake    { background: rgba(96,165,250,0.1);  color: #60a5fa; }
+
+/* Amount */
+.hst-amount {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.hst-amount--in  { color: #34d399; }
+.hst-amount--out { color: #f87171; }
+
+/* Confirmations */
+.hst-conf {
+  display: inline-block;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+.hst-conf--ok      { background: rgba(52,211,153,0.1);  color: rgba(52,211,153,0.75); }
+.hst-conf--pending { background: rgba(251,191,36,0.1);  color: rgba(251,191,36,0.7); }
+
+/* ── Empty state ──────────────────────────────── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -233,26 +382,12 @@
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background: rgba(139, 92, 246, 0.08);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  box-shadow: 0 0 28px rgba(139, 92, 246, 0.1);
+  background: rgba(139,92,246,0.08);
+  border: 1px solid rgba(139,92,246,0.2);
+  box-shadow: 0 0 28px rgba(139,92,246,0.1);
   margin-bottom: 1.25rem;
 }
-.empty-icon {
-  width: 30px;
-  height: 30px;
-  color: rgba(139, 92, 246, 0.65);
-}
-.empty-title {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
-  margin-bottom: 0.5rem;
-}
-.empty-desc {
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.35);
-  line-height: 1.65;
-  max-width: 280px;
-}
+.empty-icon  { width: 30px; height: 30px; color: rgba(139,92,246,0.65); }
+.empty-title { font-size: 0.9375rem; font-weight: 600; color: rgba(255,255,255,0.82); margin-bottom: 0.5rem; }
+.empty-desc  { font-size: 0.8125rem; color: rgba(255,255,255,0.35); line-height: 1.65; max-width: 280px; }
 </style>
