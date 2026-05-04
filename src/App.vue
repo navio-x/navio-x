@@ -865,6 +865,31 @@ mounted()
 .swal2-container.swal2-top {
   top: 36px !important;
 }
+
+/* Toast theme */
+.swal2-popup.swal2-toast {
+  background: linear-gradient(160deg, rgba(20, 12, 42, 0.97) 0%, rgba(10, 14, 32, 0.97) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+}
+
+.swal2-popup.swal2-toast .swal2-title {
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-size: 13px !important;
+}
+
+.swal2-popup.swal2-toast .swal2-timer-progress-bar {
+  background: linear-gradient(90deg, #7c3aed, #3b82f6) !important;
+}
+
+/* Icon renkleri */
+.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring { border-color: rgba(52, 211, 153, 0.3) !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-success [class^='swal2-success-line'] { background-color: #34d399 !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-error { border-color: rgba(248, 113, 113, 0.4) !important; color: #f87171 !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-warning { border-color: rgba(251, 191, 36, 0.4) !important; color: #fbbf24 !important; }
+.swal2-popup.swal2-toast .swal2-icon.swal2-info { border-color: rgba(96, 165, 250, 0.4) !important; color: #60a5fa !important; }
 </style>
 
 <style scoped>

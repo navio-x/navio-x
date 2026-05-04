@@ -27,21 +27,21 @@
     <!-- Windows / Linux: controls on the right -->
     <div v-if="!isMac" class="controls controls-win" @dblclick.stop>
       <button @click="minimizeWindow" class="ctrl-btn ctrl-minimize" title="Minimize">
-        <svg width="10" height="1" viewBox="0 0 10 1"><line x1="0" y1="0.5" x2="10" y2="0.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        <svg width="10" height="10" viewBox="0 0 10 10"><line x1="2" y1="5" x2="8" y2="5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
       <button @click="maximizeWindow" class="ctrl-btn ctrl-maximize" title="Restore/Maximize">
         <template v-if="maximized">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <rect x="2.5" y="0.5" width="7" height="7" rx="0.8" stroke="currentColor" stroke-width="1.1" fill="none"/>
-            <path d="M0.5 3v6.5h6.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" fill="none"/>
+            <rect x="2.5" y="0.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M0.5 2.5v7h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
           </svg>
         </template>
         <template v-else>
-          <svg width="10" height="10" viewBox="0 0 10 10"><rect x="0.5" y="0.5" width="9" height="9" rx="0.8" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+          <svg width="10" height="10" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
         </template>
       </button>
       <button @click="closeWindow" class="ctrl-btn ctrl-close" title="Close">
-        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 2l6 6M8 2L2 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
     </div>
 
@@ -136,7 +136,6 @@ export default {
 .controls {
   display: flex;
   align-items: center;
-  height: 100%;
   -webkit-app-region: no-drag;
   flex-shrink: 0;
 }
@@ -147,25 +146,32 @@ export default {
   justify-content: center;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: background 0.13s ease, color 0.13s ease;
   outline: none;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 /* ── Windows / Linux controls ──────────────────── */
 .controls-win {
-  padding-right: 4px;
+  padding-right: 10px;
+  gap: 6px;
 }
 
 .controls-win .ctrl-btn {
-  width: 46px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .controls-win .ctrl-btn:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .controls-win .ctrl-close:hover {
