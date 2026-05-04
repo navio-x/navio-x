@@ -3,8 +3,10 @@
 </script>
 
 <template>
-    <section
-    class="h-screen bg-transparent flex items-center justify-center"
+    <TitleBar :network="state === 'ready' ? chain : null" />
+
+<section
+    class="h-screen bg-transparent flex items-center justify-center pt-9"
     v-show="state === 'welcome'"
     >
     <div class="px-6 mx-auto max-w-screen-md text-center">
@@ -70,7 +72,7 @@
 </div>
 </section>
 
-<section class="h-screen bg-transparent flex items-center justify-center" v-show="state=='connection_error'">
+<section class="h-screen bg-transparent flex items-center justify-center pt-9" v-show="state=='connection_error'">
 <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
     <div class="flex justify-center items-center">
         <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
@@ -95,7 +97,7 @@
   </div>
 </div>
 </section>
-<section class="h-screen bg-transparent" v-show="state=='download_progress'">
+<section class="h-screen bg-transparent pt-9" v-show="state=='download_progress'">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
       <div class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
         <!-- From Uiverse.io by Z4drus --> 
@@ -117,7 +119,7 @@
   </div>
 </div>
 </section>
-<section class="h-full w-full bg-transparent" v-show="state=='agreement'">
+<section class="h-full w-full bg-transparent pt-9" v-show="state=='agreement'">
     <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16">
         <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
         <div class="w-full h-full text-white">
@@ -196,7 +198,7 @@
 />
 
 <section
-class="min-h-screen bg-transparent flex flex-col items-center justify-center"
+class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9"
 v-show="state=='select_daemon_method'"
 >
 <div class="mb-10 flex justify-center">
@@ -239,7 +241,7 @@ v-show="state=='select_daemon_method'"
 </div>
 </section>
 
-<section class="h-screen bg-transparent" v-show="state=='setup'">
+<section class="h-screen bg-transparent pt-9" v-show="state=='setup'">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <a class="flex items-center ps-2.5" style="margin-bottom:24px;">
          <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
@@ -310,7 +312,7 @@ v-show="state=='select_daemon_method'"
 </div>
 </section>
 
-<div class="flex items-center justify-center h-screen bg-transparent" v-show="state=='connected'">
+<div class="flex items-center justify-center h-screen bg-transparent pt-9" v-show="state=='connected'">
     <div class="relative p-6 text-center rounded-2xl shadow-2xl sm:p-8 glass-card">
         <div class="w-14 h-14 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
             <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
@@ -325,7 +327,7 @@ v-show="state=='select_daemon_method'"
 </div>
 
 <div id="nav" v-show="state=='ready'">
-  <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen flex flex-col sidebar-glass" aria-label="Sidebar">
+  <aside id="default-sidebar" class="fixed top-9 left-0 z-40 w-64 h-[calc(100vh-36px)] flex flex-col sidebar-glass" aria-label="Sidebar">
 
     <!-- Ambient glow blobs -->
     <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-none">
@@ -469,7 +471,7 @@ v-show="state=='select_daemon_method'"
 
   </aside>
 
-<div class="sm:ml-64 h-screen">
+<div class="sm:ml-64 h-[calc(100vh-36px)] mt-9">
   <router-view />
 </div>
 </div>
@@ -483,6 +485,7 @@ v-show="state=='select_daemon_method'"
     import '@sweetalert2/theme-dark/dark.scss';
     import Client from 'bitcoin-core';
     import NetworkSelector from './views/network.vue';
+    import TitleBar from './components/TitleBar.vue';
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -491,7 +494,7 @@ v-show="state=='select_daemon_method'"
         timerProgressBar: true,
     })
     export default {
-      components: { NetworkSelector },
+      components: { NetworkSelector, TitleBar },
       data() {
         const networks = [
           { name: 'mainnet', label: 'Mainnet', port: 48471, description: 'The live Navio network. Transactions here use real NAV with real value.' },
@@ -853,6 +856,17 @@ mounted()
 }
 }
 </script>
+<style>
+/* Push SweetAlert2 toasts below the custom titlebar */
+.swal2-container.swal2-top-end,
+.swal2-container.swal2-top-right,
+.swal2-container.swal2-top-start,
+.swal2-container.swal2-top-left,
+.swal2-container.swal2-top {
+  top: 36px !important;
+}
+</style>
+
 <style scoped>
 
 .sidebar-glass {

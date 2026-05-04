@@ -68,9 +68,9 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         width: 1100,
         height: 800,
         center: true,
-        backgroundColor: '#121212',
+        backgroundColor: '#0d071c',
         transparent: false,
-        frame: true,
+        frame: false,
         show: true,
         hasShadow: true,
         resizable: true,
@@ -82,6 +82,9 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
           contextIsolation: false,
         },
       })
+
+      win.on('maximize',   () => win?.webContents.send('window-maximized'));
+      win.on('unmaximize', () => win?.webContents.send('window-unmaximized'));
 
   // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
       if (process.platform === 'win32') {
@@ -167,6 +170,11 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+ipcMain.handle('window-minimize',      () => win?.minimize());
+ipcMain.handle('window-maximize',      () => { win?.isMaximized() ? win.unmaximize() : win?.maximize(); });
+ipcMain.handle('window-close',         () => win?.close());
+ipcMain.handle('window-is-maximized',  () => win?.isMaximized() ?? false);
 
 ipcMain.handle('get-bin-dir', () => {
   return path.join(app.getPath('userData'), 'bin');
