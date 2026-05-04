@@ -109,8 +109,16 @@
         </tbody>
     </table>
 </div>
-<div v-else>
-    <p>No transaction found.</p>
+<div v-else class="empty-state">
+  <div class="empty-icon-ring">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" class="empty-icon">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+  </div>
+  <h2 class="empty-title">No Transactions Found</h2>
+  <p class="empty-desc">
+    No transactions match your current filters,<br>or this wallet has no transaction history yet.
+  </p>
 </div>
 </div>
 </div>
@@ -208,3 +216,43 @@
         }
     };
 </script>
+
+<style scoped>
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+.empty-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.1);
+  margin-bottom: 1.25rem;
+}
+.empty-icon {
+  width: 30px;
+  height: 30px;
+  color: rgba(139, 92, 246, 0.65);
+}
+.empty-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 0.5rem;
+}
+.empty-desc {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.65;
+  max-width: 280px;
+}
+</style>

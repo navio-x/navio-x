@@ -95,16 +95,17 @@
   </tbody>
 </table>
 </div>
-<div v-else class="flex flex-col items-center justify-center py-16 px-6">
-  <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white/40">
+<div v-else class="empty-state">
+  <div class="empty-icon-ring">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" class="empty-icon">
       <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
       <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
     </svg>
   </div>
-  <h2 class="text-lg font-semibold text-white mb-2">No Address Generated Yet</h2>
-  <p class="text-sm text-white/40 text-center max-w-xs">
-    You don't have any receive addresses yet. Use the <span class="text-white font-medium">Generate New Address</span> button above to create your first address.
+  <h2 class="empty-title">No Addresses Yet</h2>
+  <p class="empty-desc">
+    Generate your first receive address using the<br>
+    <span class="empty-highlight">Generate New Address</span> button above.
   </p>
 </div>
 </div>
@@ -112,29 +113,6 @@
 <NoWalletSelected v-else />
 </div>
 </template>
-
-<style scoped>
-.theme-radio {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: border-color 0.15s ease;
-}
-.theme-radio:hover:not(:checked) {
-  border-color: rgba(139, 92, 246, 0.45);
-}
-.theme-radio:checked {
-  background: #8b5cf6;
-  border-color: #8b5cf6;
-  box-shadow: inset 0 0 0 3px rgba(13, 7, 28, 0.92);
-}
-</style>
 
 <script>
     import QRCodeStyling from "qr-code-styling";
@@ -291,3 +269,66 @@
 }
 </script>
 
+<style scoped>
+.theme-radio {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+.theme-radio:hover:not(:checked) { border-color: rgba(139, 92, 246, 0.45); }
+.theme-radio:checked {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+  box-shadow: inset 0 0 0 3px rgba(13, 7, 28, 0.92);
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+.empty-icon-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.1);
+  margin-bottom: 1.25rem;
+}
+.empty-icon {
+  width: 30px;
+  height: 30px;
+  color: rgba(139, 92, 246, 0.65);
+}
+.empty-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 0.5rem;
+}
+.empty-desc {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.65;
+  max-width: 260px;
+}
+.empty-highlight {
+  color: rgba(167, 139, 250, 0.85);
+  font-weight: 500;
+}
+</style>
