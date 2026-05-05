@@ -121,10 +121,6 @@
 </section>
 <section class="h-full w-full bg-transparent pt-9" v-show="state=='agreement'">
     <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16">
-        <div class="flex items-center gap-3 mb-6 rounded-xl border border-violet-500/20 bg-violet-500/10 px-5 py-4">
-          <span class="text-xl">🚀</span>
-          <p class="text-sm text-violet-200/70 leading-relaxed">You're using an early version of Navio X Wallet. We'd love your feedback — join us on <a href="https://discord.gg/9P52VBSt44" target="_blank" class="text-violet-400 hover:text-violet-300 underline underline-offset-2">Discord</a> to share your experience.</p>
-        </div>
         <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
         <div class="w-full h-full text-white">
           <p>
