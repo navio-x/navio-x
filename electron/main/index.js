@@ -76,7 +76,7 @@ function getNetwork() {
       win = new BrowserWindow({
         title: 'Navio X',
         width: 1100,
-        height: 780,
+        height: 760,
         center: true,
         backgroundColor: '#0d071c',
         transparent: false,
