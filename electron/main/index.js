@@ -72,11 +72,34 @@ function getNetwork() {
   } catch (e) {}
   return 'mainnet';
 }
+
+function getSetupComplete() {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      return !!config.setupComplete;
+    }
+  } catch (e) {}
+  return false;
+}
+
+function setSetupComplete(value) {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {}
+    config.setupComplete = value;
+    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+  } catch (e) {}
+}
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Navio X',
         width: 1100,
-        height: 760,
+        height: 790,
         center: true,
         backgroundColor: '#0d071c',
         transparent: false,
@@ -126,10 +149,18 @@ function getNetwork() {
     }
   });
 
-  // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () =>
   {
-    startDaemon();
+    if (getSetupComplete()) {
+      startDaemon();
+    } else {
+      win.webContents.send('is-daemon-started', {
+        started: false,
+        network: getNetwork(),
+        rpcuser,
+        rpcpassword
+      });
+    }
     win?.webContents.send('main-process-message', new Date().toLocaleString())
   })
 
@@ -210,6 +241,17 @@ ipcMain.handle('remove-bin-dir', async () => {
 ipcMain.handle('start-daemon', (_) => {
   startDaemon();
 })
+
+ipcMain.handle('set-setup-complete', () => setSetupComplete(true));
+ipcMain.handle('clear-setup-complete', () => setSetupComplete(false));
+
+ipcMain.handle('check-binary-exists', () => {
+  const filenames = { win32: 'naviod.exe', linux: 'naviod', darwin: 'naviod' };
+  const binDir = path.join(app.getPath('userData'), 'bin');
+  const binaryName = filenames[process.platform];
+  if (!binaryName) return false;
+  return fs.existsSync(path.join(binDir, binaryName));
+});
 
 ipcMain.handle('save-network', (_, networkName) => {
   try {

@@ -140,6 +140,7 @@
       clear:function()
       {
         localStorage.clear();
+        ipcRenderer.invoke('clear-setup-complete');
         Toast.fire({
           theme:'dark',
           icon: 'success',

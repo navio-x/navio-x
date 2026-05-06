@@ -559,6 +559,7 @@ methods: {
         this.network = net.name;
         this.port    = net.port;
         localStorage.setItem('network', net.name);
+        ipcRenderer.invoke('save-network', net.name);
         this.state = 'select_daemon_method';
     },
     getBlockChainInfo: function() {
@@ -646,31 +647,41 @@ methods: {
       });
     },
     downloadBinaries: function() {
-        this.state="download_progress";
-        this.is_downloading=true;
-        ipcRenderer.invoke('download-latest').then((extractPath) => {
-            if (!extractPath)
-            {
-                this.is_downloading=false;
+        ipcRenderer.invoke('check-binary-exists').then((exists) => {
+            if (exists) {
+                ipcRenderer.invoke('start-daemon').then((data) => {
+                    console.log("start-daemon (existing binary): " + data);
+                }).catch((err) => {
+                    alert('Error: ' + err.message);
+                });
                 return;
             }
-            document.getElementById('progress-bar').style.width = '100%';
-            document.getElementById('progress-text').textContent = '100%';
-            console.log("Binaries extracted to : " + extractPath);
-            Toast.fire({
-                theme:'dark',
-                icon: 'success',
-                title: "Binaries ready",
+            this.state="download_progress";
+            this.is_downloading=true;
+            ipcRenderer.invoke('download-latest').then((extractPath) => {
+                if (!extractPath)
+                {
+                    this.is_downloading=false;
+                    return;
+                }
+                document.getElementById('progress-bar').style.width = '100%';
+                document.getElementById('progress-text').textContent = '100%';
+                console.log("Binaries extracted to : " + extractPath);
+                Toast.fire({
+                    theme:'dark',
+                    icon: 'success',
+                    title: "Binaries ready",
+                });
+                ipcRenderer.invoke('start-daemon').then((data) =>
+                {
+                 console.log("start-daemon"+data);
+             }).catch((err) => {
+                alert('Error: ' + err.message);
             });
-            ipcRenderer.invoke('start-daemon').then((data) =>
-            {
-             console.log("start-daemon"+data);
          }).catch((err) => {
             alert('Error: ' + err.message);
         });
-     }).catch((err) => {
-        alert('Error: ' + err.message);
-    });
+        });
  },
  connect: function() {
     let vm=this;
@@ -766,6 +777,7 @@ mounted()
         this.$store.commit('set_daemon_auto_started',data.started);
         if (data.started)
         {
+          ipcRenderer.invoke('set-setup-complete');
           Toast.fire({
             theme:'dark',
             icon: 'success',
