@@ -87,7 +87,7 @@
 							<tbody>
 								<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.05] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
 									<td class="px-4 py-3 whitespace-nowrap">
-										<span class="text-xs text-white/30">{{format(tx.time,'DD.MM.YY HH:mm:ss')}}</span>
+										<span class="text-xs text-white/30" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
 									</td>
 									<td class="px-4 py-3">
 										<span v-if="tx.blockheight" class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{{tx.blockheight}}</span>
@@ -197,6 +197,24 @@
 			format: function(n,f)
 			{
 				if (n) return moment.unix(n).format(f); else return "";
+			},
+			timeAgo: function(timestamp) {
+				if (!timestamp) return "";
+				const diff = Math.floor(Date.now() / 1000) - timestamp;
+				if (diff < 60) {
+					return diff + 's ago';
+				} else if (diff < 3600) {
+					const m = Math.floor(diff / 60);
+					return m + 'm ago';
+				} else if (diff < 86400) {
+					const h = Math.floor(diff / 3600);
+					const m = Math.floor((diff % 3600) / 60);
+					const hStr = h + ' hour' + (h > 1 ? 's' : '');
+					return m > 0 ? hStr + ' ' + m + ' minute' + (m > 1 ? 's' : '') + ' ago' : hStr + ' ago';
+				} else {
+					const d = Math.floor(diff / 86400);
+					return d + ' day' + (d > 1 ? 's' : '') + ' ago';
+				}
 			},
 			toNav: function(n)
 			{

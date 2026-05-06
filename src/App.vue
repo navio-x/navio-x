@@ -80,7 +80,7 @@
         <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
         <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
         <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-        <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --testnet --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+        <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
         <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
             <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
                 Connect
@@ -267,6 +267,11 @@ v-show="state=='select_daemon_method'"
             <div class="relative z-0 w-full group">
               <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
               <input type="text" v-model="host" id="host" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
+              <button
+                type="button"
+                @click="host = networks.find(n => n.name === network)?.communityNode"
+                class="mt-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >Use community node ({{ networks.find(n => n.name === network)?.communityNode }})</button>
           </div>
           <div class="relative z-0 w-full group">
 
@@ -497,8 +502,8 @@ active-class="nav-item-active !text-white">
       components: { NetworkSelector, TitleBar },
       data() {
         const networks = [
-          { name: 'mainnet', label: 'Mainnet', port: 48471, description: 'The live Navio network. Transactions here use real NAV with real value.' },
-          { name: 'testnet', label: 'Testnet', port: 33677, description: 'Development and testing network. Use this to try features without risking real NAV.' },
+          { name: 'mainnet', label: 'Mainnet', port: 48471, communityNode: 'mainnet-navio.nav.community', description: 'The live Navio network. Transactions here use real NAV with real value.' },
+          { name: 'testnet', label: 'Testnet', port: 33677, communityNode: 'testnet-navio.nav.community', description: 'Development and testing network. Use this to try features without risking real NAV.' },
       ];
       const savedNetwork = localStorage.getItem('network') || 'mainnet';
       const savedPort    = localStorage.getItem('port')    || (networks.find(n => n.name === savedNetwork)?.port ?? 48471);

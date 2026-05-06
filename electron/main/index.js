@@ -57,11 +57,21 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     const rpcpassword=crypto.createHash('md5').update(randomBytes, 'utf8').digest('hex');
     //const rpcuser="x";
     //const rpcpassword="y";
-    const network="testnet";
     var daemonBinaryStarted=false;
     var daemonProcess=null;
     var daemonPID=undefined;
     var stakerPID=undefined;
+
+function getNetwork() {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      if (config.network) return config.network;
+    }
+  } catch (e) {}
+  return 'mainnet';
+}
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Navio X',
@@ -200,6 +210,21 @@ ipcMain.handle('remove-bin-dir', async () => {
 ipcMain.handle('start-daemon', (_) => {
   startDaemon();
 })
+
+ipcMain.handle('save-network', (_, networkName) => {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {}
+    config.network = networkName;
+    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
 
 ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
   startStaker(network,wallet,rpcuser,rpcpassword);
@@ -352,6 +377,7 @@ childWindow.loadURL(`${arg}`);*/
 
 function startDaemon()
 {
+  const network = getNetwork();
   const filenames = {
     win32: 'naviod.exe',
     linux: 'naviod',
@@ -394,15 +420,17 @@ function startDaemon()
     console.error('Daemon binary found:', executablePath);
   }
 
+  const addnode = network === 'testnet' ? 'testnet-navio.nav.community' : 'mainnet-navio.nav.community';
+
   const parameters = [
-    `--${network}`,
+    ...(network !== 'mainnet' ? [`--${network}`] : []),
     '--printtoconsole',
     '--walletcrosschain',
     '-rpcworkqueue=64',
     `-rpcuser=${rpcuser}`,
     `-rpcpassword=${rpcpassword}`,
     '-txindex=1',
-    '-addnode=testnet-navio.nav.community',
+    `-addnode=${addnode}`,
     '-debug=1',
     '-debugexclude=libevent',
     '-debugexclude=http',

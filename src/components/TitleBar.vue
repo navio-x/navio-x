@@ -84,8 +84,8 @@ export default {
   display: flex;
   align-items: center;
   -webkit-app-region: drag;
-  background: linear-gradient(160deg, rgba(13, 7, 28, 0.99) 0%, rgba(7, 11, 24, 0.99) 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  background: linear-gradient(90deg, rgba(42, 14, 84, 0.98) 0%, rgba(24, 16, 58, 0.98) 40%, rgba(10, 16, 46, 0.98) 100%);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.18);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   user-select: none;
@@ -113,7 +113,7 @@ export default {
 .titlebar-title {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
