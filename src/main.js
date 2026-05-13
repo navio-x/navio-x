@@ -21,7 +21,8 @@ const store = createStore({
       network:undefined,
       rpcuser:undefined,
       rpcpassword:undefined,
-      staker_pid:undefined
+      staker_pid:undefined,
+      console_log: ''
     }
   },
   mutations: {
@@ -56,6 +57,10 @@ const store = createStore({
     set_staker_wallet (state,payload)
     {
       state.staker_wallet=payload;
+    },
+    set_console_log (state,payload)
+    {
+      state.console_log=payload;
     }
   }
 })

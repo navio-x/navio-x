@@ -11,6 +11,7 @@
     <div v-if="contextMenu.visible" class="context-menu" :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
       <ul>
         <li @click="copyResult(); contextMenu.visible = false">Copy</li>
+        <li @click="selectAll(); contextMenu.visible = false">Select All</li>
         <li class="context-menu-divider"></li>
         <li @click="clearResult(); contextMenu.visible = false">Clear</li>
       </ul>
@@ -39,7 +40,7 @@
   },
   data() {
     return {
-      result:'',
+      result: this.$store.state.console_log,
       cmd:undefined,
       items:['help','getblockchaininfo'],
       contextMenu: { visible: false, x: 0, y: 0 }
@@ -48,10 +49,19 @@
   methods:{
     clearResult:function() {
       this.result='';
+      this.$store.commit('set_console_log', '');
     },
     copyResult:function() {
       const text = window.getSelection().toString();
       if (text) navigator.clipboard.writeText(text);
+    },
+    selectAll:function() {
+      const el = document.getElementById('result');
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
     },
     openContextMenu:function(event) {
       this.contextMenu = { visible: true, x: event.clientX, y: event.clientY };
@@ -89,6 +99,7 @@
         color="text-gray-200";
         this.result+=`<pre class='${color}'>${s}</pre>`;
       }
+      this.$store.commit('set_console_log', this.result);
       setTimeout(this.scrollToBottom, 10);
     },
     run:function()
@@ -239,6 +250,10 @@
     this.items=Object.keys(this.client.methods);
     this.items.push("sendtoblsctaddress","generatetoblsctaddress","getblsctauditkey","getblsctseed","stakelock","stakeunlock","listtokens","createnft","createtoken","getnftbalance","gettokenbalance","mintnft","minttoken","sendnfttoblsctaddress","sendtokentoblsctaddress");
     document.addEventListener('click', this.closeContextMenu);
+    if (this.result) this.$nextTick(() => {
+      const el = document.getElementById('result');
+      el.scrollTop = el.scrollHeight;
+    });
   },
   destroyed() {
     document.removeEventListener('click', this.closeContextMenu);
@@ -288,5 +303,9 @@
 
 .context-menu-divider:hover {
   background: rgba(255, 255, 255, 0.08) !important;
+}
+
+#result::-webkit-scrollbar-corner {
+  background: transparent;
 }
 </style>
