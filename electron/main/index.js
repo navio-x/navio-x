@@ -303,85 +303,106 @@ ipcMain.handle('get-process-variables', async (_, folderPath) => {
     }
 });
 
-ipcMain.handle('download-latest', async () => {
-  const platform = os.platform(); // 'win32', 'darwin', 'linux'
-  console.log("Platform:"+platform);
+const RELEASES_BASE_URL = 'https://releases.nav.io/';
 
-  let filename;
-  if (platform === "win32") filename = "navio-latest-win64.zip";
-  if (platform === "darwin") filename = "navio-latest-x86_64-apple-darwin.tar.gz";
-  if (platform === "linux") filename = "navio-latest-x86_64-linux-gnu.tar.gz";
-  
-  const fileInfo = {
-    filename: filename,
-    platform: platform
-  };
+function getLatestFilename(platform) {
+  if (platform === 'win32') return 'navio-latest-win64.zip';
+  if (platform === 'darwin') return 'navio-latest-x86_64-apple-darwin.tar.gz';
+  if (platform === 'linux') return 'navio-latest-x86_64-linux-gnu.tar.gz';
+  return null;
+}
 
-  win.webContents.send('download-file', fileInfo);
-
-  if (!filename)
-  {
-    win.webContents.send('download-error', "No file suitable for the platform was found.");
-    return;
+function archTokens(platform, arch) {
+  if (platform === 'win32') return ['win64'];
+  if (platform === 'darwin') {
+    if (arch === 'arm64') return ['arm64-apple-darwin'];
+    if (arch === 'x64') return ['x86_64-apple-darwin'];
+    return ['x86_64-apple-darwin'];
   }
-
-  const fullUrl = `https://releases.nav.io/${filename}`;
-  const savePath = path.join(app.getPath('downloads'), path.basename(filename));
-
-  try {
-    // 1. Dosyayı indir
-    await downloadFile(fullUrl, savePath, (progress) => {
-      console.log("Progress:" + progress);
-      win.webContents.send('download-progress', progress);
-    });
-
-    // 2. Klasörü oluştur
-    const extractPath = path.join(app.getPath('userData'), 'bin');
-
-    await fs.promises.mkdir(extractPath, { recursive: true });
-
-    // 3. Arşivi aç
-    await decompress(savePath, extractPath, {
-      filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
-      map: file => {
-        const parts = file.path.split('/');
-        const binIndex = parts.indexOf('bin');
-        if (binIndex !== -1) {
-          file.path = parts.slice(binIndex + 1).join('/');
-        }
-        return file;
-      }
-    });
-
-    return extractPath;
-
-  } catch (error) {
-    let errorMessage = 'An error occurred.';
-
-    if (error.code === 'ENOTFOUND') {
-      errorMessage = 'Could not connect to url : ' + fullUrl;
-    } else if (error.response && error.response.status === 404) {
-      errorMessage = 'File not found (404) : ' +  fullUrl;
-    } else if (error.code === 'ECONNREFUSED') {
-      errorMessage = 'Connection refused.';
-    } else if (error.message) {
-      errorMessage = error.message;
+  if (platform === 'linux') {
+    if (arch === 'x64') return ['x86_64-linux-gnu'];
+    if (arch === 'arm64') return ['aarch64-linux-gnu'];
+    if (arch === 'arm') return ['arm-linux-gnueabihf'];
+    if (arch === 'ppc64') {
+      return os.endianness() === 'LE'
+        ? ['powerpc64le-linux-gnu']
+        : ['powerpc64-linux-gnu'];
     }
-
-    console.error("Download error:", errorMessage);
-    win.webContents.send('download-error', errorMessage);
-    return null;
+    if (arch === 'riscv64') return ['riscv64-linux-gnu'];
   }
-});
+  return [];
+}
 
+function matchesPlatform(filename, platform, arch) {
+  if (!/^navio-/.test(filename)) return false;
+  if (/\.(asc|sig)$/i.test(filename)) return false;
+  const tokens = archTokens(platform, arch);
+  if (!tokens.length) return false;
+  if (platform === 'win32') {
+    return tokens.some(t => filename.toLowerCase().endsWith(`-${t}.zip`));
+  }
+  return tokens.some(t => filename.toLowerCase().endsWith(`-${t}.tar.gz`));
+}
+
+function fetchText(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, (response) => {
+      if (response.statusCode && response.statusCode >= 400) {
+        return reject(new Error(`HTTP ${response.statusCode} for ${url}`));
+      }
+      let data = '';
+      response.setEncoding('utf8');
+      response.on('data', chunk => { data += chunk; });
+      response.on('end', () => resolve(data));
+    }).on('error', reject);
+  });
+}
+
+function parseListingDate(s) {
+  if (!s) return null;
+  const m = s.match(/^(\d{2})-([A-Za-z]{3})-(\d{4})\s+(\d{2}):(\d{2})$/);
+  if (!m) return null;
+  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+  const mi = months[m[2]];
+  if (mi === undefined) return null;
+  const d = new Date(Date.UTC(+m[3], mi, +m[1], +m[4], +m[5]));
+  return isNaN(d.getTime()) ? null : d.toISOString();
+}
+
+async function listAvailableBinaries(platform, arch) {
+  const html = await fetchText(RELEASES_BASE_URL);
+  const seen = new Map();
+  const regex = /href="([^"?][^"]*)"[^<]*<\/a>(?:\s+(\d{2}-[A-Za-z]{3}-\d{4}\s+\d{2}:\d{2}))?(?:\s+([\d.]+[KMG]?|\-))?/gi;
+  let m;
+  while ((m = regex.exec(html)) !== null) {
+    const name = decodeURIComponent(m[1].split('/').pop());
+    if (!matchesPlatform(name, platform, arch)) continue;
+    if (seen.has(name)) continue;
+    seen.set(name, {
+      name,
+      date: parseListingDate(m[2]),
+      dateRaw: m[2] || '',
+      size: m[3] || ''
+    });
+  }
+  return Array.from(seen.values()).sort((a, b) => {
+    if (a.date && b.date) return b.date.localeCompare(a.date);
+    return b.name.localeCompare(a.name);
+  });
+}
 
 function downloadFile(url, dest, onProgress) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
 
     https.get(url, (response) => {
-      if (response.statusCode === 404) {
-        return reject({ response: { status: 404 } });
+      if (response.statusCode && response.statusCode >= 400) {
+        const status = response.statusCode;
+        file.close(() => {
+          try { fs.unlinkSync(dest); } catch (e) {}
+          reject({ response: { status }, message: `HTTP ${status}` });
+        });
+        return;
       }
 
       const total = parseInt(response.headers['content-length'], 10);
@@ -406,6 +427,115 @@ function downloadFile(url, dest, onProgress) {
     });
   });
 }
+
+async function downloadAndExtract(filename) {
+  const fileInfo = { filename, platform: os.platform() };
+  win.webContents.send('download-file', fileInfo);
+
+  const fullUrl = `${RELEASES_BASE_URL}${filename}`;
+  const savePath = path.join(app.getPath('downloads'), path.basename(filename));
+
+  await downloadFile(fullUrl, savePath, (progress) => {
+    console.log("Progress:" + progress);
+    win.webContents.send('download-progress', progress);
+  });
+
+  const extractPath = path.join(app.getPath('userData'), 'bin');
+  await fs.promises.mkdir(extractPath, { recursive: true });
+
+  await decompress(savePath, extractPath, {
+    filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
+    map: file => {
+      const parts = file.path.split('/');
+      const binIndex = parts.indexOf('bin');
+      if (binIndex !== -1) {
+        file.path = parts.slice(binIndex + 1).join('/');
+      }
+      return file;
+    }
+  });
+
+  return extractPath;
+}
+
+function formatDownloadError(error, url) {
+  if (error && error.code === 'ENOTFOUND') return 'Could not connect to url : ' + url;
+  if (error && error.response && error.response.status === 404) return 'File not found (404) : ' + url;
+  if (error && error.response && error.response.status === 403) return 'Access forbidden (403) : ' + url;
+  if (error && error.code === 'ECONNREFUSED') return 'Connection refused.';
+  if (error && error.message) return error.message;
+  return 'An error occurred.';
+}
+
+ipcMain.handle('download-latest', async () => {
+  const platform = os.platform();
+  const arch = os.arch();
+  console.log("Platform:" + platform + " Arch:" + arch);
+
+  const filename = getLatestFilename(platform);
+
+  if (!filename) {
+    win.webContents.send('download-error', "No file suitable for the platform was found.");
+    return null;
+  }
+
+  const fullUrl = `${RELEASES_BASE_URL}${filename}`;
+
+  try {
+    return await downloadAndExtract(filename);
+  } catch (error) {
+    const status = error && error.response && error.response.status;
+    const missing = status === 404 || status === 403;
+    if (missing) {
+      console.log(`Latest binary unavailable (HTTP ${status}), listing alternatives...`);
+      try {
+        const options = await listAvailableBinaries(platform, arch);
+        if (options.length > 0) {
+          win.webContents.send('download-select-binary', { platform, arch, options });
+          return null;
+        }
+        win.webContents.send('download-error', 'No compatible binaries found on ' + RELEASES_BASE_URL);
+        return null;
+      } catch (listErr) {
+        console.error('Listing failed:', listErr);
+        win.webContents.send('download-error', 'Latest binary not available and listing alternatives failed: ' + listErr.message);
+        return null;
+      }
+    }
+
+    const errorMessage = formatDownloadError(error, fullUrl);
+    console.error("Download error:", errorMessage);
+    win.webContents.send('download-error', errorMessage);
+    return null;
+  }
+});
+
+ipcMain.handle('download-binary', async (_, filename) => {
+  if (!filename || typeof filename !== 'string') {
+    win.webContents.send('download-error', 'Invalid filename.');
+    return null;
+  }
+  const fullUrl = `${RELEASES_BASE_URL}${filename}`;
+  try {
+    return await downloadAndExtract(filename);
+  } catch (error) {
+    const errorMessage = formatDownloadError(error, fullUrl);
+    console.error("Download error:", errorMessage);
+    win.webContents.send('download-error', errorMessage);
+    return null;
+  }
+});
+
+ipcMain.handle('list-binaries', async () => {
+  const platform = os.platform();
+  const arch = os.arch();
+  try {
+    const options = await listAvailableBinaries(platform, arch);
+    return { success: true, platform, arch, options };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
 
 /*const childWindow = new BrowserWindow({
   webPreferences: {

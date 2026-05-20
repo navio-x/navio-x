@@ -119,6 +119,60 @@
   </div>
 </div>
 </section>
+
+<section class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9 px-4" v-show="state=='select_binary'">
+  <div class="w-full max-w-3xl">
+    <h1 class="mb-2 text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
+    <p class="mb-6 text-gray-400">
+      The latest binary was not available. Choose a compatible build for
+      <b class="text-white">{{ binarySelectionInfo.platform }}</b>
+      <span v-if="binarySelectionInfo.arch"> (<b class="text-white">{{ binarySelectionInfo.arch }}</b>)</span>.
+    </p>
+
+    <div class="rounded-lg overflow-hidden border border-white/10 bg-white/[0.04] backdrop-blur">
+      <table class="w-full text-sm text-left text-gray-300">
+        <thead class="text-xs uppercase text-gray-400 bg-white/[0.06]">
+          <tr>
+            <th class="px-4 py-3">Filename</th>
+            <th class="px-4 py-3 whitespace-nowrap">Date</th>
+            <th class="px-4 py-3 whitespace-nowrap">Size</th>
+            <th class="px-4 py-3 text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="bin in availableBinaries" :key="bin.name" class="border-t border-white/5 hover:bg-white/[0.04]">
+            <td class="px-4 py-3 font-mono text-white break-all">
+              <span>{{ bin.name }}</span>
+              <span
+                v-if="bin.name === latestBinaryName"
+                class="ml-2 inline-block px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full bg-green-500/20 text-green-300 border border-green-500/40 align-middle"
+              >latest</span>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap text-gray-300">{{ format_listing_date(bin) }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-gray-300">{{ bin.size || '—' }}</td>
+            <td class="px-4 py-3 text-right">
+              <button
+                @click="select_binary(bin.name)"
+                class="inline-flex justify-center items-center py-2 px-4 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+              >Download</button>
+            </td>
+          </tr>
+          <tr v-if="!availableBinaries.length">
+            <td colspan="4" class="px-4 py-6 text-center text-gray-400">No compatible binaries found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 flex justify-end">
+      <button
+        @click="state='select_daemon_method'"
+        class="py-2 px-5 text-sm font-medium rounded-lg glass-btn-secondary focus:outline-none"
+      >Back</button>
+    </div>
+  </div>
+</section>
+
 <section class="h-full w-full bg-transparent pt-9" v-show="state=='agreement'">
     <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16">
         <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
@@ -524,6 +578,8 @@ active-class="nav-item-active !text-white">
           auto_login:false,
           is_downloading:false,
           fileinfo:{},
+          availableBinaries: [],
+          binarySelectionInfo: { platform: '', arch: '' },
       }
   },
   watch: {
@@ -531,6 +587,16 @@ active-class="nav-item-active !text-white">
       const found = this.networks.find(n => n.name === val);
       if (found) this.port = found.port;
   }
+},
+computed: {
+    latestBinaryName() {
+        let best = null;
+        for (const b of this.availableBinaries) {
+            if (!b || !b.date) continue;
+            if (!best || b.date > best.date) best = b;
+        }
+        return best ? best.name : null;
+    }
 },
 methods: {
     get_started: function() {
@@ -645,6 +711,46 @@ methods: {
             });
           }
       });
+    },
+    format_listing_date: function(bin) {
+        if (bin && bin.date) {
+            try {
+                const d = new Date(bin.date);
+                if (!isNaN(d.getTime())) {
+                    return d.toLocaleString(undefined, {
+                        year: 'numeric', month: 'short', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                }
+            } catch (e) {}
+        }
+        return (bin && bin.dateRaw) || '—';
+    },
+    select_binary: function(filename) {
+        if (!filename) return;
+        this.state = 'download_progress';
+        this.is_downloading = true;
+        this.$nextTick(() => {
+            const bar = document.getElementById('progress-bar');
+            const txt = document.getElementById('progress-text');
+            if (bar) bar.style.width = '0%';
+            if (txt) txt.textContent = '0%';
+        });
+        ipcRenderer.invoke('download-binary', filename).then((extractPath) => {
+            if (!extractPath) {
+                this.is_downloading = false;
+                return;
+            }
+            const bar = document.getElementById('progress-bar');
+            const txt = document.getElementById('progress-text');
+            if (bar) bar.style.width = '100%';
+            if (txt) txt.textContent = '100%';
+            Toast.fire({ theme:'dark', icon:'success', title: 'Binaries ready' });
+            ipcRenderer.invoke('start-daemon').catch((err) => alert('Error: ' + err.message));
+        }).catch((err) => {
+            this.is_downloading = false;
+            alert('Error: ' + err.message);
+        });
     },
     downloadBinaries: function() {
         ipcRenderer.invoke('check-binary-exists').then((exists) => {
@@ -832,6 +938,7 @@ mounted()
     console.log(this.client);
 })
     ipcRenderer.on('download-error', (event, errorMessage) => {
+        this.is_downloading=false;
         Swal.fire({
             theme:'dark',
             title: 'Download Error',
@@ -839,6 +946,14 @@ mounted()
             icon: 'error',
             confirmButtonText: 'OK'
         })
+    });
+
+    ipcRenderer.on('download-select-binary', (event, payload) => {
+        const { platform, arch, options } = payload || {};
+        this.binarySelectionInfo = { platform: platform || '', arch: arch || '' };
+        this.availableBinaries = Array.isArray(options) ? options : [];
+        this.is_downloading = false;
+        this.state = 'select_binary';
     });
     ipcRenderer.on('stop-daemon', (_event, value) =>
     {

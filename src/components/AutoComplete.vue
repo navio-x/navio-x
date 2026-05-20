@@ -49,6 +49,11 @@
         required: false,
         default: false,
       },
+      storageKey: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     data() {
       return {
@@ -74,6 +79,7 @@
     mounted() {
       document.addEventListener('click', this.handleClickOutside);
       document.addEventListener('keydown', this.handleGlobalKeydown);
+      this.loadHistory();
     },
     destroyed() {
       document.removeEventListener('click', this.handleClickOutside);
@@ -92,9 +98,34 @@
           if (this.history[0] !== cmd) {
             this.history.unshift(cmd);
             if (this.history.length > 100) this.history.pop();
+            this.saveHistory();
           }
         }
         this.historyIndex = -1;
+      },
+      loadHistory() {
+        if (!this.storageKey) return;
+        try {
+          const raw = localStorage.getItem(this.storageKey);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            this.history = parsed.filter(x => typeof x === 'string').slice(0, 100);
+          }
+        } catch (e) {}
+      },
+      saveHistory() {
+        if (!this.storageKey) return;
+        try {
+          localStorage.setItem(this.storageKey, JSON.stringify(this.history));
+        } catch (e) {}
+      },
+      clearHistory() {
+        this.history = [];
+        this.historyIndex = -1;
+        if (this.storageKey) {
+          try { localStorage.removeItem(this.storageKey); } catch (e) {}
+        }
       },
       filterResults() {
         this.results = this.items.filter((item) => {

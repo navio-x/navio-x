@@ -1,6 +1,6 @@
 {
   "name": "navio-x",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist-electron/main/index.js",
   "description": "navio-x wallet",
   "author": "x",
@@ -20,7 +20,10 @@
   },
   "scripts": {
     "dev": "vite build && electron .",
-    "build": "vite build && electron-builder --linux --x64",
+    "build:linux": "vite build && electron-builder --linux --x64",
+    "build:mac": "vite build && electron-builder --mac --x64",
+    "build:windows": "vite build && electron-builder --windows --x64",
+    "build:all": "vite build && electron-builder --linux --windows --mac --x64",
     "preview": "vite",
     "flatpak:build": "flatpak-builder --force-clean --repo=repo build-dir io.github.navio-x.yml",
     "flatpak:bundle": "flatpak build-bundle repo navio-x.flatpak io.github.navio-x",
