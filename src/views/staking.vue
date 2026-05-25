@@ -10,10 +10,10 @@
             <!-- Intro (compact) -->
             <div class="px-3 pb-3">
                 <div class="flex items-start gap-2 px-3 py-2 rounded-lg glass-card">
-                    <svg class="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"></path>
                     </svg>
-                    <p class="text-sm text-gray-400">Minimum 10,000 NAV required. Newly staked coins become eligible after 100 blocks.</p>
+                    <p class="text-sm text-gray-200">Minimum 10,000 NAV required. Newly staked coins become eligible after 100 blocks.</p>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                     Start Staking
                 </button>
                 <button v-if="$store.state.is_staking_active" v-on:click="stop_staking()"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white/60 bg-white/5 border border-white/8 rounded-lg hover:bg-white/10 hover:text-white/80 focus:outline-none whitespace-nowrap transition-all">
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white/85 bg-white/5 border border-white/8 rounded-lg hover:bg-white/10 hover:text-white/95 focus:outline-none whitespace-nowrap transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 9.563C9 9.252 9.252 9 9.563 9h4.874c.311 0 .563.252.563.563v4.874c0 .311-.252.563-.563.563H9.564A.562.562 0 0 1 9 14.437V9.564Z" />
@@ -49,7 +49,7 @@
                             {{ commitment.amount }} NAV
                         </div>
                     </template>
-                    <span v-else class="text-sm text-white/40">No commitment found.</span>
+                    <span v-else class="text-sm text-white/70">No commitment found.</span>
                 </div>
 
                 <!-- Staker status -->
@@ -427,17 +427,17 @@ ipcRenderer.on('start-staker-success', (_event, pid) =>
   display: block;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.75);
   margin-bottom: 6px;
   letter-spacing: 0.03em;
 }
 
 .stk-row {
   display: flex;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.20);
   border-radius: 0.5rem;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.10);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .stk-row:focus-within {
@@ -455,7 +455,7 @@ ipcRenderer.on('start-staker-success', (_event, pid) =>
   padding: 0.65rem 0.875rem;
   font-size: 0.875rem;
 }
-.stk-input::placeholder { color: rgba(255, 255, 255, 0.22); }
+.stk-input::placeholder { color: rgba(255, 255, 255, 0.55); }
 .stk-input::-webkit-inner-spin-button,
 .stk-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 
@@ -468,7 +468,7 @@ ipcRenderer.on('start-staker-success', (_event, pid) =>
   font-weight: 600;
   color: white;
   border: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
   cursor: pointer;
   white-space: nowrap;
   transition: opacity 0.15s ease;

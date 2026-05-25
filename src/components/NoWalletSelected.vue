@@ -57,13 +57,13 @@ export default {
 .nws-title {
   font-size: 1rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.97);
   margin-bottom: 0.6rem;
 }
 
 .nws-desc {
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.70);
   line-height: 1.6;
   max-width: 280px;
   margin-bottom: 1.75rem;
@@ -76,9 +76,9 @@ export default {
   padding: 0.55rem 1.25rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(139, 92, 246, 0.28);
+  color: rgba(255, 255, 255, 0.98);
+  background: rgba(139, 92, 246, 0.22);
+  border: 1px solid rgba(139, 92, 246, 0.45);
   border-radius: 8px;
   text-decoration: none;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;

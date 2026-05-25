@@ -113,7 +113,7 @@ export default {
 .titlebar-title {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
@@ -146,7 +146,7 @@ export default {
   justify-content: center;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.88);
   cursor: pointer;
   transition: background 0.13s ease, color 0.13s ease;
   outline: none;
@@ -166,12 +166,12 @@ export default {
   min-width: 24px;
   min-height: 24px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .controls-win .ctrl-btn:hover {
-  background: rgba(255, 255, 255, 0.13);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.98);
 }
 
 .controls-win .ctrl-close:hover {

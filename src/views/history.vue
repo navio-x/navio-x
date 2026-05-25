@@ -5,8 +5,8 @@
       <!-- ── Header ── -->
       <div class="flex items-center justify-between px-6 pt-5 pb-3 shrink-0">
         <div class="flex items-center gap-2.5">
-          <h2 class="text-sm font-semibold text-white/85">Transaction History</h2>
-          <span v-if="txs.length" class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/[0.07] text-white/40">
+          <h2 class="text-sm font-semibold text-white/95">Transaction History</h2>
+          <span v-if="txs.length" class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/[0.14] text-white/70">
             {{ txs.length }}
           </span>
         </div>
@@ -43,7 +43,7 @@
             Clear
           </button>
 
-          <span class="ml-auto text-[11px] text-white/25">{{ filteredTxs.length }} results</span>
+          <span class="ml-auto text-[11px] text-white/55">{{ filteredTxs.length }} results</span>
         </div>
       </div>
 
@@ -55,6 +55,7 @@
               <th class="hst-th text-left">Type</th>
               <th class="hst-th text-left">Date</th>
               <th class="hst-th text-right">Amount</th>
+              <th class="hst-th text-right">Fee</th>
               <th class="hst-th text-right">Conf.</th>
               <th class="hst-th text-right">Block</th>
               <th class="hst-th text-right">Address</th>
@@ -92,7 +93,16 @@
                 <span :class="['hst-amount', tx.category === 'send' ? 'hst-amount--out' : 'hst-amount--in']">
                   {{ tx.category === 'send' ? '−' : '+' }}{{ Math.abs(tx.amount).toFixed(4) }}
                 </span>
-                <span class="text-[11px] text-white/25 ml-1">NAV</span>
+                <span class="text-[11px] text-white/55 ml-1">NAV</span>
+              </td>
+
+              <!-- Fee -->
+              <td class="hst-td text-right whitespace-nowrap">
+                <span v-if="tx.fee !== undefined && tx.fee !== 0" class="hst-fee">
+                  {{ Math.abs(tx.fee).toFixed(4) }}
+                </span>
+                <span v-else class="text-white/50 text-xs">—</span>
+                <span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-[11px] text-white/55 ml-1">NAV</span>
               </td>
 
               <!-- Confirmations -->
@@ -109,10 +119,10 @@
 
               <!-- Address -->
               <td class="hst-td text-right">
-                <span v-if="tx.address" class="font-mono text-xs text-white/35">
+                <span v-if="tx.address" class="font-mono text-xs text-white/65">
                   {{ tx.address.substring(0, 6) }}…{{ tx.address.slice(-4) }}
                 </span>
-                <span v-else class="text-white/20 text-xs">—</span>
+                <span v-else class="text-white/50 text-xs">—</span>
               </td>
 
             </tr>
@@ -201,10 +211,11 @@
                 }
             },
             exportToCSV() {
-                const header = ['Category', 'Amount', 'Date', 'Confirmations', 'Block', 'Address'];
+                const header = ['Category', 'Amount', 'Fee', 'Date', 'Confirmations', 'Block', 'Address'];
                 const rows = this.filteredTxs.map(tx => [
                     tx.category,
                     tx.amount,
+                    tx.fee !== undefined ? tx.fee : '',
                     this.formatDate(tx.time),
                     tx.confirmations,
                     tx.blockheight || '',
@@ -229,40 +240,40 @@
   height: 32px;
   padding: 0 10px;
   font-size: 12px;
-  color: rgba(255,255,255,0.7);
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.95);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.20);
   border-radius: 7px;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
   transition: border-color 0.15s;
 }
-.hst-filter:focus { border-color: rgba(139,92,246,0.5); }
+.hst-filter:focus { border-color: rgba(167,139,250,0.75); }
 select.hst-filter {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='rgba(255,255,255,0.35)' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='rgba(255,255,255,0.65)' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   padding-right: 26px;
 }
-select.hst-filter option { background: #110a23; color: white; }
+select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 
 .hst-range-pill {
   height: 32px;
   padding: 0 10px;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255,255,255,0.45);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
   border-radius: 7px;
   cursor: pointer;
   transition: background 0.13s, color 0.13s, border-color 0.13s;
 }
 .hst-range-pill:hover {
-  background: rgba(139,92,246,0.15);
-  border-color: rgba(139,92,246,0.3);
-  color: rgba(255,255,255,0.85);
+  background: rgba(167,139,250,0.22);
+  border-color: rgba(167,139,250,0.45);
+  color: rgba(255,255,255,0.98);
 }
 
 .hst-clear-btn {
@@ -273,14 +284,14 @@ select.hst-filter option { background: #110a23; color: white; }
   padding: 0 10px;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.70);
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
   border-radius: 7px;
   cursor: pointer;
   transition: color 0.13s, border-color 0.13s;
 }
-.hst-clear-btn:hover { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.18); }
+.hst-clear-btn:hover { color: rgba(255,255,255,0.95); border-color: rgba(255,255,255,0.30); }
 
 .hst-export-btn {
   display: inline-flex;
@@ -290,19 +301,19 @@ select.hst-filter option { background: #110a23; color: white; }
   padding: 0 12px;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255,255,255,0.55);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
   border-radius: 7px;
   cursor: pointer;
   transition: background 0.13s, color 0.13s;
 }
-.hst-export-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.85); }
+.hst-export-btn:hover { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.98); }
 
 /* ── Table ────────────────────────────────────── */
 .hst-thead-row {
-  background: rgba(255,255,255,0.025);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.16);
 }
 .hst-th {
   padding: 8px 12px;
@@ -310,24 +321,24 @@ select.hst-filter option { background: #110a23; color: white; }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.60);
   white-space: nowrap;
 }
 
 .hst-row {
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
   transition: background 0.12s;
 }
-.hst-row:hover { background: rgba(255,255,255,0.03); }
+.hst-row:hover { background: rgba(255,255,255,0.07); }
 .hst-row:last-child { border-bottom: none; }
 
 .hst-td {
   padding: 10px 12px;
   font-size: 13px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.93);
   vertical-align: middle;
 }
-.hst-td--muted { color: rgba(255,255,255,0.38); }
+.hst-td--muted { color: rgba(255,255,255,0.65); }
 
 /* Category badge */
 .hst-badge {
@@ -355,6 +366,14 @@ select.hst-filter option { background: #110a23; color: white; }
 .hst-amount--in  { color: #34d399; }
 .hst-amount--out { color: #f87171; }
 
+/* Fee */
+.hst-fee {
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(251,146,60,0.8);
+}
+
 /* Confirmations */
 .hst-conf {
   display: inline-block;
@@ -363,8 +382,8 @@ select.hst-filter option { background: #110a23; color: white; }
   font-weight: 600;
   border-radius: 4px;
 }
-.hst-conf--ok      { background: rgba(52,211,153,0.1);  color: rgba(52,211,153,0.75); }
-.hst-conf--pending { background: rgba(251,191,36,0.1);  color: rgba(251,191,36,0.7); }
+.hst-conf--ok      { background: rgba(52,211,153,0.18);  color: rgba(52,211,153,0.98); }
+.hst-conf--pending { background: rgba(251,191,36,0.18);  color: rgba(251,191,36,0.98); }
 
 /* ── Empty state ──────────────────────────────── */
 .empty-state {
@@ -387,7 +406,7 @@ select.hst-filter option { background: #110a23; color: white; }
   box-shadow: 0 0 28px rgba(139,92,246,0.1);
   margin-bottom: 1.25rem;
 }
-.empty-icon  { width: 30px; height: 30px; color: rgba(139,92,246,0.65); }
-.empty-title { font-size: 0.9375rem; font-weight: 600; color: rgba(255,255,255,0.82); margin-bottom: 0.5rem; }
-.empty-desc  { font-size: 0.8125rem; color: rgba(255,255,255,0.35); line-height: 1.65; max-width: 280px; }
+.empty-icon  { width: 30px; height: 30px; color: rgba(167,139,250,0.85); }
+.empty-title { font-size: 0.9375rem; font-weight: 600; color: rgba(255,255,255,0.97); margin-bottom: 0.5rem; }
+.empty-desc  { font-size: 0.8125rem; color: rgba(255,255,255,0.70); line-height: 1.65; max-width: 280px; }
 </style>

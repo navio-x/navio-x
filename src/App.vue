@@ -40,7 +40,7 @@
 </p>
 
 <!-- Mini description -->
-<p class="mt-2 mb-8 text-sm text-gray-500">
+<p class="mt-2 mb-8 text-sm text-gray-300">
   Runs locally on your computer. No cloud services. No user accounts.
 </p>
 
@@ -78,8 +78,8 @@
             <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
         </div>
         <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
-        <p class="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-400">Connection error</p>
-        <p class="mt-5 mb-8 text-sm font-normal text-gray-500 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
+        <p class="mb-8 text-lg font-normal text-gray-300 sm:px-16 lg:px-48 dark:text-gray-200">Connection error</p>
+        <p class="mt-5 mb-8 text-sm font-normal text-gray-300 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
         <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
         <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
             <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
@@ -113,7 +113,7 @@
           <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files for <b>{{fileinfo.platform}}</b> from https://releases.nav.io</span>
           <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
       </div>
-      <div class="w-full bg-white/[0.08] rounded-full h-2">
+      <div class="w-full bg-white/[0.16] rounded-full h-2">
           <div id="progress-bar" class="h-2 rounded-full transition-all" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #3b82f6);"></div>
       </div>
   </div>
@@ -123,15 +123,15 @@
 <section class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9 px-4" v-show="state=='select_binary'">
   <div class="w-full max-w-3xl">
     <h1 class="mb-2 text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
-    <p class="mb-6 text-gray-400">
+    <p class="mb-6 text-gray-200">
       The latest binary was not available. Choose a compatible build for
       <b class="text-white">{{ binarySelectionInfo.platform }}</b>
       <span v-if="binarySelectionInfo.arch"> (<b class="text-white">{{ binarySelectionInfo.arch }}</b>)</span>.
     </p>
 
-    <div class="rounded-lg overflow-hidden border border-white/10 bg-white/[0.04] backdrop-blur">
+    <div class="rounded-lg overflow-hidden border border-white/20 bg-white/[0.16] backdrop-blur">
       <table class="w-full text-sm text-left text-gray-300">
-        <thead class="text-xs uppercase text-gray-400 bg-white/[0.06]">
+        <thead class="text-xs uppercase text-gray-200 bg-white/[0.12]">
           <tr>
             <th class="px-4 py-3">Filename</th>
             <th class="px-4 py-3 whitespace-nowrap">Date</th>
@@ -140,7 +140,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="bin in availableBinaries" :key="bin.name" class="border-t border-white/5 hover:bg-white/[0.04]">
+          <tr v-for="bin in availableBinaries" :key="bin.name" class="border-t border-white/15 hover:bg-white/[0.16]">
             <td class="px-4 py-3 font-mono text-white break-all">
               <span>{{ bin.name }}</span>
               <span
@@ -158,7 +158,7 @@
             </td>
           </tr>
           <tr v-if="!availableBinaries.length">
-            <td colspan="4" class="px-4 py-6 text-center text-gray-400">No compatible binaries found.</td>
+            <td colspan="4" class="px-4 py-6 text-center text-gray-200">No compatible binaries found.</td>
           </tr>
         </tbody>
       </table>
@@ -264,7 +264,7 @@ v-show="state=='select_daemon_method'"
       Choose a method
   </h1>
 
-  <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-400">
+  <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-200">
       You can download the official Navio binaries, or manually start the Navio daemon and connect to it.
   </p>
 
@@ -300,7 +300,7 @@ v-show="state=='select_daemon_method'"
       <a class="flex items-center ps-2.5" style="margin-bottom:24px;">
          <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
      </a>
-     <div class="w-full rounded-xl border md:mt-0 sm:max-w-md xl:p-0" style="background: linear-gradient(160deg, rgba(17,10,35,0.95) 0%, rgba(10,14,30,0.95) 100%); border-color: rgba(255,255,255,0.08); backdrop-filter: blur(16px);">
+     <div class="w-full rounded-xl border md:mt-0 sm:max-w-md xl:p-0" style="background: linear-gradient(160deg, rgba(34,26,68,0.95) 0%, rgba(22,28,58,0.95) 100%); border-color: rgba(255,255,255,0.18); backdrop-filter: blur(16px);">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl dark:text-white text-white">
               Setup
@@ -401,10 +401,10 @@ v-show="state=='select_daemon_method'"
 
   <!-- Main nav -->
   <nav class="relative flex-1 overflow-y-auto px-3 pb-2">
-      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Wallet</p>
+      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/45">Wallet</p>
 
       <router-link to="/home"
-      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
       active-class="nav-item-active !text-white">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -413,7 +413,7 @@ v-show="state=='select_daemon_method'"
   </router-link>
 
   <router-link to="/wallets"
-  class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+  class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
   active-class="nav-item-active !text-white">
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
       <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
@@ -422,7 +422,7 @@ v-show="state=='select_daemon_method'"
 </router-link>
 
 <router-link to="/send"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -431,7 +431,7 @@ active-class="nav-item-active !text-white">
 </router-link>
 
 <router-link to="/receive"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -440,7 +440,7 @@ active-class="nav-item-active !text-white">
 </router-link>
 
 <router-link to="/history"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -449,7 +449,7 @@ active-class="nav-item-active !text-white">
 </router-link>
 
 <router-link to="/staking"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -457,11 +457,11 @@ active-class="nav-item-active !text-white">
 <span>Staking</span>
 </router-link>
 
-<div class="my-3 border-t border-white/[0.06]"></div>
-<p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/20">Tools</p>
+<div class="my-3 border-t border-white/[0.14]"></div>
+<p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/45">Tools</p>
 
 <router-link to="/console"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
@@ -470,7 +470,7 @@ active-class="nav-item-active !text-white">
 </router-link>
 
 <router-link to="/settings"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium mb-0.5"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
@@ -479,7 +479,7 @@ active-class="nav-item-active !text-white">
 </router-link>
 
 <router-link to="/about"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all text-sm font-medium"
+class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium"
 active-class="nav-item-active !text-white">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
   <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
@@ -489,32 +489,32 @@ active-class="nav-item-active !text-white">
 </nav>
 
 <!-- Status card -->
-<div class="relative px-3 py-4 border-t border-white/[0.06] shrink-0">
+<div class="relative px-3 py-4 border-t border-white/[0.14] shrink-0">
   <div v-if="chain" class="status-glass rounded-xl px-3 py-3 space-y-2.5">
     <div class="flex items-center gap-2 min-w-0">
       <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
-      <span class="text-xs text-white/70 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
+      <span class="text-xs text-white/90 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
   </div>
   <div>
       <div class="flex items-center justify-between mb-1.5">
-        <span class="text-[11px] text-white/30">{{ blocks == headers ? 'Synced' : 'Syncing...' }}</span>
+        <span class="text-[11px] text-white/60">{{ blocks == headers ? 'Synced' : 'Syncing...' }}</span>
         <span :class="blocks == headers ? 'text-emerald-400' : 'text-violet-400'" class="text-[11px] font-semibold">{{ get_sync_percent() }}%</span>
     </div>
-    <div class="bg-white/[0.08] rounded-full h-1">
+    <div class="bg-white/[0.16] rounded-full h-1">
         <div class="h-1 rounded-full transition-all duration-500 progress-gradient" :style="{ width: get_sync_percent() + '%' }"></div>
     </div>
 </div>
 <div class="flex items-center justify-between">
-  <span class="text-[11px] text-white/25 capitalize font-medium">{{ chain }}</span>
-  <router-link to="/peers" class="text-[11px] text-white/40 hover:text-white/80 transition-colors" :title="'Protocol: ' + networkinfo.protocolversion">
+  <span class="text-[11px] text-white/55 capitalize font-medium">{{ chain }}</span>
+  <router-link to="/peers" class="text-[11px] text-white/90 hover:text-white/80 transition-colors" :title="'Protocol: ' + networkinfo.protocolversion">
     {{ networkinfo.connections ? networkinfo.connections + ' peer' + (networkinfo.connections > 1 ? 's' : '') : 'No peers' }}
 </router-link>
 </div>
-<div class="border-t border-white/[0.06] pt-2 flex items-center justify-between">
-  <span class="text-[11px] text-white/25">Blocks</span>
+<div class="border-t border-white/[0.14] pt-2 flex items-center justify-between">
+  <span class="text-[11px] text-white/55">Blocks</span>
   <span class="text-[11px] font-mono">
-    <span class="text-white/50">{{ blocks.toLocaleString() }}</span>
-    <span class="text-white/20 mx-1">/</span>
+    <span class="text-white/80">{{ blocks.toLocaleString() }}</span>
+    <span class="text-white/45 mx-1">/</span>
     <span :class="blocks == headers ? 'text-emerald-400/70' : 'text-violet-400/70'">{{ headers.toLocaleString() }}</span>
 </span>
 </div>
@@ -524,7 +524,7 @@ active-class="nav-item-active !text-white">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
   </svg>
-  <span class="text-xs text-white/40">Initializing...</span>
+  <span class="text-xs text-white/90">Initializing...</span>
 </div>
 </div>
 
@@ -1000,15 +1000,15 @@ mounted()
 
 /* Toast theme */
 .swal2-popup.swal2-toast {
-  background: linear-gradient(160deg, rgba(20, 12, 42, 0.97) 0%, rgba(10, 14, 32, 0.97) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(160deg, rgba(40, 30, 78, 0.97) 0%, rgba(24, 30, 62, 0.97) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
 }
 
 .swal2-popup.swal2-toast .swal2-title {
-  color: rgba(255, 255, 255, 0.82) !important;
+  color: rgba(255, 255, 255, 0.96) !important;
   font-size: 13px !important;
 }
 
@@ -1034,17 +1034,17 @@ mounted()
 
 /* Popup box */
 .swal2-popup:not(.swal2-toast) {
-  background: linear-gradient(160deg, rgba(20, 12, 42, 0.98) 0%, rgba(10, 14, 32, 0.98) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background: linear-gradient(160deg, rgba(40, 30, 78, 0.98) 0%, rgba(24, 30, 62, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.08) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.18) !important;
   border-radius: 16px !important;
 }
 
 /* Title */
 .swal2-popup:not(.swal2-toast) .swal2-title {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.98) !important;
   font-size: 1.15rem !important;
   font-weight: 600 !important;
 }
@@ -1052,7 +1052,7 @@ mounted()
 /* Body text */
 .swal2-popup:not(.swal2-toast) .swal2-html-container,
 .swal2-popup:not(.swal2-toast) .swal2-content {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 0.82) !important;
   font-size: 0.9rem !important;
 }
 
@@ -1074,9 +1074,9 @@ mounted()
 /* Cancel / Deny button → glass secondary */
 .swal2-popup:not(.swal2-toast) .swal2-cancel,
 .swal2-popup:not(.swal2-toast) .swal2-deny {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
   font-weight: 600 !important;
   font-size: 0.875rem !important;
   border-radius: 8px !important;
@@ -1106,8 +1106,8 @@ mounted()
 <style scoped>
 
     .sidebar-glass {
-      background: linear-gradient(160deg, rgba(17, 10, 35, 0.97) 0%, rgba(10, 14, 30, 0.97) 100%);
-      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      background: linear-gradient(160deg, rgba(34, 26, 68, 0.96) 0%, rgba(22, 28, 58, 0.96) 100%);
+      border-right: 1px solid rgba(255, 255, 255, 0.14);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
   }
@@ -1136,8 +1136,8 @@ mounted()
   }
 
   .status-glass {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
   }

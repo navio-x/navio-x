@@ -4,11 +4,11 @@
 
       <img class="mx-auto" src="../assets/navio-x.png" style="width:108px;" alt="Navio-X Wallet"/>
       <h1 class="mt-8 text-2xl font-extrabold tracking-tight text-white">Navio X Wallet</h1>
-      <p class="mt-1 text-xs font-mono text-white/30">v{{ appVersion }}</p>
-      <p class="mt-4 text-sm font-normal text-white/50 leading-relaxed">
+      <p class="mt-1 text-xs font-mono text-white/60">v{{ appVersion }}</p>
+      <p class="mt-4 text-sm font-normal text-white/80 leading-relaxed">
         Navio X Wallet is an open-source, cross-platform desktop wallet built to securely interact with the Navio blockchain.
       </p>
-      <p class="mt-2 text-sm font-normal text-white/40 leading-relaxed">
+      <p class="mt-2 text-sm font-normal text-white/70 leading-relaxed">
         The project is driven by Navio community developers and contributors. Join our Discord server to get support, share feedback, and follow development updates.
       </p>
 
@@ -59,9 +59,9 @@
   padding: 8px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.20);
   border-radius: 8px;
   text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;

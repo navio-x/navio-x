@@ -8,7 +8,7 @@
 				</svg>
 			</div>
 			<h2 class="text-lg font-semibold text-white mb-2">Loading Wallet</h2>
-			<p class="text-sm text-white/50 text-center max-w-xs">Blockchain is syncing and wallet data is being loaded. This may take a moment.</p>
+			<p class="text-sm text-white/80 text-center max-w-xs">Blockchain is syncing and wallet data is being loaded. This may take a moment.</p>
 		</div>
 		<div v-else-if="balance">
 			<!-- Balance Cards -->
@@ -21,17 +21,17 @@
 					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-cyan-300 to-blue-500 text-transparent mb-4">
 						{{formatNumbers(balance.mine.trusted)}} <span class="text-lg">NAV</span>
 					</div>
-					<div class="space-y-2 border-t border-white/[0.08] pt-4">
+					<div class="space-y-2 border-t border-white/[0.18] pt-4">
 						<div class="flex justify-between text-sm">
-							<span class="text-white/35">Pending</span>
-							<span class="text-white/70">{{formatNumbers(balance.mine.untrusted_pending)}} NAV</span>
+							<span class="text-white/65">Pending</span>
+							<span class="text-white/90">{{formatNumbers(balance.mine.untrusted_pending)}} NAV</span>
 						</div>
 						<div class="flex justify-between text-sm">
-							<span class="text-white/35" title="Immature staking coins will mature after 100 blocks.">Immature</span>
-							<span class="text-white/70">{{formatNumbers(balance.mine.immature)}} NAV</span>
+							<span class="text-white/65" title="Immature staking coins will mature after 100 blocks.">Immature</span>
+							<span class="text-white/90">{{formatNumbers(balance.mine.immature)}} NAV</span>
 						</div>
-						<div class="flex justify-between text-sm border-t border-white/[0.08] pt-2">
-							<span class="text-white/50 font-medium">Total</span>
+						<div class="flex justify-between text-sm border-t border-white/[0.18] pt-2">
+							<span class="text-white/80 font-medium">Total</span>
 							<span class="text-white font-semibold">{{formatNumbers(getTotal(balance))}} NAV</span>
 						</div>
 					</div>
@@ -45,22 +45,22 @@
 					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-4">
 						{{formatNumbers(balance.mine.staked_commitment_balance)}} <span class="text-lg">NAV</span>
 					</div>
-					<div class="space-y-2 border-t border-white/[0.08] pt-4">
+					<div class="space-y-2 border-t border-white/[0.18] pt-4">
 						<div class="flex justify-between text-sm">
-							<span class="text-white/35">24H</span>
-							<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/70'">
+							<span class="text-white/65">24H</span>
+							<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
 								{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV
 							</span>
 						</div>
 						<div class="flex justify-between text-sm">
-							<span class="text-white/35">7D</span>
-							<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/70'">
+							<span class="text-white/65">7D</span>
+							<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
 								{{ generateSums.week > 0 ? '+' : '' }}{{ generateSums.week }} NAV
 							</span>
 						</div>
 						<div class="flex justify-between text-sm">
-							<span class="text-white/35">30D</span>
-							<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/70'">
+							<span class="text-white/65">30D</span>
+							<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
 								{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
 							</span>
 						</div>
@@ -70,10 +70,10 @@
 
 			<!-- Recent Transactions -->
 			<div class="px-6 pb-6">
-				<div class="relative overflow-hidden rounded-xl border border-white/[0.07]"
-					style="background: linear-gradient(160deg, rgba(17,10,35,0.7) 0%, rgba(10,14,30,0.7) 100%); backdrop-filter: blur(12px);">
+				<div class="relative overflow-hidden rounded-xl border border-white/[0.16]"
+					style="background: linear-gradient(160deg, rgba(34,26,68,0.7) 0%, rgba(22,28,58,0.7) 100%); backdrop-filter: blur(12px);">
 					<!-- header -->
-					<div class="flex items-center gap-2 px-6 py-4 border-b border-white/[0.07]">
+					<div class="flex items-center gap-2 px-6 py-4 border-b border-white/[0.16]">
 						<div class="flex items-center justify-center w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -85,9 +85,9 @@
 					<div v-if="txs.length > 0" class="overflow-x-auto">
 						<table class="w-full text-sm">
 							<tbody>
-								<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.05] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
+								<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
 									<td class="px-4 py-3 whitespace-nowrap">
-										<span class="text-xs text-white/30" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
+										<span class="text-xs text-white/60" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
 									</td>
 									<td class="px-4 py-3">
 										<span v-if="tx.blockheight" class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{{tx.blockheight}}</span>
@@ -106,7 +106,7 @@
 											<svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-violet-400 shrink-0">
 												<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
 											</svg>
-											<span class="text-xs text-white/40 capitalize">{{tx.category}}</span>
+											<span class="text-xs text-white/90 capitalize">{{tx.category}}</span>
 										</div>
 									</td>
 									<td class="px-4 py-3">
@@ -114,8 +114,14 @@
 											{{tx.amount > 0 ? '+' + tx.amount : tx.amount}} NAV
 										</span>
 									</td>
+									<td class="px-4 py-3 whitespace-nowrap">
+										<span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-xs text-orange-300/80 font-medium" :title="'Fee: ' + Math.abs(tx.fee) + ' NAV'">
+											{{ Math.abs(tx.fee) }} NAV
+										</span>
+										<span v-else class="text-xs text-white/80">—</span>
+									</td>
 									<td class="px-4 py-3">
-										<span v-if="tx.address" class="text-xs text-white/30 font-mono">
+										<span v-if="tx.address" class="text-xs text-white/60 font-mono">
 											{{tx.address.substring(0,6)}}…{{tx.address.slice(-6)}}
 										</span>
 									</td>
@@ -131,7 +137,7 @@
 							</svg>
 						</div>
 						<p class="text-sm font-medium text-white mb-1">No Transactions Yet</p>
-						<p class="text-xs text-white/35 text-center max-w-xs">Your recent transactions will appear here once you send or receive NAV.</p>
+						<p class="text-xs text-white/65 text-center max-w-xs">Your recent transactions will appear here once you send or receive NAV.</p>
 					</div>
 				</div>
 			</div>

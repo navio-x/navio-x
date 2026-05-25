@@ -3,15 +3,15 @@
   <div id="modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-sm max-h-full">
       <div class="relative rounded-xl shadow-2xl glass-modal">
-        <div class="flex items-center justify-between p-4 border-b border-white/[0.08]">
+        <div class="flex items-center justify-between p-4 border-b border-white/[0.18]">
           <h3 class="text-base font-semibold text-white">QR Code</h3>
-          <button v-on:click="hide()" type="button" class="text-white/40 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
+          <button v-on:click="hide()" type="button" class="text-white/90 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
           </button>
         </div>
         <div class="p-6 flex flex-col items-center gap-4">
           <div id="canvas"></div>
-          <p class="font-mono text-xs text-white/50 text-center break-all leading-relaxed">{{ qr_address }}</p>
+          <p class="font-mono text-xs text-white/80 text-center break-all leading-relaxed">{{ qr_address }}</p>
         </div>
       </div>
     </div>
@@ -39,11 +39,11 @@
           <div
             v-for="address in all_addresses"
             :key="address.address"
-            class="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/[0.06] glass-card hover:border-white/10 hover:bg-white/[0.03] transition-all">
+            class="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/[0.16] glass-card hover:border-white/10 hover:bg-white/[0.10] transition-all">
 
             <!-- Address info -->
             <div class="flex-1 min-w-0">
-              <span class="font-mono text-sm text-white/70 block" :title="address.address">
+              <span class="font-mono text-sm text-white/90 block" :title="address.address">
                 {{ truncateAddress(address.address) }}
               </span>
               <span v-if="address.label" class="text-xs text-indigo-400 mt-0.5 block">
@@ -219,12 +219,12 @@
 .empty-title {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.97);
   margin-bottom: 0.5rem;
 }
 .empty-desc {
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.70);
   line-height: 1.65;
   max-width: 260px;
 }

@@ -3,7 +3,7 @@
     <img src="../assets/logo.svg" class="w-36 mb-10" alt="Navio" />
 
     <h1 class="text-3xl font-extrabold text-white mb-2 text-center">Select Network</h1>
-    <p class="text-white/50 text-sm mb-10 text-center max-w-sm">
+    <p class="text-white/80 text-sm mb-10 text-center max-w-sm">
       Choose the Navio network you want to connect to. You can change this later from the setup screen.
     </p>
 
@@ -32,7 +32,7 @@
             </div>
             <div>
               <p class="text-base font-semibold text-white">{{ net.label }}</p>
-              <p class="text-xs text-white/50">Port {{ net.port }}</p>
+              <p class="text-xs text-white/80">Port {{ net.port }}</p>
             </div>
           </div>
           <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0"
@@ -42,7 +42,7 @@
             </svg>
           </div>
         </div>
-        <p class="text-xs text-white/35 leading-relaxed">{{ net.description }}</p>
+        <p class="text-xs text-white/65 leading-relaxed">{{ net.description }}</p>
       </button>
     </div>
 

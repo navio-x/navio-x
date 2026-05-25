@@ -13,12 +13,12 @@
           </div>
           <h3 class="text-xl font-semibold text-white">Send NAV</h3>
         </div>
-        <p class="text-xs text-white/40 ml-12">Transfer funds to another wallet</p>
+        <p class="text-xs text-white/70 ml-12">Transfer funds to another wallet</p>
       </div>
 
       <!-- Card -->
-      <div class="relative overflow-hidden rounded-2xl border border-white/[0.07] p-6"
-        style="background: linear-gradient(160deg, rgba(17,10,35,0.8) 0%, rgba(10,14,30,0.8) 100%); backdrop-filter: blur(16px);">
+      <div class="relative overflow-hidden rounded-2xl border border-white/[0.16] p-6"
+        style="background: linear-gradient(160deg, rgba(34,26,68,0.8) 0%, rgba(22,28,58,0.8) 100%); backdrop-filter: blur(16px);">
 
         <!-- subtle glow -->
         <div class="pointer-events-none absolute -top-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl"></div>
@@ -26,7 +26,7 @@
 
         <!-- Address -->
         <div class="mb-5">
-          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/40">
+          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
             </svg>
@@ -37,7 +37,7 @@
             rows="3"
             placeholder="Enter NAV recipient address..."
             class="w-full rounded-xl text-sm font-mono resize-none px-4 py-3 leading-relaxed glass-input"></textarea>
-          <p class="mt-1.5 text-xs text-white/25 flex items-center gap-1">
+          <p class="mt-1.5 text-xs text-white/55 flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
             </svg>
@@ -46,11 +46,11 @@
         </div>
 
         <!-- Divider -->
-        <div class="border-t border-white/[0.06] my-5"></div>
+        <div class="border-t border-white/[0.16] my-5"></div>
 
         <!-- Amount -->
         <div class="mb-6">
-          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/40">
+          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
             Amount
           </label>
           <div class="relative">
@@ -60,7 +60,7 @@
               min="0"
               placeholder="0.00"
               class="w-full rounded-xl text-2xl font-bold px-4 py-4 pr-20 glass-input">
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-white/30 tracking-wider">NAV</span>
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-white/60 tracking-wider">NAV</span>
           </div>
         </div>
 
@@ -92,15 +92,15 @@
     <transition name="fade" appear>
       <div v-if="showModal" @keydown.esc="showModal = false" tabindex="0"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="relative text-white rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl border border-white/[0.09] transition-all duration-300"
+        <div class="relative text-white rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl border border-white/[0.18] transition-all duration-300"
           :class="{ 'scale-100': showModal, 'scale-95': !showModal }"
-          style="background: linear-gradient(160deg, rgba(17,10,35,0.98) 0%, rgba(10,14,30,0.98) 100%); backdrop-filter: blur(24px);">
+          style="background: linear-gradient(160deg, rgba(40,30,78,0.98) 0%, rgba(24,30,62,0.98) 100%); backdrop-filter: blur(24px);">
 
           <!-- glow -->
           <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 w-48 h-24 bg-blue-600/15 rounded-full blur-3xl"></div>
 
           <!-- Close -->
-          <button @click="showModal = false" class="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors focus:outline-none">
+          <button @click="showModal = false" class="absolute top-3 right-3 text-white/70 hover:text-white/95 transition-colors focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -109,13 +109,13 @@
           <h2 class="text-lg font-semibold mb-5">Confirm Transaction</h2>
 
           <div class="space-y-3 mb-6">
-            <div class="rounded-xl p-3 border border-white/[0.07]" style="background: rgba(255,255,255,0.04)">
-              <p class="text-xs text-white/40 mb-1 uppercase tracking-widest">Recipient</p>
-              <p class="text-sm font-mono break-all text-white/80">{{ address }}</p>
+            <div class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
+              <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Recipient</p>
+              <p class="text-sm font-mono break-all text-white/95">{{ address }}</p>
             </div>
             <div class="rounded-xl p-3 border border-blue-500/20" style="background: rgba(37,99,235,0.08)">
               <p class="text-xs text-blue-400/60 mb-1 uppercase tracking-widest">Amount</p>
-              <p class="text-2xl font-bold text-white">{{ amount }} <span class="text-base text-white/50">NAV</span></p>
+              <p class="text-2xl font-bold text-white">{{ amount }} <span class="text-base text-white/95">NAV</span></p>
             </div>
           </div>
 

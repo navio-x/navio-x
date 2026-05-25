@@ -6,7 +6,7 @@
     <div class="w-full p-4 bg-transparent">
       <div class="w-full p-6 glass-card rounded-xl">
         <h5 class="mb-2 text-2xl font-bold text-white dark:text-white">Debug</h5>
-        <p class="mb-3 font-normal text-gray-400 dark:text-gray-400">View Navio logs.</p>
+        <p class="mb-3 font-normal text-gray-200 dark:text-gray-200">View Navio logs.</p>
         <div v-if="rpcinfo.logpath">
           <p>Log Path : {{rpcinfo.logpath}}</p>
           <button v-on:click="open_log_file()" class="mt-5 inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -17,7 +17,7 @@
 
       <div class="w-full p-6 glass-card rounded-xl mt-10">
         <h5 class="mb-2 text-2xl font-bold text-white dark:text-white">Navio Binaries</h5>
-        <p class="mb-3 font-normal text-gray-400 dark:text-gray-400">You can view the binary files required for Navio to run.</p>
+        <p class="mb-3 font-normal text-gray-200 dark:text-gray-200">You can view the binary files required for Navio to run.</p>
         <div v-if="binDir">
           <p>Binary Path : {{binDir}}</p>
           <div class="mt-5 flex items-center gap-3">
@@ -41,7 +41,7 @@
 
   <div class="w-full p-6 glass-card rounded-xl mt-10">
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-white dark:text-white">Network</h5>
-    <p class="mb-4 font-normal text-gray-400 dark:text-gray-400">Switch between Mainnet and Testnet. The application will need to reconnect after changing the network.</p>
+    <p class="mb-4 font-normal text-gray-200 dark:text-gray-200">Switch between Mainnet and Testnet. The application will need to reconnect after changing the network.</p>
     <div class="flex gap-5 mb-5">
       <label v-for="net in networks" :key="net.name" class="flex items-center gap-3 cursor-pointer group">
         <input
@@ -52,7 +52,7 @@
         >
         <div>
           <span class="text-sm font-medium text-white">{{ net.label }}</span>
-          <span class="ml-2 text-xs text-zinc-400">(port {{ net.port }})</span>
+          <span class="ml-2 text-xs text-zinc-200">(port {{ net.port }})</span>
           <span v-if="net.name === currentNetwork" class="ml-2 text-xs text-emerald-400 font-semibold">current</span>
         </div>
       </label>
@@ -68,7 +68,7 @@
 
   <div class="w-full p-6 glass-card rounded-xl mt-10">
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-white dark:text-white">Clear Settings</h5>
-    <p class="mb-3 font-normal text-gray-400 dark:text-gray-400">This option allows you to reset all saved Navio X application preferences.</p>
+    <p class="mb-3 font-normal text-gray-200 dark:text-gray-200">This option allows you to reset all saved Navio X application preferences.</p>
     <button v-on:click="clear()" class="inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
       Clear
     </button>
@@ -76,7 +76,7 @@
 
   <div class="w-full p-6 glass-card rounded-xl mt-10">
     <h5 class="mb-2 text-2xl font-bold tracking-tight text-white dark:text-white">Stop Navio Daemon</h5>
-    <p class="mb-3 font-normal text-gray-400 dark:text-gray-400">The Navio daemon, which provides wallet services, continues to run in the background. If this service is stopped, your Navio X wallets will be unavailable until the daemon is restarted.</p>
+    <p class="mb-3 font-normal text-gray-200 dark:text-gray-200">The Navio daemon, which provides wallet services, continues to run in the background. If this service is stopped, your Navio X wallets will be unavailable until the daemon is restarted.</p>
     <button v-on:click="stop_daemon()" class="inline-flex items-center px-3 py-2 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
       Stop Daemon
     </button>

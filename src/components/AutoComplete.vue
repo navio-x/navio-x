@@ -253,12 +253,13 @@
     height: 235px;
     width: 100%;
     overflow: auto;
-    background: rgba(17, 10, 35, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 0.5rem;
     color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
   .autocomplete-result {
@@ -294,10 +295,10 @@
   .input-context-menu {
     position: fixed;
     z-index: 1000;
-    background: rgba(17, 10, 35, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 0.5rem;
     min-width: 120px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);

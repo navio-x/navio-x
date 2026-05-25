@@ -2,7 +2,7 @@
   <div class="h-full w-full flex flex-col p-4 bg-transparent">
     <header class="flex h-12 w-full bg-transparent text-white items-center justify-between">
       <h3>Console</h3>
-      <span class="text-xs text-gray-500">Ctrl+L to clear</span>
+      <span class="text-xs text-gray-300">Ctrl+L to clear</span>
     </header>
     <div id="result" class="flex flex-1 text-white overflow-auto glass-card rounded-xl p-4" @contextmenu.prevent="openContextMenu">
       <div v-html="result" class="scroll-auto scroll-smooth">
@@ -265,10 +265,10 @@
 .context-menu {
   position: fixed;
   z-index: 1000;
-  background: rgba(17, 10, 35, 0.97);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 0.5rem;
   min-width: 140px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -296,13 +296,13 @@
 .context-menu-divider {
   height: 1px !important;
   padding: 0 !important;
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
   cursor: default !important;
   margin: 4px 0;
 }
 
 .context-menu-divider:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
 }
 
 #result::-webkit-scrollbar-corner {
