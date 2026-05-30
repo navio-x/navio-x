@@ -22,8 +22,7 @@
     <div v-if="$store.state.active_wallet">
 
       <!-- Header -->
-      <div class="flex items-center justify-between px-4 py-3">
-        <h3>Receive</h3>
+      <div class="px-4 py-3">
         <button v-on:click="generate_new_address()" type="button"
           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

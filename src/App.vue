@@ -401,15 +401,8 @@ v-show="state=='select_daemon_method'"
       <div class="absolute bottom-32 -left-8 w-36 h-36 bg-blue-600/15 rounded-full blur-3xl"></div>
   </div>
 
-  <!-- Logo -->
-  <div class="relative px-5 pt-6 pb-5 shrink-0">
-      <img src="./assets/logo.svg" class="w-24" alt="Navio Logo"/>
-  </div>
-
   <!-- Main nav -->
-  <nav class="relative flex-1 overflow-y-auto px-3 pb-2">
-      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/45">Wallet</p>
-
+  <nav class="relative flex-1 overflow-y-auto px-3 pt-4 pb-2">
       <router-link to="/home"
       class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
       active-class="nav-item-active !text-white">

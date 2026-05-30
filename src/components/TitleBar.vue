@@ -84,12 +84,12 @@ export default {
   display: flex;
   align-items: center;
   -webkit-app-region: drag;
-  background: linear-gradient(90deg, rgba(42, 14, 84, 0.98) 0%, rgba(24, 16, 58, 0.98) 40%, rgba(10, 16, 46, 0.98) 100%);
-  border-bottom: 1px solid rgba(139, 92, 246, 0.18);
+  background: #0e0b1e;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   user-select: none;
 }
+
 
 /* ── Drag / title area ─────────────────────────── */
 .titlebar-drag {

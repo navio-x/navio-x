@@ -1,8 +1,5 @@
 <template>
   <div class="h-full bg-transparent text-white">
-    <div class="p-4">
-      <h3>Settings</h3>
-    </div>
     <div class="w-full p-4 bg-transparent">
       <div class="w-full p-6 glass-card rounded-xl">
         <h5 class="mb-2 text-2xl font-bold text-white dark:text-white">Debug</h5>

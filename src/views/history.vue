@@ -2,24 +2,8 @@
   <div class="h-full flex flex-col bg-transparent text-white overflow-hidden">
     <div v-if="$store.state.active_wallet && ready" class="flex flex-col h-full min-h-0">
 
-      <!-- ── Header ── -->
-      <div class="flex items-center justify-between px-6 pt-5 pb-3 shrink-0">
-        <div class="flex items-center gap-2.5">
-          <h2 class="text-sm font-semibold text-white/95">Transaction History</h2>
-          <span v-if="txs.length" class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/[0.14] text-white/70">
-            {{ txs.length }}
-          </span>
-        </div>
-        <button @click="exportToCSV" class="hst-export-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-          </svg>
-          Export CSV
-        </button>
-      </div>
-
       <!-- ── Filter bar ── -->
-      <div class="px-6 pb-4 shrink-0">
+      <div class="px-4 py-3 shrink-0">
         <div class="flex items-center gap-2 flex-wrap">
 
           <select v-model="selectedCategory" class="hst-filter">
@@ -44,6 +28,12 @@
           </button>
 
           <span class="ml-auto text-[11px] text-white/55">{{ filteredTxs.length }} results</span>
+          <button @click="exportToCSV" class="hst-export-btn shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Export CSV
+          </button>
         </div>
       </div>
 

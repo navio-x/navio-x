@@ -44,8 +44,7 @@
 </div>
 </div>
 <div class="h-full bg-transparent text-white">
-    <div class="p-4">
-        <h3>Peers</h3>
+    <div class="px-4 pt-3 pb-4">
         <p>You are currently connected to {{peers.length}} peer(s).</p>
         <button id="button-add-node"  class="inline-flex justify-center items-center mt-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />

@@ -1,9 +1,6 @@
 <template>
-  <div class="h-full w-full flex flex-col p-4 bg-transparent">
-    <header class="flex h-12 w-full bg-transparent text-white items-center justify-between">
-      <h3>Console</h3>
-      <span class="text-xs text-gray-300">Ctrl+L to clear</span>
-    </header>
+  <div class="h-full w-full flex flex-col px-4 pb-4 bg-transparent">
+    <div class="py-3 text-xs text-gray-300 text-right">Ctrl+L to clear</div>
     <div id="result" class="flex flex-1 text-white overflow-auto glass-card rounded-xl p-4" @contextmenu.prevent="openContextMenu">
       <div v-html="result" class="scroll-auto scroll-smooth">
       </div>
