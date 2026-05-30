@@ -100,7 +100,7 @@ function setSetupComplete(value) {
       win = new BrowserWindow({
         title: 'Navio X',
         width: 1100,
-        height: 790,
+        height: 740,
         center: true,
         backgroundColor: '#0d071c',
         transparent: false,
