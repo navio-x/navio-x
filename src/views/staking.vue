@@ -296,7 +296,7 @@
                         chart: {
                             id: 'staking-chart',
                             type:'area',
-                            foreColor: '#bbbbbb',
+                            foreColor: 'rgba(255,255,255,0.45)',
                             toolbar: {
                                 show: false,
                                 tools: {
@@ -309,7 +309,7 @@
                     },
                     grid: {
                         show: true,
-                        borderColor: '#343434',
+                        borderColor: 'rgba(255,255,255,0.07)',
                         strokeDashArray: 0,
                         position: 'back',
                         xaxis: {

@@ -4,11 +4,11 @@
       <!-- Modal content -->
       <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.18]">
-          <h3 class="text-xl font-semibold lg:text-2xl text-white">
+        <div class="flex items-start justify-between px-6 py-5 border-b border-white/[0.10] rounded-t" style="background: linear-gradient(90deg, rgba(124,58,237,0.10) 0%, rgba(59,130,246,0.05) 100%);">
+          <h3 class="text-lg font-semibold tracking-tight text-white">
             Create Wallet
           </h3>
-          <button id="closeButton" type="button" class="text-white/70 hover:text-white/95 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
+          <button id="closeButton" type="button" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -46,8 +46,8 @@
           </label>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.18] rounded-b">
-          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Create</button>
+        <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
+          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Create</button>
 
         </div>
       </div>
@@ -59,11 +59,11 @@
       <!-- Modal content -->
       <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.18]">
-          <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
+        <div class="flex items-start justify-between px-6 py-5 border-b border-white/[0.10] rounded-t" style="background: linear-gradient(90deg, rgba(124,58,237,0.10) 0%, rgba(59,130,246,0.05) 100%);">
+          <h3 class="text-lg font-semibold tracking-tight text-white">
             Wallet Seed
           </h3>
-          <button id="closeButton-1" data-modal-hide="modal" type="button" class="text-white/70 hover:text-white/95 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
+          <button id="closeButton-1" data-modal-hide="modal" type="button" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -78,8 +78,8 @@
           </div>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.18] rounded-b">
-          <button type="button" id="confirmButton-1" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Copy</button>
+        <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
+          <button type="button" id="confirmButton-1" data-modal-hide="modal" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Copy</button>
 
         </div>
       </div>
@@ -91,11 +91,11 @@
       <!-- Modal content -->
       <div class="relative rounded-xl shadow-2xl glass-modal">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t border-white/[0.18]">
-          <h3 class="text-xl font-semibold lg:text-2xl dark:text-white text-white">
+        <div class="flex items-start justify-between px-6 py-5 border-b border-white/[0.10] rounded-t" style="background: linear-gradient(90deg, rgba(124,58,237,0.10) 0%, rgba(59,130,246,0.05) 100%);">
+          <h3 class="text-lg font-semibold tracking-tight text-white">
             Audit Key
           </h3>
-          <button id="closeButton-2" data-modal-hide="modal" type="button" class="text-white/70 hover:text-white/95 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
+          <button id="closeButton-2" data-modal-hide="modal" type="button" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
           </button>
         </div>
@@ -110,8 +110,8 @@
           </div>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-white/[0.18] rounded-b">
-          <button type="button" id="confirmButton-2" data-modal-hide="modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-800">Copy</button>
+        <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
+          <button type="button" id="confirmButton-2" data-modal-hide="modal" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Copy</button>
 
         </div>
       </div>
@@ -121,27 +121,27 @@
   <!-- Rescan Modal (Vue-native) -->
   <transition name="fade">
     <div v-if="showRescanModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div class="relative rounded-xl shadow-2xl glass-modal w-full max-w-lg mx-4 p-6">
-        <div class="flex items-start justify-between mb-5">
-          <h3 class="text-xl font-semibold text-white">Rescan Blockchain</h3>
-          <button @click="showRescanModal = false" class="text-white/70 hover:text-white/95 bg-transparent rounded-lg p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
+      <div class="relative rounded-xl shadow-2xl glass-modal w-full max-w-lg mx-4 overflow-hidden">
+        <div class="flex items-start justify-between px-6 py-5 border-b border-white/[0.10]" style="background: linear-gradient(90deg, rgba(124,58,237,0.10) 0%, rgba(59,130,246,0.05) 100%);">
+          <h3 class="text-lg font-semibold tracking-tight text-white">Rescan Blockchain</h3>
+          <button @click="showRescanModal = false" class="text-white/40 hover:text-white/80 bg-transparent rounded-lg p-1.5 ml-auto inline-flex items-center transition-colors focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
           </button>
         </div>
-        <p class="text-sm text-white/85 mb-5">Rescan the local blockchain for wallet related transactions.</p>
-        <div class="space-y-4 mb-6">
+        <div class="px-6 py-5 space-y-4">
+          <p class="text-sm text-white/60">Rescan the local blockchain for wallet related transactions.</p>
           <div>
-            <label class="block mb-2 text-sm font-medium text-white">Start Height</label>
+            <label class="block mb-2 text-sm font-medium text-white/80">Start Height</label>
             <input type="number" v-model="scan_start_height" class="glass-input text-sm block w-full p-2.5">
           </div>
           <div>
-            <label class="block mb-2 text-sm font-medium text-white">Stop Height</label>
+            <label class="block mb-2 text-sm font-medium text-white/80">Stop Height</label>
             <input type="number" v-model="scan_stop_height" class="glass-input text-sm block w-full p-2.5">
           </div>
         </div>
-        <div class="flex gap-3 border-t border-white/[0.18] pt-5">
+        <div class="flex gap-3 px-6 py-4 border-t border-white/[0.08]">
           <button @click="showRescanModal = false" class="flex-1 px-4 py-2.5 rounded-lg text-sm glass-btn-secondary transition duration-200">Cancel</button>
-          <button @click="rescanblockchain(); showRescanModal = false" :disabled="scan_start_height === ''" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-700 hover:bg-blue-600 disabled:opacity-50 transition duration-200">Rescan</button>
+          <button @click="rescanblockchain(); showRescanModal = false" :disabled="scan_start_height === ''" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Rescan</button>
         </div>
       </div>
     </div>
@@ -175,33 +175,33 @@
   <h3>Wallet Info</h3>
   <div class="flex mt-5" v-if="is_wallet_loaded&&wallet_info">
     <div>
-      <span v-if="wallet_info.private_keys_enabled" class="inline-flex justify-center items-center bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <span v-if="wallet_info.private_keys_enabled" class="inline-flex justify-center items-center bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
       </svg>
     &nbsp;Private Keys Enabled</span>
-    <span v-else class="inline-flex justify-center items-center bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+    <span v-else class="inline-flex justify-center items-center bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
     </svg>
   &nbsp;Private Keys Disabled</span>
 </div>
 <div v-if="typeof wallet_info.scanning=='boolean'">
-  <span v-if="wallet_info.scanning" class="inline-flex justify-center items-center bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <span v-if="wallet_info.scanning" class="inline-flex justify-center items-center bg-green-900/60 text-green-300 border border-green-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
   </svg>
 &nbsp;Scanning...</span>
-<span v-else class="inline-flex justify-center items-center bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+<span v-else class="inline-flex justify-center items-center bg-white/10 text-white/70 border border-white/20 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
 </svg>&nbsp;Not scanning</span>
 </div>
 <div v-if="typeof wallet_info.scanning=='object'">
-  <span class="inline-flex justify-center items-center bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <span class="inline-flex justify-center items-center bg-blue-900/60 text-blue-300 border border-blue-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
   </svg>&nbsp;Scanning...</span>
-  <span v-if="wallet_info.scanning.duration" class="inline-flex justify-center items-center bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <span v-if="wallet_info.scanning.duration" class="inline-flex justify-center items-center bg-green-900/60 text-green-300 border border-green-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
   </svg>
 &nbsp;{{wallet_info.scanning.duration}} seconds</span>
-<span v-if="wallet_info.scanning.progress" class="inline-flex justify-center items-center bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+<span v-if="wallet_info.scanning.progress" class="inline-flex justify-center items-center bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
 </svg>
 
@@ -431,7 +431,7 @@
             let $confirmButton = document.querySelector('#confirmButton-1');
             let $closeButton = document.querySelector('#closeButton-1');
             let modalOptions = {
-              backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
+              backdropClasses: 'bg-black/60 backdrop-blur-sm fixed inset-0 z-40'
             }
             if ($modalElement)
             {
@@ -477,7 +477,7 @@
             let $confirmButton = document.querySelector('#confirmButton-2');
             let $closeButton = document.querySelector('#closeButton-2');
             let modalOptions = {
-              backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40'
+              backdropClasses: 'bg-black/60 backdrop-blur-sm fixed inset-0 z-40'
             }
             if ($modalElement)
             {
@@ -558,7 +558,7 @@
       const $closeButton = document.querySelector('#closeButton');
 
       const modalOptions = {
-        backdropClasses: 'bg-transparent/50 dark:bg-transparent/80 fixed inset-0 z-40',
+        backdropClasses: 'bg-black/60 backdrop-blur-sm fixed inset-0 z-40',
         closable: false
       }
 

@@ -110,8 +110,8 @@
           <div class="slice"></div>
       </div>
       <div class="w-full flex justify-between mt-20">
-          <span class="text-base font-medium text-blue-700 dark:text-white">Downloading latest binary files for <b>{{fileinfo.platform}}</b> from https://releases.nav.io</span>
-          <span id="progress-text" class="text-sm font-medium text-blue-700 dark:text-white">0%</span>
+          <span class="text-base font-medium text-white/90">Downloading binary files for <b>{{fileinfo.platform}}</b> from GitHub releases</span>
+          <span id="progress-text" class="text-sm font-medium text-white/90">0%</span>
       </div>
       <div class="w-full bg-white/[0.16] rounded-full h-2">
           <div id="progress-bar" class="h-2 rounded-full transition-all" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #3b82f6);"></div>
@@ -124,41 +124,44 @@
   <div class="w-full max-w-3xl">
     <h1 class="mb-2 text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
     <p class="mb-6 text-gray-200">
-      The latest binary was not available. Choose a compatible build for
+      Choose a compatible build from GitHub releases for
       <b class="text-white">{{ binarySelectionInfo.platform }}</b>
       <span v-if="binarySelectionInfo.arch"> (<b class="text-white">{{ binarySelectionInfo.arch }}</b>)</span>.
     </p>
 
-    <div class="rounded-lg overflow-hidden border border-white/20 bg-white/[0.16] backdrop-blur">
-      <table class="w-full text-sm text-left text-gray-300">
-        <thead class="text-xs uppercase text-gray-200 bg-white/[0.12]">
+    <div class="rounded-xl overflow-hidden border border-white/[0.10] shadow-[0_24px_64px_rgba(0,0,0,0.65)]" style="background: linear-gradient(160deg, rgba(20,14,48,0.97) 0%, rgba(13,17,40,0.97) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+      <table class="w-full text-sm text-left">
+        <thead style="background: rgba(0,0,0,0.30); border-bottom: 1px solid rgba(255,255,255,0.08);">
           <tr>
-            <th class="px-4 py-3">Filename</th>
-            <th class="px-4 py-3 whitespace-nowrap">Date</th>
-            <th class="px-4 py-3 whitespace-nowrap">Size</th>
-            <th class="px-4 py-3 text-right">Action</th>
+            <th class="px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40">Version</th>
+            <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-white/40">Filename</th>
+            <th class="px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40">Date</th>
+            <th class="px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40">Size</th>
+            <th class="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-widest text-white/40">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="bin in availableBinaries" :key="bin.name" class="border-t border-white/15 hover:bg-white/[0.16]">
-            <td class="px-4 py-3 font-mono text-white break-all">
-              <span>{{ bin.name }}</span>
+          <tr v-for="bin in availableBinaries" :key="bin.name" class="border-t border-white/[0.07] hover:bg-white/[0.04] transition-colors">
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 text-[11px] font-mono font-semibold rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">{{ bin.tag || '—' }}</span>
               <span
                 v-if="bin.name === latestBinaryName"
                 class="ml-2 inline-block px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full bg-green-500/20 text-green-300 border border-green-500/40 align-middle"
               >latest</span>
             </td>
-            <td class="px-4 py-3 whitespace-nowrap text-gray-300">{{ format_listing_date(bin) }}</td>
-            <td class="px-4 py-3 whitespace-nowrap text-gray-300">{{ bin.size || '—' }}</td>
+            <td class="px-4 py-3 font-mono text-white/85 break-all text-sm">{{ bin.name }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-white/55">{{ format_listing_date(bin) }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-white/55">{{ bin.size || '—' }}</td>
             <td class="px-4 py-3 text-right">
               <button
-                @click="select_binary(bin.name)"
-                class="inline-flex justify-center items-center py-2 px-4 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+                @click="select_binary(bin)"
+                class="inline-flex justify-center items-center py-1.5 px-4 text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-80"
+                style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);"
               >Download</button>
             </td>
           </tr>
           <tr v-if="!availableBinaries.length">
-            <td colspan="4" class="px-4 py-6 text-center text-gray-200">No compatible binaries found.</td>
+            <td colspan="5" class="px-4 py-6 text-center text-white/50">No compatible binaries found.</td>
           </tr>
         </tbody>
       </table>
@@ -291,15 +294,25 @@ v-show="state=='select_daemon_method'"
   d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"/>
 </svg>
 </button>
+
+  <button
+  v-if="binDir"
+  @click="open_bin_directory()"
+  class="inline-flex justify-center items-center py-3 px-5 text-base font-medium rounded-lg glass-btn-secondary focus:outline-none"
+  >
+  Open Binaries Folder
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+  stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+  <path stroke-linecap="round" stroke-linejoin="round"
+  d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"/>
+</svg>
+</button>
 </div>
 </div>
 </section>
 
 <section class="h-screen bg-transparent pt-9" v-show="state=='setup'">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <a class="flex items-center ps-2.5" style="margin-bottom:24px;">
-         <img src="./assets/logo.svg" style="width:192px;" alt="Navio"/>
-     </a>
      <div class="w-full rounded-xl border md:mt-0 sm:max-w-md xl:p-0" style="background: linear-gradient(160deg, rgba(34,26,68,0.95) 0%, rgba(22,28,58,0.95) 100%); border-color: rgba(255,255,255,0.18); backdrop-filter: blur(16px);">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl dark:text-white text-white">
@@ -321,11 +334,6 @@ v-show="state=='select_daemon_method'"
             <div class="relative z-0 w-full group">
               <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
               <input type="text" v-model="host" id="host" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
-              <button
-                type="button"
-                @click="host = networks.find(n => n.name === network)?.communityNode"
-                class="mt-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >Use community node ({{ networks.find(n => n.name === network)?.communityNode }})</button>
           </div>
           <div class="relative z-0 w-full group">
 
@@ -373,7 +381,7 @@ v-show="state=='select_daemon_method'"
 
 <div class="flex items-center justify-center h-screen bg-transparent pt-9" v-show="state=='connected'">
     <div class="relative p-6 text-center rounded-2xl shadow-2xl sm:p-8 glass-card">
-        <div class="w-14 h-14 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
+        <div class="w-14 h-14 rounded-full bg-green-900/60 border border-green-500/30 p-2 flex items-center justify-center mx-auto mb-3.5">
             <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
             <span class="sr-only">Success</span>
         </div>
@@ -580,6 +588,7 @@ active-class="nav-item-active !text-white">
           fileinfo:{},
           availableBinaries: [],
           binarySelectionInfo: { platform: '', arch: '' },
+          binDir: null,
       }
   },
   watch: {
@@ -599,6 +608,9 @@ computed: {
     }
 },
 methods: {
+    open_bin_directory: function() {
+        ipcRenderer.invoke('shell-open-folder', this.binDir);
+    },
     get_started: function() {
         this.state='agreement';
     },
@@ -726,8 +738,8 @@ methods: {
         }
         return (bin && bin.dateRaw) || '—';
     },
-    select_binary: function(filename) {
-        if (!filename) return;
+    select_binary: function(bin) {
+        if (!bin || !bin.url) return;
         this.state = 'download_progress';
         this.is_downloading = true;
         this.$nextTick(() => {
@@ -736,7 +748,7 @@ methods: {
             if (bar) bar.style.width = '0%';
             if (txt) txt.textContent = '0%';
         });
-        ipcRenderer.invoke('download-binary', filename).then((extractPath) => {
+        ipcRenderer.invoke('download-binary', { url: bin.url, name: bin.name }).then((extractPath) => {
             if (!extractPath) {
                 this.is_downloading = false;
                 return;
@@ -865,6 +877,7 @@ mounted()
 {
     console.log("App mounted");
     this.app=getCurrentInstance();
+    ipcRenderer.invoke('get-bin-dir').then((dir) => { if (dir) this.binDir = dir; });
     ipcRenderer.on('download-file', (e, fileinfo) => {
         this.fileinfo=fileinfo;
     });

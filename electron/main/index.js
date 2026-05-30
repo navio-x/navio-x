@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
+const http = require('http');
 const decompress = require('decompress');
 const os = require('os');
 
@@ -303,14 +304,7 @@ ipcMain.handle('get-process-variables', async (_, folderPath) => {
     }
 });
 
-const RELEASES_BASE_URL = 'https://releases.nav.io/';
-
-function getLatestFilename(platform) {
-  if (platform === 'win32') return 'navio-latest-win64.zip';
-  if (platform === 'darwin') return 'navio-latest-x86_64-apple-darwin.tar.gz';
-  if (platform === 'linux') return 'navio-latest-x86_64-linux-gnu.tar.gz';
-  return null;
-}
+const GITHUB_RELEASES_API = 'https://api.github.com/repos/nav-io/navio-core/releases';
 
 function archTokens(platform, arch) {
   if (platform === 'win32') return ['win64'];
@@ -333,109 +327,106 @@ function archTokens(platform, arch) {
   return [];
 }
 
-function matchesPlatform(filename, platform, arch) {
-  if (!/^navio-/.test(filename)) return false;
-  if (/\.(asc|sig)$/i.test(filename)) return false;
+function matchesGitHubAsset(name, platform, arch) {
+  if (!/^navio-/.test(name)) return false;
+  if (/\.(asc|sig|sha256|sha256sum|txt)$/i.test(name)) return false;
+  if (platform === 'win32' && !/\.zip$/i.test(name)) return false;
+  if (platform !== 'win32' && !/\.tar\.gz$/i.test(name)) return false;
   const tokens = archTokens(platform, arch);
   if (!tokens.length) return false;
-  if (platform === 'win32') {
-    return tokens.some(t => filename.toLowerCase().endsWith(`-${t}.zip`));
-  }
-  return tokens.some(t => filename.toLowerCase().endsWith(`-${t}.tar.gz`));
+  return tokens.some(t => name.toLowerCase().includes(t.toLowerCase()));
 }
 
-function fetchText(url) {
+function formatSize(bytes) {
+  if (!bytes) return '';
+  if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + 'M';
+  if (bytes >= 1024) return Math.round(bytes / 1024) + 'K';
+  return bytes + 'B';
+}
+
+function fetchJSON(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, (response) => {
-      if (response.statusCode && response.statusCode >= 400) {
-        return reject(new Error(`HTTP ${response.statusCode} for ${url}`));
+    const opts = {
+      headers: { 'Accept': 'application/vnd.github+json', 'User-Agent': 'navio-x' }
+    };
+    https.get(url, opts, (res) => {
+      if (res.statusCode >= 400) {
+        res.resume();
+        return reject(new Error(`HTTP ${res.statusCode} for ${url}`));
       }
       let data = '';
-      response.setEncoding('utf8');
-      response.on('data', chunk => { data += chunk; });
-      response.on('end', () => resolve(data));
+      res.setEncoding('utf8');
+      res.on('data', c => { data += c; });
+      res.on('end', () => { try { resolve(JSON.parse(data)); } catch(e) { reject(e); } });
     }).on('error', reject);
   });
 }
 
-function parseListingDate(s) {
-  if (!s) return null;
-  const m = s.match(/^(\d{2})-([A-Za-z]{3})-(\d{4})\s+(\d{2}):(\d{2})$/);
-  if (!m) return null;
-  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
-  const mi = months[m[2]];
-  if (mi === undefined) return null;
-  const d = new Date(Date.UTC(+m[3], mi, +m[1], +m[4], +m[5]));
-  return isNaN(d.getTime()) ? null : d.toISOString();
-}
-
-async function listAvailableBinaries(platform, arch) {
-  const html = await fetchText(RELEASES_BASE_URL);
-  const seen = new Map();
-  const regex = /href="([^"?][^"]*)"[^<]*<\/a>(?:\s+(\d{2}-[A-Za-z]{3}-\d{4}\s+\d{2}:\d{2}))?(?:\s+([\d.]+[KMG]?|\-))?/gi;
-  let m;
-  while ((m = regex.exec(html)) !== null) {
-    const name = decodeURIComponent(m[1].split('/').pop());
-    if (!matchesPlatform(name, platform, arch)) continue;
-    if (seen.has(name)) continue;
-    seen.set(name, {
-      name,
-      date: parseListingDate(m[2]),
-      dateRaw: m[2] || '',
-      size: m[3] || ''
-    });
+async function listGitHubReleases(platform, arch) {
+  const releases = await fetchJSON(`${GITHUB_RELEASES_API}?per_page=20`);
+  const result = [];
+  for (const release of releases) {
+    const assets = (release.assets || []).filter(a => matchesGitHubAsset(a.name, platform, arch));
+    for (const asset of assets) {
+      result.push({
+        name: asset.name,
+        tag: release.tag_name,
+        date: release.published_at,
+        dateRaw: release.published_at || '',
+        size: formatSize(asset.size),
+        url: asset.browser_download_url
+      });
+    }
   }
-  return Array.from(seen.values()).sort((a, b) => {
-    if (a.date && b.date) return b.date.localeCompare(a.date);
-    return b.name.localeCompare(a.name);
-  });
+  return result;
 }
 
 function downloadFile(url, dest, onProgress) {
   return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(dest);
-
-    https.get(url, (response) => {
-      if (response.statusCode && response.statusCode >= 400) {
+    function doGet(currentUrl) {
+      const mod = currentUrl.startsWith('https:') ? https : http;
+      mod.get(currentUrl, (response) => {
         const status = response.statusCode;
-        file.close(() => {
-          try { fs.unlinkSync(dest); } catch (e) {}
-          reject({ response: { status }, message: `HTTP ${status}` });
-        });
-        return;
-      }
-
-      const total = parseInt(response.headers['content-length'], 10);
-      let downloaded = 0;
-
-      response.pipe(file);
-
-      response.on('data', (chunk) => {
-        downloaded += chunk.length;
-        if (onProgress && total) {
-          const percent = Math.round((downloaded / total) * 100);
-          onProgress(percent);
+        if (status === 301 || status === 302 || status === 307 || status === 308) {
+          response.resume();
+          const location = response.headers.location;
+          if (!location) return reject(new Error('Redirect with no Location header'));
+          doGet(location);
+          return;
         }
-      });
-
-      file.on('finish', () => {
-        file.close(resolve);
-      });
-
-    }).on('error', (err) => {
-      reject(err);
-    });
+        if (status && status >= 400) {
+          response.resume();
+          reject({ response: { status }, message: `HTTP ${status}` });
+          return;
+        }
+        const file = fs.createWriteStream(dest);
+        const total = parseInt(response.headers['content-length'], 10);
+        let downloaded = 0;
+        response.pipe(file);
+        response.on('data', (chunk) => {
+          downloaded += chunk.length;
+          if (onProgress && total) {
+            onProgress(Math.round((downloaded / total) * 100));
+          }
+        });
+        file.on('finish', () => file.close(resolve));
+        file.on('error', (err) => {
+          try { fs.unlinkSync(dest); } catch (e) {}
+          reject(err);
+        });
+      }).on('error', reject);
+    }
+    doGet(url);
   });
 }
 
-async function downloadAndExtract(filename) {
+async function downloadAndExtract(url, filename) {
   const fileInfo = { filename, platform: os.platform() };
   win.webContents.send('download-file', fileInfo);
 
-  const fullUrl = `${RELEASES_BASE_URL}${filename}`;
-  const savePath = path.join(app.getPath('downloads'), path.basename(filename));
+  const savePath = path.join(app.getPath('downloads'), filename);
 
-  await downloadFile(fullUrl, savePath, (progress) => {
+  await downloadFile(url, savePath, (progress) => {
     console.log("Progress:" + progress);
     win.webContents.send('download-progress', progress);
   });
@@ -472,54 +463,31 @@ ipcMain.handle('download-latest', async () => {
   const arch = os.arch();
   console.log("Platform:" + platform + " Arch:" + arch);
 
-  const filename = getLatestFilename(platform);
-
-  if (!filename) {
-    win.webContents.send('download-error', "No file suitable for the platform was found.");
-    return null;
-  }
-
-  const fullUrl = `${RELEASES_BASE_URL}${filename}`;
-
   try {
-    return await downloadAndExtract(filename);
-  } catch (error) {
-    const status = error && error.response && error.response.status;
-    const missing = status === 404 || status === 403;
-    if (missing) {
-      console.log(`Latest binary unavailable (HTTP ${status}), listing alternatives...`);
-      try {
-        const options = await listAvailableBinaries(platform, arch);
-        if (options.length > 0) {
-          win.webContents.send('download-select-binary', { platform, arch, options });
-          return null;
-        }
-        win.webContents.send('download-error', 'No compatible binaries found on ' + RELEASES_BASE_URL);
-        return null;
-      } catch (listErr) {
-        console.error('Listing failed:', listErr);
-        win.webContents.send('download-error', 'Latest binary not available and listing alternatives failed: ' + listErr.message);
-        return null;
-      }
+    const options = await listGitHubReleases(platform, arch);
+    if (options.length > 0) {
+      win.webContents.send('download-select-binary', { platform, arch, options });
+    } else {
+      win.webContents.send('download-error', 'No compatible binaries found in GitHub releases for this platform.');
     }
-
-    const errorMessage = formatDownloadError(error, fullUrl);
-    console.error("Download error:", errorMessage);
+  } catch (error) {
+    const errorMessage = formatDownloadError(error, GITHUB_RELEASES_API);
+    console.error("GitHub releases fetch error:", errorMessage);
     win.webContents.send('download-error', errorMessage);
-    return null;
   }
+  return null;
 });
 
-ipcMain.handle('download-binary', async (_, filename) => {
-  if (!filename || typeof filename !== 'string') {
-    win.webContents.send('download-error', 'Invalid filename.');
+ipcMain.handle('download-binary', async (_, payload) => {
+  if (!payload || typeof payload !== 'object' || !payload.url || !payload.name) {
+    win.webContents.send('download-error', 'Invalid download request.');
     return null;
   }
-  const fullUrl = `${RELEASES_BASE_URL}${filename}`;
+  const { url, name } = payload;
   try {
-    return await downloadAndExtract(filename);
+    return await downloadAndExtract(url, name);
   } catch (error) {
-    const errorMessage = formatDownloadError(error, fullUrl);
+    const errorMessage = formatDownloadError(error, url);
     console.error("Download error:", errorMessage);
     win.webContents.send('download-error', errorMessage);
     return null;
@@ -530,7 +498,7 @@ ipcMain.handle('list-binaries', async () => {
   const platform = os.platform();
   const arch = os.arch();
   try {
-    const options = await listAvailableBinaries(platform, arch);
+    const options = await listGitHubReleases(platform, arch);
     return { success: true, platform, arch, options };
   } catch (e) {
     return { success: false, error: e.message };
@@ -592,7 +560,7 @@ function startDaemon()
     console.error('Daemon binary found:', executablePath);
   }
 
-  const addnode = network === 'testnet' ? 'testnet-navio.nav.community' : 'mainnet-navio.nav.community';
+  const addnode = network === 'testnet' ? 'testnet-navio.nav.community' : 'mainnet.nav.io';
 
   const parameters = [
     ...(network !== 'mainnet' ? [`--${network}`] : []),
