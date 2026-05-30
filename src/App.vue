@@ -110,7 +110,7 @@
           <div class="slice"></div>
       </div>
       <div class="w-full flex justify-between mt-20">
-          <span class="text-base font-medium text-white/90">Downloading binary files for <b>{{fileinfo.platform}}</b> from GitHub releases</span>
+          <span class="text-base font-medium text-white/90">Downloading binary files for <b>{{friendly_platform(fileinfo.platform)}} {{fileinfo.arch}}</b> from GitHub releases</span>
           <span id="progress-text" class="text-sm font-medium text-white/90">0%</span>
       </div>
       <div class="w-full bg-white/[0.16] rounded-full h-2">
@@ -125,8 +125,7 @@
     <h1 class="mb-2 text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
     <p class="mb-6 text-gray-200">
       Choose a compatible build from GitHub releases for
-      <b class="text-white">{{ binarySelectionInfo.platform }}</b>
-      <span v-if="binarySelectionInfo.arch"> (<b class="text-white">{{ binarySelectionInfo.arch }}</b>)</span>.
+      <b class="text-white">{{ friendly_platform(binarySelectionInfo.platform) }} {{ binarySelectionInfo.arch }}</b>.
     </p>
 
     <div class="rounded-xl overflow-hidden border border-white/[0.10] shadow-[0_24px_64px_rgba(0,0,0,0.65)]" style="background: linear-gradient(160deg, rgba(20,14,48,0.97) 0%, rgba(13,17,40,0.97) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
@@ -608,6 +607,10 @@ computed: {
     }
 },
 methods: {
+    friendly_platform: function(p) {
+        const names = { win32: 'Windows', darwin: 'macOS', linux: 'Linux' };
+        return names[p] || p;
+    },
     open_bin_directory: function() {
         ipcRenderer.invoke('shell-open-folder', this.binDir);
     },

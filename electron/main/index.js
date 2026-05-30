@@ -421,7 +421,7 @@ function downloadFile(url, dest, onProgress) {
 }
 
 async function downloadAndExtract(url, filename) {
-  const fileInfo = { filename, platform: os.platform() };
+  const fileInfo = { filename, platform: os.platform(), arch: os.arch() };
   win.webContents.send('download-file', fileInfo);
 
   const savePath = path.join(app.getPath('downloads'), filename);
