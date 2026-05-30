@@ -307,7 +307,7 @@ ipcMain.handle('get-process-variables', async (_, folderPath) => {
 const GITHUB_RELEASES_API = 'https://api.github.com/repos/nav-io/navio-core/releases';
 
 function archTokens(platform, arch) {
-  if (platform === 'win32') return ['win64'];
+  if (platform === 'win32') return ['win64', 'x86_64-w64'];
   if (platform === 'darwin') {
     if (arch === 'arm64') return ['arm64-apple-darwin'];
     if (arch === 'x64') return ['x86_64-apple-darwin'];
