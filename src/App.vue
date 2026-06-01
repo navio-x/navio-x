@@ -128,7 +128,7 @@
       <b class="text-white">{{ friendly_platform(binarySelectionInfo.platform) }} {{ binarySelectionInfo.arch }}</b>.
     </p>
 
-    <div class="rounded-xl overflow-hidden border border-white/[0.10] shadow-[0_24px_64px_rgba(0,0,0,0.65)]" style="background: linear-gradient(160deg, rgba(20,14,48,0.97) 0%, rgba(13,17,40,0.97) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+    <div class="rounded-xl overflow-hidden border border-white/[0.10]" style="background: linear-gradient(160deg, rgba(20,14,48,0.97) 0%, rgba(13,17,40,0.97) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
       <table class="w-full text-sm text-left">
         <thead style="background: rgba(0,0,0,0.30); border-bottom: 1px solid rgba(255,255,255,0.08);">
           <tr>
@@ -155,7 +155,7 @@
               <button
                 @click="select_binary(bin)"
                 class="inline-flex justify-center items-center py-1.5 px-4 text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-80"
-                style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);"
+                style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);"
               >Download</button>
             </td>
           </tr>
@@ -175,9 +175,9 @@
   </div>
 </section>
 
-<section class="h-full w-full bg-transparent pt-9" v-show="state=='agreement'">
-    <div class="py-8 p-10 mx-auto max-w-screen-xl lg:py-16">
-        <p class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
+<section class="h-full w-full bg-transparent pt-9 overflow-auto" v-show="state=='agreement'">
+    <div class="px-10 pt-6 pb-10 mx-auto max-w-screen-xl">
+        <p class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
         <div class="w-full h-full text-white">
           <p>
             This is a binding Agreement between Navio Developers (“Navio” or “We”) and the person, persons, or entity (“You” or “Your”) using the service, Software, or application (“Software”).
@@ -234,10 +234,10 @@
             You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time.
         </p>
     </div>
-    <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 mt-10">
-        <button v-on:click="accept_agreement()" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-            I Agreee
-            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+    <div class="flex justify-center mt-8">
+        <button v-on:click="accept_agreement()" class="inline-flex items-center gap-2 py-2 px-5 text-sm font-semibold text-white rounded-lg bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors">
+            I Agree
+            <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
             </svg>
         </button>
@@ -254,128 +254,127 @@ v-show="state=='select_network'"
 />
 
 <section
-class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9"
-v-show="state=='select_daemon_method'"
+  class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9"
+  v-show="state=='select_daemon_method'"
 >
-<div class="mb-10 flex justify-center">
-    <img src="./assets/setup.svg" class="w-[64px] md:w-[128px] lg:w-[256px] h-auto" />
-</div>
+  <div class="mb-8 flex justify-center">
+    <img src="./assets/setup.svg" class="w-[72px] h-auto" />
+  </div>
 
-<div class="px-4 max-w-screen-xl text-center">
-    <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white brand">
+  <div class="px-4 max-w-screen-sm w-full text-center">
+    <h1 class="mb-3 text-4xl font-extrabold tracking-tight text-white brand">
       Choose a method
-  </h1>
+    </h1>
+    <p class="mb-10 text-base text-gray-300">
+      Download the official Navio binaries automatically, or connect to a node you manage yourself.
+    </p>
 
-  <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-200">
-      You can download the official Navio binaries, or manually start the Navio daemon and connect to it.
-  </p>
-
-  <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Download Binaries -->
       <button
-      @click="state='setup'"
-      class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+        @click="downloadBinaries()"
+        class="glass-card glass-card-hover rounded-xl p-5 text-left flex flex-col items-start gap-3 cursor-pointer transition-all focus:outline-none"
+        style="border-color: rgba(139,92,246,0.40);"
       >
-      Manual Node Connection
-      <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M1 5h12m0 0L9 1m4 4L9 9"/>
-      </svg>
-  </button>
+        <div class="flex items-center justify-between w-full">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+          </div>
+          <span class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">Recommended</span>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm">Download Binaries</p>
+          <p class="text-gray-400 text-xs mt-1 leading-relaxed">Automatically fetch the latest official Navio binaries from GitHub releases.</p>
+        </div>
+      </button>
 
-  <button
-  @click="downloadBinaries()"
-  class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
-  >
-  Download Official Navio Binaries
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-  stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
-  <path stroke-linecap="round" stroke-linejoin="round"
-  d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"/>
-</svg>
-</button>
+      <!-- Manual Connection -->
+      <button
+        @click="state='setup'"
+        class="glass-card glass-card-hover rounded-xl p-5 text-left flex flex-col items-start gap-3 cursor-pointer transition-all focus:outline-none"
+      >
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white/80">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm">Manual Connection</p>
+          <p class="text-gray-400 text-xs mt-1 leading-relaxed">Connect to a Navio node you started yourself using custom RPC credentials.</p>
+        </div>
+      </button>
+    </div>
 
-  <button
-  v-if="binDir"
-  @click="open_bin_directory()"
-  class="inline-flex justify-center items-center py-3 px-5 text-base font-medium rounded-lg glass-btn-secondary focus:outline-none"
-  >
-  Open Binaries Folder
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-  stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
-  <path stroke-linecap="round" stroke-linejoin="round"
-  d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"/>
-</svg>
-</button>
-</div>
-</div>
+    <!-- Open Binaries Folder (secondary) -->
+    <div v-if="binDir" class="mt-5 flex justify-center">
+      <button
+        @click="open_bin_directory()"
+        class="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white/80 transition-colors glass-btn-secondary rounded-lg px-4 py-2 focus:outline-none"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
+        </svg>
+        Open Binaries Folder
+      </button>
+    </div>
+  </div>
 </section>
 
 <section class="h-screen bg-transparent pt-9" v-show="state=='setup'">
-  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-     <div class="w-full rounded-xl border md:mt-0 sm:max-w-md xl:p-0" style="background: linear-gradient(160deg, rgba(34,26,68,0.95) 0%, rgba(22,28,58,0.95) 100%); border-color: rgba(255,255,255,0.18); backdrop-filter: blur(16px);">
-      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl dark:text-white text-white">
-              Setup
-          </h1>
-          <p class="dark:text-white text-white">Enter the RPC connection details you specified when starting the Navio daemon.</p>
-          <div class="space-y-4 md:space-y-6">
-              <div>
-                <label class="block mb-2 text-sm font-medium text-white">Network</label>
-                <div class="flex gap-4">
-                  <label v-for="net in networks" :key="net.name" class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" v-model="network" :value="net.name" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2">
-                    <span class="text-sm text-white">{{ net.label }}</span>
-                    <span class="text-xs text-zinc-400">({{ net.port }})</span>
-                </label>
+  <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto h-full">
+    <div class="w-full rounded-xl border sm:max-w-md" style="background: linear-gradient(160deg, rgba(34,26,68,0.95) 0%, rgba(22,28,58,0.95) 100%); border-color: rgba(255,255,255,0.18); backdrop-filter: blur(16px);">
+      <div class="p-5 space-y-3">
+        <h1 class="text-lg font-bold leading-tight tracking-tight text-white">Manual Connection</h1>
+        <p class="text-xs text-white/60">Enter the RPC details you set when starting the Navio daemon.</p>
+        <div class="space-y-3">
+          <div>
+            <label class="block mb-1 text-xs font-medium text-white/80">Network</label>
+            <div class="flex gap-4">
+              <label v-for="net in networks" :key="net.name" class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" v-model="network" :value="net.name" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2">
+                <span class="text-sm text-white">{{ net.label }}</span>
+                <span class="text-xs text-zinc-400">({{ net.port }})</span>
+              </label>
             </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="host" class="block mb-1 text-xs font-medium text-white/80">Host</label>
+              <input type="text" v-model="host" id="host" class="glass-input block w-full p-2 text-sm rounded-lg" required="">
+            </div>
+            <div>
+              <label for="port" class="block mb-1 text-xs font-medium text-white/80">Port</label>
+              <input type="text" v-model="port" id="port" class="glass-input block w-full p-2 text-sm rounded-lg" required="">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="username" class="block mb-1 text-xs font-medium text-white/80">Username</label>
+              <input type="text" v-model="username" id="username" class="glass-input block w-full p-2 text-sm rounded-lg" required="">
+            </div>
+            <div>
+              <label for="password" class="block mb-1 text-xs font-medium text-white/80">Password</label>
+              <input type="password" v-model="password" id="password" class="glass-input block w-full p-2 text-sm rounded-lg" required="">
+            </div>
+          </div>
+          <div class="flex items-center gap-5">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="remember" v-model="remember" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
+              <span class="text-sm text-white">Remember me</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="auto_login" v-model="auto_login" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
+              <span class="text-sm text-white">Auto login</span>
+            </label>
+          </div>
+          <button :disabled="!username||!password" v-on:click="connect()" class="w-full text-white disabled:opacity-40 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 hover:bg-blue-800 focus:outline-none transition">Connect</button>
+          <button v-on:click="select_daemon_method()" class="w-full font-medium rounded-lg text-sm px-5 py-2 text-center glass-btn-secondary focus:outline-none">Back</button>
         </div>
-        <div class="grid md:grid-cols-2 md:gap-6">
-            <div class="relative z-0 w-full group">
-              <label for="host" class="block mb-2 text-sm font-medium dark:text-white text-white">Host</label>
-              <input type="text" v-model="host" id="host" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
-          </div>
-          <div class="relative z-0 w-full group">
-
-              <label for="port" class="block mb-2 text-sm font-medium dark:text-white text-white">Port</label>
-              <input type="text" v-model="port" id="port" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
-          </div>
       </div>
-      <div class="grid md:grid-cols-2 md:gap-6">
-        <div class="relative z-0 w-full group">
-          <label for="username" class="block mb-2 text-sm font-medium dark:text-white text-white">Username</label>
-          <input type="text" v-model="username" id="username" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" placeholder="" required="">
-      </div>
-      <div class="relative z-0 w-full group">
-          <label for="password" class="block mb-2 text-sm font-medium dark:text-white text-white">Password</label>
-          <input type="password" v-model="password" id="password" placeholder="" class="glass-input block w-full p-2.5 sm:text-sm rounded-lg" required="">
-      </div>
+    </div>
   </div>
-  <div class="flex items-center justify-between">
-      <div class="flex items-start">
-          <div class="flex items-center h-5">
-            <input id="remember" v-model="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
-        </div>
-        <div class="ml-3 text-sm">
-            <label for="remember" class="dark:text-white text-white">Remember me</label>
-        </div>
-    </div>
-</div>
-<div class="flex items-center justify-between">
-  <div class="flex items-start">
-      <div class="flex items-center h-5">
-        <input id="auto_login" v-model="auto_login" aria-describedby="auto_login" type="checkbox" class="w-4 h-4 rounded accent-violet-500 bg-white/10 border border-white/20">
-    </div>
-    <div class="ml-3 text-sm">
-        <label for="auto_login" class="dark:text-white text-white">Auto login</label>
-    </div>
-</div>
-</div>
-<button :disabled="!username||!password" v-on:click="connect()" class="w-full text-white bg-primary-600 disabled:bg-blue-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Connect</button>
-<button v-on:click="select_daemon_method()" class="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center glass-btn-secondary focus:outline-none">Back</button>
-</div>
-</div>
-</div>
-</div>
 </section>
 
 <div class="flex items-center justify-center h-screen bg-transparent pt-9" v-show="state=='connected'">
@@ -736,14 +735,6 @@ methods: {
     },
     select_binary: function(bin) {
         if (!bin || !bin.url) return;
-        this.state = 'download_progress';
-        this.is_downloading = true;
-        this.$nextTick(() => {
-            const bar = document.getElementById('progress-bar');
-            const txt = document.getElementById('progress-text');
-            if (bar) bar.style.width = '0%';
-            if (txt) txt.textContent = '0%';
-        });
         ipcRenderer.invoke('download-binary', { url: bin.url, name: bin.name }).then((extractPath) => {
             if (!extractPath) {
                 this.is_downloading = false;
@@ -770,8 +761,6 @@ methods: {
                 });
                 return;
             }
-            this.state="download_progress";
-            this.is_downloading=true;
             ipcRenderer.invoke('download-latest').then((extractPath) => {
                 if (!extractPath)
                 {
@@ -875,7 +864,15 @@ mounted()
     this.app=getCurrentInstance();
     ipcRenderer.invoke('get-bin-dir').then((dir) => { if (dir) this.binDir = dir; });
     ipcRenderer.on('download-file', (e, fileinfo) => {
-        this.fileinfo=fileinfo;
+        this.fileinfo = fileinfo;
+        this.is_downloading = true;
+        this.state = 'download_progress';
+        this.$nextTick(() => {
+            const bar = document.getElementById('progress-bar');
+            const txt = document.getElementById('progress-text');
+            if (bar) bar.style.width = '0%';
+            if (txt) txt.textContent = '0%';
+        });
     });
 
     ipcRenderer.on('download-progress', (e, progress) => {

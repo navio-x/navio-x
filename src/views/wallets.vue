@@ -47,7 +47,7 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
-          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Create</button>
+          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Create</button>
 
         </div>
       </div>
@@ -69,9 +69,9 @@
         </div>
         <!-- Modal body -->
         <div class="p-6 space-y-6">
-          <center>
+          <div class="flex justify-center">
             <img class="h-auto max-w-lg rounded-lg" src="../assets/seed-phrase.png" alt="Seed Phrase">
-          </center>
+          </div>
           <p class="font-medium text-white/85">A seed is a unique phrase that is generated for your wallet, and you can back up this seed and restore it to your wallet in the future. Keep the following seed phrase safe and do not share it with anyone.</p>
           <div class="rounded-lg p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.06);">
             <pre class="block text-sm font-mono text-white whitespace-pre-wrap break-all">{{blsctseed}}</pre>
@@ -79,7 +79,7 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
-          <button type="button" id="confirmButton-1" data-modal-hide="modal" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Copy</button>
+          <button type="button" id="confirmButton-1" data-modal-hide="modal" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Copy</button>
 
         </div>
       </div>
@@ -101,9 +101,9 @@
         </div>
         <!-- Modal body -->
         <div class="p-6 space-y-6">
-          <center>
+          <div class="flex justify-center">
             <img class="h-auto max-w-lg rounded-lg" src="../assets/audit-key.jpg" alt="Audit Key">
-          </center>
+          </div>
           <p class="font-medium text-white/85">Transactions made in your wallet can only be viewed by you. The audit key allows your transaction history in the wallet to be shared with 3rd parties. The 3rd party cannot perform any transactions related to your wallet.</p>
           <div class="rounded-lg p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.06);">
             <div class="text-sm font-mono text-white" style="width:100%;height:auto;display:inline-block;overflow-wrap: break-word;">{{blsctauditkey}}</div>
@@ -111,7 +111,7 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
-          <button type="button" id="confirmButton-2" data-modal-hide="modal" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Copy</button>
+          <button type="button" id="confirmButton-2" data-modal-hide="modal" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Copy</button>
 
         </div>
       </div>
@@ -141,35 +141,41 @@
         </div>
         <div class="flex gap-3 px-6 py-4 border-t border-white/[0.08]">
           <button @click="showRescanModal = false" class="flex-1 px-4 py-2.5 rounded-lg text-sm glass-btn-secondary transition duration-200">Cancel</button>
-          <button @click="rescanblockchain(); showRescanModal = false" :disabled="scan_start_height === ''" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 4px 14px rgba(124,58,237,0.30);">Rescan</button>
+          <button @click="rescanblockchain(); showRescanModal = false" :disabled="scan_start_height === ''" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Rescan</button>
         </div>
       </div>
     </div>
   </transition>
   <div class="h-full w-full text-white bg-transparent">
-    <div class="w-full pt-3 mb-5">
-      <button id="button" type="button" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>&nbsp;Create Wallet
+    <div class="flex items-center gap-2 px-4 pt-3 mb-5">
+      <button id="button" type="button" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-semibold text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Create Wallet
       </button>
       <template v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
-      <button v-on:click="getblsctseed()" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-      </svg>
-      &nbsp;Wallet Seed
-    </button>
-    <button v-on:click="getblsctauditkey()" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-    </svg>
-    &nbsp;Audit Key
-  </button>
-  <button @click="showRescanModal = true" class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-  </svg>
-  &nbsp;Rescan Blockchain
-</button>
+        <button v-on:click="getblsctseed()" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+          </svg>
+          Wallet Seed
+        </button>
+        <button v-on:click="getblsctauditkey()" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+          Audit Key
+        </button>
+        <button @click="showRescanModal = true" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+          Rescan
+        </button>
       </template>
-</div>
+    </div>
 <div class="w-full p-4 bg-transparent" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
   <h3>Wallet Info</h3>
   <div class="flex mt-5" v-if="is_wallet_loaded&&wallet_info">
@@ -227,22 +233,27 @@
 <p>No wallet loaded.</p>
 </div>!-->
 
-<p v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">Click on the wallet you want to load or unload</p>
-<div class="w-48 mt-3 space-y-3 text-white dark:text-white bg-transparent" v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">
-  <!--<p>All wallets : {{Object.keys(all_wallets.wallets).length}}</p>!-->
-  <label class="w-full relative inline-flex items-center cursor-pointer" v-for="wallet in all_wallets.wallets">
-    <input type="checkbox" id="wallet_name" value="" class="sr-only peer" v-model="wallet.checked" v-on:change="manage_wallet(wallet)">
-    <div class="w-14 h-7 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 border-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-    <span class="ms-3 text-sm font-medium dark:text-gray-300 text-gray-300">{{wallet.name}}</span>
-  </label>
-
-  <h3 class="mb-4 font-semibold dark:text-white text-white">Change Active Wallet : </h3>
-  <div class="flex" v-for="wallet in all_wallets.wallets">
-    <input type="radio" name="hs-default-radio" class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-gray-800 dark:bg-gray-800 dark:border-gray-700 border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" :id="'lr_'+wallet.name" v-bind:value="wallet.name" v-model="active_wallet" v-on:change="set_active_wallet(wallet)">
-    <label :for="'lr_'+wallet.name" class="text-sm ms-2 dark:text-gray-200 text-gray-200">{{wallet.name}}</label>
+<div class="mt-1 space-y-4 text-white bg-transparent" v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">
+  <div>
+    <p class="text-xs text-white/50 mb-2">Toggle to load or unload a wallet</p>
+    <div class="space-y-2">
+      <label class="relative inline-flex items-center cursor-pointer" v-for="wallet in all_wallets.wallets">
+        <input type="checkbox" id="wallet_name" value="" class="sr-only peer" v-model="wallet.checked" v-on:change="manage_wallet(wallet)">
+        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+        <span class="ms-2 text-sm text-white/80">{{wallet.name}}</span>
+      </label>
+    </div>
   </div>
 
-
+  <div>
+    <p class="text-xs text-white/50 mb-2">Active wallet</p>
+    <div class="space-y-1.5">
+      <label class="flex items-center gap-2 cursor-pointer" v-for="wallet in all_wallets.wallets">
+        <input type="radio" name="hs-default-radio" class="shrink-0 border-gray-600 rounded-full text-blue-600 focus:ring-blue-500 bg-gray-800 checked:bg-blue-500 checked:border-blue-500" :id="'lr_'+wallet.name" v-bind:value="wallet.name" v-model="active_wallet" v-on:change="set_active_wallet(wallet)">
+        <span :for="'lr_'+wallet.name" class="text-sm text-white/80">{{wallet.name}}</span>
+      </label>
+    </div>
+  </div>
 </div>
 <div v-else class="flex flex-col items-center justify-center py-16 px-6">
   <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">

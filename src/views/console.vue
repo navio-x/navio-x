@@ -16,9 +16,10 @@
     <footer class="flex bg-transparent mt-3 h-18 w-full">
       <div class="flex w-full rounded-lg shadow-sm">
         <autocomplete ref="autocomplete" class="w-10/12" @selected="cmd = $event" @submit="run()" @clear="clearResult()" :items="items" storage-key="console-cmd-history" />
-        <button class="ml-3 h-10 bg-blue-500 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white w-2/12 font-bold rounded focus:outline-none focus:shadow-outline" :disabled="!cmd || !cmd.trim()" v-on:click="run()"><center><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <button class="ml-3 h-10 w-2/12 inline-flex items-center justify-center rounded-lg disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none transition-opacity hover:opacity-85" :disabled="!cmd || !cmd.trim()" v-on:click="run()" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-white">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-        </svg></center>
+        </svg>
       </button>
     </div>
   </footer>
