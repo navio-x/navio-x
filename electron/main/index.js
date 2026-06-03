@@ -63,39 +63,39 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     var daemonPID=undefined;
     var stakerPID=undefined;
 
-function getNetwork() {
-  try {
-    const configPath = path.join(app.getPath('userData'), 'config.json');
-    if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      if (config.network) return config.network;
+    function getNetwork() {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        if (fs.existsSync(configPath)) {
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          if (config.network) return config.network;
+        }
+      } catch (e) {}
+      return 'mainnet';
     }
-  } catch (e) {}
-  return 'mainnet';
-}
 
-function getSetupComplete() {
-  try {
-    const configPath = path.join(app.getPath('userData'), 'config.json');
-    if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      return !!config.setupComplete;
+    function getSetupComplete() {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        if (fs.existsSync(configPath)) {
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          return !!config.setupComplete;
+        }
+      } catch (e) {}
+      return false;
     }
-  } catch (e) {}
-  return false;
-}
 
-function setSetupComplete(value) {
-  try {
-    const configPath = path.join(app.getPath('userData'), 'config.json');
-    let config = {};
-    try {
-      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    } catch (e) {}
-    config.setupComplete = value;
-    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
-  } catch (e) {}
-}
+    function setSetupComplete(value) {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        let config = {};
+        try {
+          if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        } catch (e) {}
+        config.setupComplete = value;
+        fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+      } catch (e) {}
+    }
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Navio X',
@@ -297,11 +297,11 @@ ipcMain.handle('shell-open-folder', async (_, folderPath) => {
 
 ipcMain.handle('get-process-variables', async (_, folderPath) => {
   return {
-      electron: process.versions.electron,
-      chrome: process.versions.chrome,
-      node: process.versions.node,
-      v8: process.versions.v8
-    }
+    electron: process.versions.electron,
+    chrome: process.versions.chrome,
+    node: process.versions.node,
+    v8: process.versions.v8
+  }
 });
 
 const GITHUB_RELEASES_API = 'https://api.github.com/repos/nav-io/navio-core/releases';
@@ -319,8 +319,8 @@ function archTokens(platform, arch) {
     if (arch === 'arm') return ['arm-linux-gnueabihf'];
     if (arch === 'ppc64') {
       return os.endianness() === 'LE'
-        ? ['powerpc64le-linux-gnu']
-        : ['powerpc64-linux-gnu'];
+      ? ['powerpc64le-linux-gnu']
+      : ['powerpc64-linux-gnu'];
     }
     if (arch === 'riscv64') return ['riscv64-linux-gnu'];
   }
@@ -571,13 +571,7 @@ function startDaemon()
     `-rpcpassword=${rpcpassword}`,
     '-txindex=1',
     `-addnode=${addnode}`,
-    '-debug=1',
-    '-debugexclude=libevent',
-    '-debugexclude=http',
-    '-debugexclude=rpc',
-    '-debugexclude=leveldb',
-    '-debugexclude=net',
-    '-debugexclude=addrman'
+    '-debug=1'
   ];
   console.log("Daemon Parameters : [" + parameters + "]");
 
