@@ -3,7 +3,7 @@
     <div v-if="$store.state.active_wallet && ready" class="flex flex-col h-full min-h-0">
 
       <!-- ── Filter bar ── -->
-      <div class="px-4 py-3 shrink-0">
+      <div class="px-4 py-3 shrink-0 border-b border-white/10">
         <div class="flex items-center gap-2 flex-wrap">
 
           <select v-model="selectedCategory" class="hst-filter">
@@ -38,89 +38,122 @@
       </div>
 
       <!-- ── Table ── -->
-      <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
-        <table v-if="filteredTxs.length" class="w-full border-collapse">
-          <thead class="sticky top-0 z-10">
-            <tr class="hst-thead-row">
-              <th class="hst-th text-left">Type</th>
-              <th class="hst-th text-left">Date</th>
-              <th class="hst-th text-right">Amount</th>
-              <th class="hst-th text-right">Fee</th>
-              <th class="hst-th text-right">Conf.</th>
-              <th class="hst-th text-right">Block</th>
-              <th class="hst-th text-right">Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="tx in filteredTxs" :key="tx.txid + tx.time" class="hst-row">
+      <template v-if="filteredTxs.length">
+        <!-- Fixed header — outside scroll container -->
+        <div class="px-6 pt-3 shrink-0">
+          <table class="w-full table-fixed border-separate [border-spacing:0]">
+            <colgroup>
+              <col style="width:13%">
+              <col style="width:21%">
+              <col style="width:16%">
+              <col style="width:14%">
+              <col style="width:10%">
+              <col style="width:12%">
+              <col style="width:14%">
+            </colgroup>
+            <thead>
+              <tr class="hst-thead-row">
+                <th class="hst-th text-left">Type</th>
+                <th class="hst-th text-left">Date</th>
+                <th class="hst-th text-right">Amount</th>
+                <th class="hst-th text-right">Fee</th>
+                <th class="hst-th text-right">Conf.</th>
+                <th class="hst-th text-right">Block</th>
+                <th class="hst-th text-right">Address</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
 
-              <!-- Type badge -->
-              <td class="hst-td">
-                <span :class="['hst-badge', `hst-badge--${tx.category}`]">
-                  <!-- receive -->
-                  <svg v-if="tx.category === 'receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"/>
-                  </svg>
-                  <!-- send -->
-                  <svg v-else-if="tx.category === 'send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/>
-                  </svg>
-                  <!-- generate / stake -->
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                  </svg>
-                  {{ tx.category }}
-                </span>
-              </td>
+        <!-- Scrollable body -->
+        <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
+          <table class="w-full table-fixed border-separate [border-spacing:0]">
+            <colgroup>
+              <col style="width:13%">
+              <col style="width:21%">
+              <col style="width:16%">
+              <col style="width:14%">
+              <col style="width:10%">
+              <col style="width:12%">
+              <col style="width:14%">
+            </colgroup>
+            <tbody>
+              <tr v-for="tx in paginatedTxs" :key="tx.txid + tx.time" class="hst-row">
 
-              <!-- Date -->
-              <td class="hst-td hst-td--muted text-sm whitespace-nowrap">
-                {{ formatDate(tx.time) }}
-              </td>
+                <!-- Type badge -->
+                <td class="hst-td">
+                  <span :class="['hst-badge', `hst-badge--${tx.category}`]">
+                    <svg v-if="tx.category === 'receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"/>
+                    </svg>
+                    <svg v-else-if="tx.category === 'send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                    </svg>
+                    {{ tx.category }}
+                  </span>
+                </td>
 
-              <!-- Amount -->
-              <td class="hst-td text-right whitespace-nowrap">
-                <span :class="['hst-amount', tx.category === 'send' ? 'hst-amount--out' : 'hst-amount--in']">
-                  {{ tx.category === 'send' ? '−' : '+' }}{{ Math.abs(tx.amount).toFixed(4) }}
-                </span>
-                <span class="text-[11px] text-white/55 ml-1">NAV</span>
-              </td>
+                <!-- Date -->
+                <td class="hst-td hst-td--muted text-sm whitespace-nowrap">
+                  {{ formatDate(tx.time) }}
+                </td>
 
-              <!-- Fee -->
-              <td class="hst-td text-right whitespace-nowrap">
-                <span v-if="tx.fee !== undefined && tx.fee !== 0" class="hst-fee">
-                  {{ Math.abs(tx.fee).toFixed(4) }}
-                </span>
-                <span v-else class="text-white/50 text-xs">—</span>
-                <span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-[11px] text-white/55 ml-1">NAV</span>
-              </td>
+                <!-- Amount -->
+                <td class="hst-td text-right whitespace-nowrap">
+                  <span :class="['hst-amount', tx.category === 'send' ? 'hst-amount--out' : 'hst-amount--in']">
+                    {{ tx.category === 'send' ? '−' : '+' }}{{ Math.abs(tx.amount).toFixed(4) }}
+                  </span>
+                  <span class="text-[11px] text-white/55 ml-1">NAV</span>
+                </td>
 
-              <!-- Confirmations -->
-              <td class="hst-td text-right">
-                <span :class="['hst-conf', tx.confirmations >= 6 ? 'hst-conf--ok' : 'hst-conf--pending']">
-                  {{ tx.confirmations > 999 ? '999+' : tx.confirmations }}
-                </span>
-              </td>
+                <!-- Fee -->
+                <td class="hst-td text-right whitespace-nowrap">
+                  <span v-if="tx.fee !== undefined && tx.fee !== 0" class="hst-fee">
+                    {{ Math.abs(tx.fee).toFixed(4) }}
+                  </span>
+                  <span v-else class="text-white/50 text-xs">—</span>
+                  <span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-[11px] text-white/55 ml-1">NAV</span>
+                </td>
 
-              <!-- Block height -->
-              <td class="hst-td hst-td--muted text-right font-mono text-xs">
-                {{ tx.blockheight || '—' }}
-              </td>
+                <!-- Confirmations -->
+                <td class="hst-td text-right">
+                  <span :class="['hst-conf', tx.confirmations >= 6 ? 'hst-conf--ok' : 'hst-conf--pending']">
+                    {{ tx.confirmations > 999 ? '999+' : tx.confirmations }}
+                  </span>
+                </td>
 
-              <!-- Address -->
-              <td class="hst-td text-right">
-                <span v-if="tx.address" class="font-mono text-xs text-white/65">
-                  {{ tx.address.substring(0, 6) }}…{{ tx.address.slice(-4) }}
-                </span>
-                <span v-else class="text-white/50 text-xs">—</span>
-              </td>
+                <!-- Block height -->
+                <td class="hst-td hst-td--muted text-right font-mono text-xs">
+                  {{ tx.blockheight || '—' }}
+                </td>
 
-            </tr>
-          </tbody>
-        </table>
+                <!-- Address -->
+                <td class="hst-td text-right">
+                  <span v-if="tx.address" class="font-mono text-xs text-white/65">
+                    {{ tx.address.substring(0, 6) }}…{{ tx.address.slice(-4) }}
+                  </span>
+                  <span v-else class="text-white/50 text-xs">—</span>
+                </td>
 
-        <!-- Empty state -->
-        <div v-else class="empty-state">
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="px-6 py-2.5 shrink-0 border-t border-white/10 flex items-center justify-between">
+          <button @click="currentPage--" :disabled="currentPage === 1" class="hst-page-btn">← Prev</button>
+          <span class="text-[12px] text-white/55">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button @click="currentPage++" :disabled="currentPage === totalPages" class="hst-page-btn">Next →</button>
+        </div>
+      </template>
+
+      <!-- Empty state -->
+      <div v-else class="flex-1 overflow-auto px-6 pt-3 pb-4 min-h-0">
+        <div class="empty-state">
           <div class="empty-icon-ring">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" class="empty-icon">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -148,7 +181,9 @@
                 ready: false,
                 selectedCategory: "",
                 startDate: "",
-                endDate: ""
+                endDate: "",
+                currentPage: 1,
+                pageSize: 10
             };
         },
         computed: {
@@ -163,7 +198,17 @@
                     const matchesEnd = this.endDate ? txTime <= new Date(this.endDate + 'T23:59:59') : true;
                     return matchesCategory && matchesStart && matchesEnd;
                 });
+            },
+            totalPages() {
+                return Math.max(1, Math.ceil(this.filteredTxs.length / this.pageSize));
+            },
+            paginatedTxs() {
+                const start = (this.currentPage - 1) * this.pageSize;
+                return this.filteredTxs.slice(start, start + this.pageSize);
             }
+        },
+        watch: {
+            filteredTxs() { this.currentPage = 1; }
         },
         methods: {
             formatDate(ts) {
@@ -302,10 +347,13 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 
 /* ── Table ────────────────────────────────────── */
 .hst-thead-row {
-  background: rgba(255,255,255,0.08);
+  background: rgba(20, 15, 48, 0.90);
   border-bottom: 1px solid rgba(255,255,255,0.16);
 }
 .hst-th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   padding: 8px 12px;
   font-size: 10px;
   font-weight: 600;
@@ -313,21 +361,22 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
   text-transform: uppercase;
   color: rgba(255,255,255,0.60);
   white-space: nowrap;
+  background: rgb(20, 15, 48);
 }
 
 .hst-row {
-  border-bottom: 1px solid rgba(255,255,255,0.10);
   transition: background 0.12s;
 }
-.hst-row:hover { background: rgba(255,255,255,0.07); }
-.hst-row:last-child { border-bottom: none; }
+.hst-row:hover td { background: rgba(255,255,255,0.07); }
 
 .hst-td {
   padding: 10px 12px;
   font-size: 13px;
   color: rgba(255,255,255,0.93);
   vertical-align: middle;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
 }
+.hst-row:last-child .hst-td { border-bottom: none; }
 .hst-td--muted { color: rgba(255,255,255,0.65); }
 
 /* Category badge */
@@ -374,6 +423,26 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 }
 .hst-conf--ok      { background: rgba(52,211,153,0.18);  color: rgba(52,211,153,0.98); }
 .hst-conf--pending { background: rgba(251,191,36,0.18);  color: rgba(251,191,36,0.98); }
+
+/* ── Pagination ───────────────────────────────── */
+.hst-page-btn {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s, border-color 0.13s;
+}
+.hst-page-btn:hover:not(:disabled) {
+  background: rgba(167,139,250,0.22);
+  border-color: rgba(167,139,250,0.45);
+  color: rgba(255,255,255,0.98);
+}
+.hst-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ── Empty state ──────────────────────────────── */
 .empty-state {
