@@ -70,7 +70,7 @@
         <!-- Modal body -->
         <div class="p-6 space-y-6">
           <div class="flex justify-center">
-            <img class="h-auto max-w-lg rounded-lg" src="../assets/seed-phrase.png" alt="Seed Phrase">
+            <img class="h-auto max-w-[240px] rounded-lg" src="../assets/seed-phrase.png" alt="Seed Phrase">
           </div>
           <p class="font-medium text-white/85">A seed is a unique phrase that is generated for your wallet, and you can back up this seed and restore it to your wallet in the future. Keep the following seed phrase safe and do not share it with anyone.</p>
           <div class="rounded-lg p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.06);">
@@ -102,7 +102,7 @@
         <!-- Modal body -->
         <div class="p-6 space-y-6">
           <div class="flex justify-center">
-            <img class="h-auto max-w-lg rounded-lg" src="../assets/audit-key.jpg" alt="Audit Key">
+            <img class="h-auto max-w-[240px] rounded-lg" src="../assets/audit-key.jpg" alt="Audit Key">
           </div>
           <p class="font-medium text-white/85">Transactions made in your wallet can only be viewed by you. The audit key allows your transaction history in the wallet to be shared with 3rd parties. The 3rd party cannot perform any transactions related to your wallet.</p>
           <div class="rounded-lg p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.06);">
@@ -168,7 +168,7 @@
           </svg>
           Audit Key
         </button>
-        <button @click="showRescanModal = true" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button @click="openRescanModal" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
@@ -178,41 +178,38 @@
     </div>
 <div class="w-full p-4 bg-transparent" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
   <h3>Wallet Info</h3>
-  <div class="flex mt-5" v-if="is_wallet_loaded&&wallet_info">
-    <div>
-      <span v-if="wallet_info.private_keys_enabled" class="inline-flex justify-center items-center bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-      </svg>
-    &nbsp;Private Keys Enabled</span>
-    <span v-else class="inline-flex justify-center items-center bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-    </svg>
-  &nbsp;Private Keys Disabled</span>
-</div>
-<div v-if="typeof wallet_info.scanning=='boolean'">
-  <span v-if="wallet_info.scanning" class="inline-flex justify-center items-center bg-green-900/60 text-green-300 border border-green-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-  </svg>
-&nbsp;Scanning...</span>
-<span v-else class="inline-flex justify-center items-center bg-white/10 text-white/70 border border-white/20 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-</svg>&nbsp;Not scanning</span>
-</div>
-<div v-if="typeof wallet_info.scanning=='object'">
-  <span class="inline-flex justify-center items-center bg-blue-900/60 text-blue-300 border border-blue-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-  </svg>&nbsp;Scanning...</span>
-  <span v-if="wallet_info.scanning.duration" class="inline-flex justify-center items-center bg-green-900/60 text-green-300 border border-green-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-  </svg>
-&nbsp;{{wallet_info.scanning.duration}} seconds</span>
-<span v-if="wallet_info.scanning.progress" class="inline-flex justify-center items-center bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-sm font-medium me-2 px-2.5 py-0.5 rounded"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-</svg>
+  <div class="flex flex-wrap gap-1.5 mt-4" v-if="is_wallet_loaded&&wallet_info">
+    <span v-if="wallet_info.private_keys_enabled" class="inline-flex items-center gap-1 bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 text-xs font-medium px-2 py-0.5 rounded">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>
+      Private Keys Enabled
+    </span>
+    <span v-else class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>
+      Private Keys Disabled
+    </span>
 
-&nbsp;{{(wallet_info.scanning.progress*100).toFixed(2)}} %</span>
-</div>
-</div>
+    <template v-if="typeof wallet_info.scanning=='boolean' && wallet_info.scanning">
+      <span class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+        Scanning...
+      </span>
+    </template>
+
+    <template v-if="typeof wallet_info.scanning=='object'">
+      <span class="inline-flex items-center gap-1 bg-blue-900/60 text-blue-300 border border-blue-500/30 text-xs font-medium px-2 py-0.5 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+        Scanning...
+      </span>
+      <span v-if="wallet_info.scanning.duration" class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+        {{wallet_info.scanning.duration}}s
+      </span>
+      <span v-if="wallet_info.scanning.progress" class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+        {{(wallet_info.scanning.progress*100).toFixed(2)}}%
+      </span>
+    </template>
+  </div>
   <!--<span v-if="wallet_info&&wallet_info.scanning==true" class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Scanning...</span>
     <span v-else class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Not scanning</span>!-->
     <!--<pre class="text-white dark:text-white" v-if="is_wallet_loaded&&wallet_info">{{wallet_info}}</pre>!-->
@@ -391,6 +388,14 @@
             vm.listwallets();
           });
         }
+      },
+      openRescanModal: function() {
+        this.showRescanModal = true;
+        this.client.command([{ method: "getblockcount" }]).then((r) => {
+          if (r[0] && typeof r[0] === 'number') {
+            this.scan_stop_height = r[0];
+          }
+        });
       },
       rescanblockchain:function()
       {
