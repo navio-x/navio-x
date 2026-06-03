@@ -104,7 +104,7 @@
                 <!-- Amount -->
                 <td class="hst-td text-right whitespace-nowrap">
                   <span :class="['hst-amount', tx.category === 'send' ? 'hst-amount--out' : 'hst-amount--in']">
-                    {{ tx.category === 'send' ? '−' : '+' }}{{ Math.abs(tx.amount).toFixed(4) }}
+                    {{ tx.category === 'send' ? '−' : '+' }}{{ formatNav(tx.amount) }}
                   </span>
                   <span class="text-[11px] text-white/55 ml-1">NAV</span>
                 </td>
@@ -112,7 +112,7 @@
                 <!-- Fee -->
                 <td class="hst-td text-right whitespace-nowrap">
                   <span v-if="tx.fee !== undefined && tx.fee !== 0" class="hst-fee">
-                    {{ Math.abs(tx.fee).toFixed(4) }}
+                    {{ formatNav(tx.fee) }}
                   </span>
                   <span v-else class="text-white/50 text-xs">—</span>
                   <span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-[11px] text-white/55 ml-1">NAV</span>
@@ -216,6 +216,12 @@
                     day: '2-digit', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
+            },
+            formatNav(n) {
+                const fixed = parseFloat(Math.abs(n).toFixed(4)).toString();
+                const [int, dec] = fixed.split('.');
+                const intFmt = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return dec ? intFmt + '.' + dec : intFmt;
             },
             listtransactions() {
                 this.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) => {

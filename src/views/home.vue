@@ -84,6 +84,17 @@
 
 					<div v-if="txs.length > 0" class="overflow-x-auto">
 						<table class="w-full text-sm">
+							<thead>
+								<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
+								</tr>
+							</thead>
 							<tbody>
 								<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
 									<td class="px-4 py-3 whitespace-nowrap">
@@ -111,12 +122,12 @@
 									</td>
 									<td class="px-4 py-3">
 										<span :class="tx.amount > 0 ? 'text-green-400' : 'text-red-400'" class="text-sm font-medium">
-											{{tx.amount > 0 ? '+' + tx.amount : tx.amount}} NAV
+											{{ tx.amount > 0 ? '+' : '−' }}{{ formatNav(tx.amount) }} NAV
 										</span>
 									</td>
 									<td class="px-4 py-3 whitespace-nowrap">
 										<span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-xs text-orange-300/80 font-medium" :title="'Fee: ' + Math.abs(tx.fee) + ' NAV'">
-											{{ Math.abs(tx.fee) }} NAV
+											{{ formatNav(tx.fee) }} NAV
 										</span>
 										<span v-else class="text-xs text-white/80">—</span>
 									</td>
@@ -229,6 +240,12 @@
 			toNavoshi: function(n)
 			{
 				if (n) return sb.toSatoshi(n);
+			},
+			formatNav(n) {
+				const fixed = parseFloat(Math.abs(n).toFixed(4)).toString();
+				const [int, dec] = fixed.split('.');
+				const intFmt = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+				return dec ? intFmt + '.' + dec : intFmt;
 			},
 			formatNumber: n => {
 				if (!n) return "0";
