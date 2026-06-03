@@ -576,7 +576,6 @@ function startDaemon()
     '-debugexclude=http',
     '-debugexclude=rpc',
     '-debugexclude=leveldb',
-    '-debugexclude=bench',
     '-debugexclude=net',
     '-debugexclude=addrman'
   ];
