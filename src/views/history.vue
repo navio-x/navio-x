@@ -348,11 +348,6 @@
                 <span class="txm-value">{{ modalTx.output_storage ? 'Yes' : 'No' }}</span>
               </div>
 
-              <div v-if="modalTx.trusted !== undefined" class="txm-field">
-                <span class="txm-label">Trusted</span>
-                <span class="txm-value">{{ modalTx.trusted ? 'Yes' : 'No' }}</span>
-              </div>
-
               <div v-if="modalTx.walletconflicts && modalTx.walletconflicts.length" class="txm-field txm-field--full">
                 <span class="txm-label">Wallet Conflicts</span>
                 <span class="txm-value txm-mono text-red-400">{{ modalTx.walletconflicts.join(', ') }}</span>
