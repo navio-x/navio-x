@@ -403,88 +403,70 @@ v-show="state=='select_network'"
   <!-- Main nav -->
   <nav class="relative flex-1 overflow-y-auto px-3 pt-4 pb-2">
       <router-link to="/home"
-      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-      active-class="nav-item-active !text-white">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-      </svg>
-      <span>Home</span>
-  </router-link>
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhHouse :size="19" weight="duotone" class="shrink-0" />
+        <span>Home</span>
+      </router-link>
 
-  <router-link to="/wallets"
-  class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-  active-class="nav-item-active !text-white">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-  </svg>
-  <span>Wallets</span>
-</router-link>
+      <router-link to="/wallets"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhWallet :size="19" weight="duotone" class="shrink-0" />
+        <span>Wallets</span>
+      </router-link>
 
-<router-link to="/send"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-</svg>
-<span>Send</span>
-</router-link>
+      <router-link to="/send"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhPaperPlaneTilt :size="19" weight="duotone" class="shrink-0" />
+        <span>Send</span>
+      </router-link>
 
-<router-link to="/receive"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-</svg>
-<span>Receive</span>
-</router-link>
+      <router-link to="/receive"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhArrowCircleDown :size="19" weight="duotone" class="shrink-0" />
+        <span>Receive</span>
+      </router-link>
 
-<router-link to="/history"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-</svg>
-<span>History</span>
-</router-link>
+      <router-link to="/history"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhClockCounterClockwise :size="19" weight="duotone" class="shrink-0" />
+        <span>History</span>
+      </router-link>
 
-<router-link to="/staking"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-</svg>
-<span>Staking</span>
-</router-link>
+      <router-link to="/staking"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium"
+      active-class="nav-item-active">
+        <PhDatabase :size="19" weight="duotone" class="shrink-0" />
+        <span>Staking</span>
+      </router-link>
 
-<div class="my-3 border-t border-white/[0.14]"></div>
-<p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/45">Tools</p>
+      <div class="my-3 border-t border-white/[0.14]"></div>
+      <p class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/45">Tools</p>
 
-<router-link to="/console"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-</svg>
-<span>Console</span>
-</router-link>
+      <router-link to="/console"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhTerminalWindow :size="19" weight="duotone" class="shrink-0" />
+        <span>Console</span>
+      </router-link>
 
-<router-link to="/settings"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
-</svg>
-<span>Settings</span>
-</router-link>
+      <router-link to="/settings"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhGearSix :size="19" weight="duotone" class="shrink-0" />
+        <span>Settings</span>
+      </router-link>
 
-<router-link to="/about"
-class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/90 hover:text-white/90 hover:bg-white/[0.12] transition-all text-sm font-medium"
-active-class="nav-item-active !text-white">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[18px] h-[18px] shrink-0">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-</svg>
-<span>About</span>
-</router-link>
+      <router-link to="/about"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium"
+      active-class="nav-item-active">
+        <PhInfo :size="19" weight="duotone" class="shrink-0" />
+        <span>About</span>
+      </router-link>
 </nav>
 
 <!-- Status card -->
@@ -544,6 +526,11 @@ active-class="nav-item-active !text-white">
     import Client from 'bitcoin-core';
     import NetworkSelector from './views/network.vue';
     import TitleBar from './components/TitleBar.vue';
+    import {
+        PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
+        PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
+        PhGearSix, PhInfo
+    } from '@phosphor-icons/vue';
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -552,7 +539,12 @@ active-class="nav-item-active !text-white">
         timerProgressBar: true,
     })
     export default {
-      components: { NetworkSelector, TitleBar },
+      components: {
+          NetworkSelector, TitleBar,
+          PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
+          PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
+          PhGearSix, PhInfo
+      },
       data() {
         const networks = [
           { name: 'mainnet', label: 'Mainnet', port: 48471, communityNode: 'mainnet-navio.nav.community', description: 'The live Navio network. Transactions here use real NAV with real value.' },
@@ -1127,6 +1119,7 @@ mounted()
       position: relative;
       background: linear-gradient(90deg, rgba(139, 92, 246, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%) !important;
       border-color: rgba(139, 92, 246, 0.25) !important;
+      color: #c4b5fd !important;
   }
   .nav-item-active::before {
       content: '';
