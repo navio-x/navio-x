@@ -100,8 +100,8 @@
                 </td>
 
                 <!-- Date -->
-                <td class="hst-td hst-td--muted text-sm whitespace-nowrap">
-                  {{ formatDate(tx.time) }}
+                <td class="hst-td hst-td--muted text-sm whitespace-nowrap" :title="formatDate(tx.time)">
+                  {{ timeAgo(tx.time) }}
                 </td>
 
                 <!-- Amount -->
@@ -410,6 +410,26 @@
                     day: '2-digit', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
+            },
+            timeAgo(timestamp) {
+                if (!timestamp) return "";
+                const diff = Math.floor(Date.now() / 1000) - timestamp;
+                if (diff < 60) {
+                    return diff + 's ago';
+                } else if (diff < 3600) {
+                    const m = Math.floor(diff / 60);
+                    return m + 'm ago';
+                } else if (diff < 86400) {
+                    const h = Math.floor(diff / 3600);
+                    const m = Math.floor((diff % 3600) / 60);
+                    return m > 0 ? h + 'h ' + m + 'm ago' : h + 'h ago';
+                } else if (diff < 2592000) {
+                    const d = Math.floor(diff / 86400);
+                    return d + 'd ago';
+                } else {
+                    const mo = Math.floor(diff / 2592000);
+                    return mo + 'M ago';
+                }
             },
             formatNav(n) {
                 const fixed = parseFloat(Math.abs(n).toFixed(4)).toString();

@@ -226,11 +226,13 @@
 				} else if (diff < 86400) {
 					const h = Math.floor(diff / 3600);
 					const m = Math.floor((diff % 3600) / 60);
-					const hStr = h + ' hour' + (h > 1 ? 's' : '');
-					return m > 0 ? hStr + ' ' + m + ' minute' + (m > 1 ? 's' : '') + ' ago' : hStr + ' ago';
-				} else {
+					return m > 0 ? h + 'h ' + m + 'm ago' : h + 'h ago';
+				} else if (diff < 2592000) {
 					const d = Math.floor(diff / 86400);
-					return d + ' day' + (d > 1 ? 's' : '') + ' ago';
+					return d + 'd ago';
+				} else {
+					const mo = Math.floor(diff / 2592000);
+					return mo + 'M ago';
 				}
 			},
 			toNav: function(n)
