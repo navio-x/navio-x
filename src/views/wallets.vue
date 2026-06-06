@@ -182,81 +182,111 @@
         </button>
       </template>
     </div>
-<div class="w-full p-4 bg-transparent" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
-  <h3>Wallet Info</h3>
-  <div class="flex flex-wrap gap-1.5 mt-4" v-if="is_wallet_loaded&&wallet_info">
-    <span v-if="wallet_info.private_keys_enabled" class="inline-flex items-center gap-1 bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 text-xs font-medium px-2 py-0.5 rounded">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>
-      Private Keys Enabled
-    </span>
-    <span v-else class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>
-      Private Keys Disabled
-    </span>
+<div class="px-4 pb-4 space-y-4" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
 
-    <template v-if="typeof wallet_info.scanning=='boolean' && wallet_info.scanning">
-      <span class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
-        Scanning...
+  <!-- Wallet Info Card -->
+  <div v-if="is_wallet_loaded && wallet_info" class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.20); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+    <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.07]" style="background: rgba(139,92,246,0.07);">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+      </svg>
+      <span class="text-sm font-semibold text-white/90">Wallet Info</span>
+    </div>
+    <div class="flex flex-wrap gap-1.5 px-4 py-3">
+      <span v-if="wallet_info.private_keys_enabled" class="inline-flex items-center gap-1 bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 text-xs font-medium px-2 py-0.5 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>
+        Private Keys Enabled
       </span>
-    </template>
-
-    <template v-if="typeof wallet_info.scanning=='object'">
-      <span class="inline-flex items-center gap-1 bg-blue-900/60 text-blue-300 border border-blue-500/30 text-xs font-medium px-2 py-0.5 rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
-        Scanning...
+      <span v-else class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>
+        Private Keys Disabled
       </span>
-      <span v-if="wallet_info.scanning.duration" class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-        {{wallet_info.scanning.duration}}s
-      </span>
-      <span v-if="wallet_info.scanning.progress" class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
-        {{(wallet_info.scanning.progress*100).toFixed(2)}}%
-      </span>
-    </template>
+      <template v-if="typeof wallet_info.scanning=='boolean' && wallet_info.scanning">
+        <span class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+          Scanning...
+        </span>
+      </template>
+      <template v-if="typeof wallet_info.scanning=='object'">
+        <span class="inline-flex items-center gap-1 bg-blue-900/60 text-blue-300 border border-blue-500/30 text-xs font-medium px-2 py-0.5 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+          Scanning...
+        </span>
+        <span v-if="wallet_info.scanning.duration" class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+          {{wallet_info.scanning.duration}}s
+        </span>
+        <span v-if="wallet_info.scanning.progress" class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+          {{(wallet_info.scanning.progress*100).toFixed(2)}}%
+        </span>
+      </template>
+    </div>
   </div>
-  <!--<span v-if="wallet_info&&wallet_info.scanning==true" class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Scanning...</span>
-    <span v-else class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Not scanning</span>!-->
-    <!--<pre class="text-white dark:text-white" v-if="is_wallet_loaded&&wallet_info">{{wallet_info}}</pre>!-->
-  </div>
 
-  <div class="p-4 overflow-auto text-white bg-transparent">
-
-<!--<div class="w-48 text-white dark:text-white" v-if="loaded_wallets&&Object.keys(loaded_wallets).length>0">
-<p>Loaded wallet : {{Object.keys(loaded_wallets).length}}</p>
-<button v-for="wallet in loaded_wallets" type="button" class="relative inline-flex items-center w-full px-4 py-2 text-sm font-medium border-b border-white/[0.18] bg-white/[0.12] hover:bg-white/[0.18] text-white transition-colors">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-<path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-</svg>
-&nbsp;{{wallet}}
-</button>
-</div>
-<div v-else>
-<p>No wallet loaded.</p>
-</div>!-->
-
-<div class="mt-1 space-y-4 text-white bg-transparent" v-if="all_wallets&&Object.keys(all_wallets.wallets).length>0">
-  <div>
-    <p class="text-xs text-white/50 mb-2">Toggle to load or unload a wallet</p>
-    <div class="space-y-2">
-      <label class="relative inline-flex items-center cursor-pointer" v-for="wallet in all_wallets.wallets">
-        <input type="checkbox" id="wallet_name" value="" class="sr-only peer" v-model="wallet.checked" v-on:change="manage_wallet(wallet)">
-        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-        <span class="ms-2 text-sm text-white/80">{{wallet.name}}</span>
+  <!-- Wallet List Card -->
+  <div class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.20); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+    <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.07]" style="background: rgba(139,92,246,0.07);">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
+      </svg>
+      <span class="text-sm font-semibold text-white/90">My Wallets</span>
+      <span class="ml-auto text-xs text-white/40">{{all_wallets.wallets.length}} wallet{{all_wallets.wallets.length !== 1 ? 's' : ''}}</span>
+    </div>
+    <!-- Header row -->
+    <div class="flex items-center px-4 py-2 border-b border-white/[0.05]" style="background: rgba(139,92,246,0.04);">
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-6 pr-1">
+        <span class="text-xs text-white/35 w-8 text-center">Load</span>
+        <span class="text-xs text-white/35 w-12 text-center">Active</span>
+      </div>
+    </div>
+    <!-- Wallet rows -->
+    <div v-for="(wallet, index) in all_wallets.wallets" :key="wallet.name"
+         class="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.03]"
+         :class="{ 'border-b border-white/[0.05]': index < all_wallets.wallets.length - 1 }">
+      <!-- Wallet icon -->
+      <div class="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
+           :style="wallet.checked ? 'background: linear-gradient(135deg, rgba(124,58,237,0.30) 0%, rgba(59,130,246,0.20) 100%); border: 1px solid rgba(124,58,237,0.35);' : 'background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);'">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="w-5 h-5 transition-colors"
+             :class="wallet.checked ? 'text-violet-400' : 'text-white/40'">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+        </svg>
+      </div>
+      <!-- Wallet name -->
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-white truncate">{{wallet.name}}</p>
+        <p class="text-xs mt-0.5" :class="wallet.checked ? 'text-violet-400' : 'text-white/30'">
+          {{wallet.checked ? 'Loaded' : 'Not loaded'}}
+        </p>
+      </div>
+      <!-- Load toggle -->
+      <label class="inline-flex items-center cursor-pointer flex-shrink-0">
+        <input type="checkbox" value="" class="sr-only peer" v-model="wallet.checked" v-on:change="manage_wallet(wallet)">
+        <div class="relative w-10 h-5 rounded-full border border-white/20 transition-colors duration-200
+                    bg-white/10 peer-checked:bg-violet-600 peer-checked:border-violet-500
+                    after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                    after:w-4 after:h-4 after:bg-white after:rounded-full after:shadow
+                    after:transition-transform after:duration-200
+                    peer-checked:after:translate-x-[18px]"></div>
+      </label>
+      <!-- Active radio -->
+      <label class="relative flex items-center justify-center cursor-pointer flex-shrink-0 w-12"
+             :class="!wallet.checked ? 'opacity-30 pointer-events-none' : ''">
+        <input type="radio" name="active-wallet-radio" class="sr-only peer"
+               :id="'lr_'+wallet.name" v-bind:value="wallet.name"
+               v-model="active_wallet" v-on:change="set_active_wallet(wallet)"
+               :disabled="!wallet.checked">
+        <span class="w-4 h-4 rounded-full border border-white/25 transition-all flex-shrink-0
+                     peer-checked:border-violet-500
+                     peer-checked:[box-shadow:inset_0_0_0_3px_rgba(12,8,32,0.9)]
+                     peer-checked:bg-violet-500"
+              style="background: rgba(255,255,255,0.06);"></span>
       </label>
     </div>
   </div>
 
-  <div>
-    <p class="text-xs text-white/50 mb-2">Active wallet</p>
-    <div class="space-y-1.5">
-      <label class="flex items-center gap-2 cursor-pointer" v-for="wallet in all_wallets.wallets">
-        <input type="radio" name="hs-default-radio" class="shrink-0 border-gray-600 rounded-full text-blue-600 focus:ring-blue-500 bg-gray-800 checked:bg-blue-500 checked:border-blue-500" :id="'lr_'+wallet.name" v-bind:value="wallet.name" v-model="active_wallet" v-on:change="set_active_wallet(wallet)">
-        <span :for="'lr_'+wallet.name" class="text-sm text-white/80">{{wallet.name}}</span>
-      </label>
-    </div>
-  </div>
 </div>
 <div v-else class="flex flex-col items-center justify-center py-16 px-6">
   <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
@@ -268,7 +298,6 @@
   <p class="text-sm text-white/70 text-center max-w-xs">You haven't created any wallets yet. Click <span class="text-white font-medium">Create Wallet</span> to get started.</p>
 </div>
 
-</div>
 </div>
 
 </template>
