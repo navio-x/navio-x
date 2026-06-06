@@ -76,6 +76,9 @@
                     <th scope="col" class="px-6 py-3">
                         Synced Blocks
                     </th>
+                    <th scope="col" class="px-6 py-3">
+                        Connection Type
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -88,6 +91,7 @@
                     <td class="px-6 py-3">{{peer.startingheight}}</td>
                     <td class="px-6 py-3">{{peer.synced_headers}}</td>
                     <td class="px-6 py-3">{{peer.synced_blocks}}</td>
+                    <td class="px-6 py-3">{{peer.connection_type}}</td>
                 </tr>
             </tbody>
         </table>

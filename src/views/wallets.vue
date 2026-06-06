@@ -174,6 +174,12 @@
           </svg>
           Rescan
         </button>
+        <button v-if="is_wallet_loaded && wallet_info && (wallet_info.scanning === true || typeof wallet_info.scanning === 'object')" @click="abortrescan" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
+          </svg>
+          Abort Rescan
+        </button>
       </template>
     </div>
 <div class="w-full p-4 bg-transparent" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
@@ -388,6 +394,29 @@
             vm.listwallets();
           });
         }
+      },
+      abortrescan: function() {
+        this.client.command([{ method: "abortrescan" }]).then((r) => {
+          if (r[0] === true) {
+            Toast.fire({
+              theme: 'dark',
+              icon: 'success',
+              title: 'Rescan aborted',
+            });
+          } else {
+            Toast.fire({
+              theme: 'dark',
+              icon: 'info',
+              title: 'No active rescan to abort',
+            });
+          }
+        }).catch(() => {
+          Toast.fire({
+            theme: 'dark',
+            icon: 'error',
+            title: 'Failed to abort rescan',
+          });
+        });
       },
       openRescanModal: function() {
         this.showRescanModal = true;
