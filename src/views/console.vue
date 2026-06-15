@@ -82,20 +82,16 @@
     add_to_log:function(s,t)
     {
       const now = new Date();
-      const day = now.getDay(); // returns a number representing the day of the week, starting with 0 for Sunday
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const seconds = now.getSeconds();
-      let color="";
+      const hours = String(now.getHours()).padStart(2,'0');
+      const minutes = String(now.getMinutes()).padStart(2,'0');
+      const seconds = String(now.getSeconds()).padStart(2,'0');
       if (t=="command")
       {
-        color="text-blue-500";
-        this.result+=`<pre class='${color}'><span class='text-gray-200'>${hours}:${minutes}:${seconds}</span>&nbsp;${s}</pre>`;
+        this.result+=`<pre class="text-blue-400 text-sm whitespace-pre-wrap break-words"><span class="text-gray-400">${hours}:${minutes}:${seconds}</span> ${s}</pre>`;
       }
       if (t=="output")
       {
-        color="text-gray-200";
-        this.result+=`<pre class='${color}'>${s}</pre>`;
+        this.result+=`<pre class="text-gray-200 text-sm whitespace-pre-wrap break-words pb-1">${s}</pre>`;
       }
       this.$store.commit('set_console_log', this.result);
       setTimeout(this.scrollToBottom, 10);
@@ -165,25 +161,30 @@
       const batch = [{ method: methodname, parameters: params }]
       this.add_to_log(this.cmd,"command");
       let vm=this;
-      this.client.command(batch).then((retval) => 
+      this.client.command(batch).then((retval) =>
       {
         if (typeof retval[0]=="object")
         {
-          vm.add_to_log(JSON.stringify(retval[0], null, 2),"output");
+          vm.add_to_log(vm.jsonPretty(JSON.stringify(retval[0])),"output");
         }
         else
         {
-          vm.add_to_log(retval[0],"output");
+          const escaped = String(retval[0])
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          vm.add_to_log(escaped,"output");
         }
       }).catch((r) =>
       {
-       Swal.fire({
-        theme:'dark',
-        title: 'Error!',
-        text: JSON.stringify(r),
-        icon: 'error',
-        confirmButtonText: 'OK'
-      })
+        const msg = typeof r === 'object' ? JSON.stringify(r) : String(r);
+        Swal.fire({
+          theme:'dark',
+          title: 'Error!',
+          text: msg,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
      });
       this.$refs.autocomplete.addToHistory(this.cmd);
       this.cmd="";
@@ -203,22 +204,28 @@
     jsonPretty:function(value)
     {
       let json = JSON.stringify(JSON.parse(value), null, 2);
-      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+]?\d+)?)/g, function(match) {
-        var cls = 'number'
+        var cls = 'json-number';
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {
-            cls = 'key'
+            cls = 'json-key';
           } else {
-            cls = 'string'
+            cls = 'json-string';
+            match = match
+              .replace(/\\n/g, '\n')
+              .replace(/\\t/g, '    ')
+              .replace(/\\r/g, '')
+              .replace(/\\"/g, '"')
+              .replace(/\\\\/g, '\\');
           }
         } else if (/true|false/.test(match)) {
-          cls = 'boolean'
+          cls = 'json-boolean';
         } else if (/null/.test(match)) {
-          cls = 'null'
+          cls = 'json-null';
         }
-        return '<span class="' + cls + '">' + match + '</span>'
-      })
+        return '<span class="' + cls + '">' + match + '</span>';
+      });
     },
     commandArgs2Array:function(text)
     {
@@ -260,6 +267,12 @@
 </script>
 
 <style scoped>
+:deep(.json-key)     { color: #7dd3fc; }
+:deep(.json-string)  { color: #86efac; }
+:deep(.json-number)  { color: #fbbf24; }
+:deep(.json-boolean) { color: #c084fc; }
+:deep(.json-null)    { color: #94a3b8; }
+
 .context-menu {
   position: fixed;
   z-index: 1000;
