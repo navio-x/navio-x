@@ -36,8 +36,20 @@
             <input type="text" autofocus id="wallet_name" v-model="new_wallet_name" class="glass-input text-sm block w-full p-2.5">
           </div>
           <div v-if="wallet_type_id==2">
-            <label for="import_seed_phrase" class="block mb-2 text-sm font-medium dark:text-white text-white">Wallet Seed Phrase or Audit Key</label>
-            <input type="text" autofocus id="import_seed_phrase" v-model="import_seed_phrase" class="glass-input text-sm block w-full p-2.5">
+            <div class="flex gap-6 mb-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" value="seed" v-model="import_type" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2">
+                <span class="text-sm font-medium text-white">Seed / Audit Key</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" value="mnemonic" v-model="import_type" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2">
+                <span class="text-sm font-medium text-white">Mnemonics</span>
+              </label>
+            </div>
+            <label for="import_seed_phrase" class="block mb-2 text-sm font-medium text-white">
+              {{ import_type === 'seed' ? 'Seed / Audit Key' : 'Mnemonic Phrase' }}
+            </label>
+            <input type="text" id="import_seed_phrase" v-model="import_seed_phrase" class="glass-input text-sm block w-full p-2.5">
           </div>
           <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" true-value="1" false-value="0" v-model="wallet_load_on_startup" class="sr-only peer">
@@ -47,7 +59,7 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
-          <button :disabled="new_wallet_name==''" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Create</button>
+          <button :disabled="!new_wallet_name || (wallet_type_id==2 && !import_seed_phrase)" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Create</button>
 
         </div>
       </div>
@@ -326,10 +338,12 @@
         blsctauditkey:'',
         wallet_type_id:1,
         import_seed_phrase:'',
+        import_type:'seed',
         wallet_load_on_startup:1,
         scan_start_height:0,
         scan_stop_height:0,
-        showRescanModal: false
+        showRescanModal: false,
+        walletModal: null
       }
     },
     methods:{
@@ -576,19 +590,21 @@
       create_wallet:function()
       {
         let vm=this;
-        console.log("Creating wallet :" + this.new_wallet_name);
-        console.log("Seed :" + this.import_seed_phrase);
         const isFirstWallet = !vm.all_wallets || Object.keys(vm.all_wallets.wallets).length === 0;
         let parameters={};
-        if (this.wallet_type_id==1) parameters={"wallet_name":this.new_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
-        if (this.wallet_type_id==2) parameters={"wallet_name":this.new_wallet_name,"blsct":true,"seed":this.import_seed_phrase,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
+        if (this.wallet_type_id==1) {
+          parameters={"wallet_name":this.new_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
+        }
+        if (this.wallet_type_id==2) {
+          parameters={"wallet_name":this.new_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
+          if (this.import_type==='seed') parameters.seed=this.import_seed_phrase;
+          else if (this.import_type==='mnemonic') parameters.mnemonic=this.import_seed_phrase;
+        }
         this.client.command([{ method: "createwallet", parameters: parameters }]).then((r) =>
         {
-          vm.new_wallet_name="";
           console.log(r);
           if (r[0].code)
           {
-            console.log("RpcError");
             Swal.fire({
               theme:'dark',
               title: 'Error!',
@@ -599,6 +615,10 @@
           }
           else
           {
+           if (vm.walletModal) vm.walletModal.hide();
+           vm.new_wallet_name="";
+           vm.import_seed_phrase="";
+           vm.import_type="seed";
            if (isFirstWallet)
            {
              vm.set_active_wallet({ name: r[0].name });
@@ -638,23 +658,23 @@
       if ($modalElement)
       {
         const modal = new Modal($modalElement, modalOptions);
+        this.walletModal = modal;
         $buttonElement.addEventListener('click', () => {
           modal.toggle();
           document.getElementById("wallet_name").focus();
         });
-        $confirmButton.addEventListener('click', () => 
+        $confirmButton.addEventListener('click', () =>
         {
-          modal.hide();
           if (this.new_wallet_name)
           {
-            console.log("hide");
-            console.log("creating wallet -> " + this.new_wallet_name);
             this.create_wallet();
           }
         });
         $closeButton.addEventListener('click', () => {
           modal.hide();
           this.new_wallet_name="";
+          this.import_seed_phrase="";
+          this.import_type="seed";
         });
       }
 
