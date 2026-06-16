@@ -274,15 +274,15 @@
       <!-- Active radio -->
       <label class="relative flex items-center justify-center cursor-pointer flex-shrink-0 w-12"
              :class="!wallet.checked ? 'opacity-30 pointer-events-none' : ''">
-        <input type="radio" name="active-wallet-radio" class="sr-only peer"
+        <input type="radio" name="active-wallet-radio" class="sr-only"
                :id="'lr_'+wallet.name" v-bind:value="wallet.name"
                v-model="active_wallet" v-on:change="set_active_wallet(wallet)"
                :disabled="!wallet.checked">
-        <span class="w-4 h-4 rounded-full border border-white/25 transition-all flex-shrink-0
-                     peer-checked:border-violet-500
-                     peer-checked:[box-shadow:inset_0_0_0_3px_rgba(12,8,32,0.9)]
-                     peer-checked:bg-violet-500"
-              style="background: rgba(255,255,255,0.06);"></span>
+        <span class="w-[18px] h-[18px] rounded-full border-2 transition-all flex items-center justify-center flex-shrink-0"
+              :class="active_wallet === wallet.name ? 'border-violet-500' : 'border-white/25'">
+          <span class="w-[8px] h-[8px] rounded-full bg-violet-500 transition-all duration-150"
+                :class="active_wallet === wallet.name ? 'opacity-100 scale-100' : 'opacity-0 scale-0'"></span>
+        </span>
       </label>
     </div>
   </div>
