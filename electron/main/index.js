@@ -293,6 +293,27 @@ ipcMain.handle('shell-open-folder', async (_, folderPath) => {
   return await shell.openPath(folderPath);
 });
 
+ipcMain.handle('update-startup-wallets', (_, { logpath, walletName, action }) => {
+  try {
+    const dir = path.dirname(logpath);
+    const settingsPath = path.join(dir, 'settings.json');
+    let settings = { wallet: [] };
+    if (fs.existsSync(settingsPath)) {
+      try { settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8')); } catch (e) {}
+    }
+    if (!Array.isArray(settings.wallet)) settings.wallet = [];
+    if (action === 'add') {
+      if (!settings.wallet.includes(walletName)) settings.wallet.push(walletName);
+    } else if (action === 'remove') {
+      settings.wallet = settings.wallet.filter(w => w !== walletName);
+    }
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 4), 'utf8');
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 ipcMain.handle('get-process-variables', async (_, folderPath) => {
   return {
     electron: process.versions.electron,
