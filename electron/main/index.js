@@ -381,22 +381,66 @@ function fetchJSON(url) {
   });
 }
 
+// Extracts a comparable [major, minor, patch, rc] tuple from a release tag, e.g.
+// "v0.1rc36" -> [0, 1, 0, 36], "v0.1-rc31" -> [0, 1, 0, 31]. Final releases (no "rcN"
+// suffix) get rc=Infinity so they outrank any rc of the same major.minor.patch.
+// Returns null for tags with no parseable version (e.g. "nightly") - those never
+// win the "latest" comparison since asset upload timestamps can be unreliable
+// (re-uploads, mislabeled tags, etc. can make an older build look freshly uploaded).
+function parseVersionRank(tag) {
+  if (!tag) return null;
+  const m = tag.match(/(\d+)\.(\d+)(?:\.(\d+))?(?:[-]?rc(\d+))?/i);
+  if (!m) return null;
+  return [
+    parseInt(m[1], 10),
+    parseInt(m[2], 10),
+    m[3] ? parseInt(m[3], 10) : 0,
+    m[4] ? parseInt(m[4], 10) : Infinity
+  ];
+}
+
+function compareVersionRank(a, b) {
+  for (let i = 0; i < 4; i++) {
+    if (a[i] !== b[i]) return a[i] - b[i];
+  }
+  return 0;
+}
+
 async function listGitHubReleases(platform, arch) {
   const releases = await fetchJSON(`${GITHUB_RELEASES_API}?per_page=20`);
   const result = [];
   for (const release of releases) {
     const assets = (release.assets || []).filter(a => matchesGitHubAsset(a.name, platform, arch));
-    for (const asset of assets) {
-      result.push({
-        name: asset.name,
-        tag: release.tag_name,
-        date: release.published_at,
-        dateRaw: release.published_at || '',
-        size: formatSize(asset.size),
-        url: asset.browser_download_url
-      });
-    }
+    if (!assets.length) continue;
+    // Rolling tags (e.g. "nightly") accumulate every historical build as a separate asset.
+    // Only surface the most recently uploaded asset per release/tag.
+    const asset = assets.reduce((newest, a) =>
+      new Date(a.created_at) > new Date(newest.created_at) ? a : newest
+    );
+    result.push({
+      name: asset.name,
+      tag: release.tag_name,
+      date: asset.created_at,
+      dateRaw: asset.created_at || '',
+      size: formatSize(asset.size),
+      url: asset.browser_download_url,
+      tagUrl: release.html_url,
+      notes: release.body || '',
+      versionRank: parseVersionRank(release.tag_name)
+    });
   }
+  result.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  let latest = null;
+  for (const entry of result) {
+    if (!entry.versionRank) continue;
+    if (!latest || compareVersionRank(entry.versionRank, latest.versionRank) > 0) latest = entry;
+  }
+  for (const entry of result) {
+    entry.latest = entry === latest;
+    delete entry.versionRank;
+  }
+
   return result;
 }
 

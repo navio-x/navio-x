@@ -88,10 +88,14 @@
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                 </svg>
             </button>
-            <button v-on:click="downloadBinaries()" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                Download binaries
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
+            <button v-on:click="downloadBinaries()" :disabled="is_fetching_releases" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 disabled:opacity-60 disabled:cursor-not-allowed">
+                {{ is_fetching_releases ? 'Checking GitHub releases…' : 'Download binaries' }}
+                <svg v-if="!is_fetching_releases" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
+              </svg>
+              <svg v-else class="w-3.5 h-3.5 ms-2 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
               </svg>
           </button>
       </div>
@@ -122,48 +126,78 @@
 
 <section class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9 px-4" v-show="state=='select_binary'">
   <div class="w-full max-w-3xl">
-    <h1 class="mb-2 text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
+    <div class="flex items-center justify-between gap-4 mb-2">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
+      <a
+        href="https://github.com/nav-io/navio-core"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 border border-white/[0.12] hover:text-white hover:bg-white/[0.08] transition-colors shrink-0"
+      >
+        <svg viewBox="0 0 16 16" class="w-4 h-4" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
     <p class="mb-6 text-gray-200">
       Choose a compatible build from GitHub releases for
       <b class="text-white">{{ friendly_platform(binarySelectionInfo.platform) }} {{ binarySelectionInfo.arch }}</b>.
     </p>
 
     <div class="rounded-xl overflow-hidden border border-white/[0.10]" style="background: linear-gradient(160deg, rgba(20,14,48,0.97) 0%, rgba(13,17,40,0.97) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-      <table class="w-full text-sm text-left">
-        <thead style="background: rgba(0,0,0,0.30); border-bottom: 1px solid rgba(255,255,255,0.08);">
-          <tr>
-            <th class="px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40">Version</th>
-            <th class="px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-white/40">Filename</th>
-            <th class="px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40">Date</th>
-            <th class="px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40">Size</th>
-            <th class="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-widest text-white/40">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="bin in availableBinaries" :key="bin.name" class="border-t border-white/[0.07] hover:bg-white/[0.04] transition-colors">
-            <td class="px-4 py-3 whitespace-nowrap">
-              <span class="inline-block px-2 py-0.5 text-[11px] font-mono font-semibold rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">{{ bin.tag || '—' }}</span>
-              <span
-                v-if="bin.name === latestBinaryName"
-                class="ml-2 inline-block px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full bg-green-500/20 text-green-300 border border-green-500/40 align-middle"
-              >latest</span>
-            </td>
-            <td class="px-4 py-3 font-mono text-white/85 break-all text-sm">{{ bin.name }}</td>
-            <td class="px-4 py-3 whitespace-nowrap text-white/55">{{ format_listing_date(bin) }}</td>
-            <td class="px-4 py-3 whitespace-nowrap text-white/55">{{ bin.size || '—' }}</td>
-            <td class="px-4 py-3 text-right">
-              <button
-                @click="select_binary(bin)"
-                class="inline-flex justify-center items-center py-1.5 px-4 text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-80"
-                style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);"
-              >Download</button>
-            </td>
-          </tr>
-          <tr v-if="!availableBinaries.length">
-            <td colspan="5" class="px-4 py-6 text-center text-white/50">No compatible binaries found.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="max-h-[420px] overflow-y-auto">
+        <table class="w-full text-sm text-left">
+          <thead>
+            <tr>
+              <th class="sticky top-0 z-10 px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40" style="background: rgb(20,16,46); border-bottom: 1px solid rgba(255,255,255,0.08);">Version</th>
+              <th class="sticky top-0 z-10 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-white/40" style="background: rgb(20,16,46); border-bottom: 1px solid rgba(255,255,255,0.08);">Filename</th>
+              <th class="sticky top-0 z-10 px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40" style="background: rgb(20,16,46); border-bottom: 1px solid rgba(255,255,255,0.08);">Date</th>
+              <th class="sticky top-0 z-10 px-4 py-3 whitespace-nowrap text-[11px] font-semibold uppercase tracking-widest text-white/40" style="background: rgb(20,16,46); border-bottom: 1px solid rgba(255,255,255,0.08);">Size</th>
+              <th class="sticky top-0 z-10 px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-widest text-white/40" style="background: rgb(20,16,46); border-bottom: 1px solid rgba(255,255,255,0.08);">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="bin in availableBinaries" :key="bin.tag + '-' + bin.name" class="border-t border-white/[0.07] hover:bg-white/[0.04] transition-colors">
+              <td class="px-4 py-3 whitespace-nowrap">
+                <a
+                  v-if="bin.tagUrl"
+                  :href="bin.tagUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-block px-2 py-0.5 text-[11px] font-mono font-semibold rounded bg-violet-500/20 text-violet-300 border border-violet-500/30 hover:bg-violet-500/30 transition-colors"
+                >{{ bin.tag || '—' }}</a>
+                <span v-else class="inline-block px-2 py-0.5 text-[11px] font-mono font-semibold rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">{{ bin.tag || '—' }}</span>
+                <span
+                  v-if="bin.latest"
+                  class="ml-2 inline-block px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full bg-green-500/20 text-green-300 border border-green-500/40 align-middle"
+                >latest</span>
+              </td>
+              <td class="px-4 py-3 font-mono text-white/85 break-all text-sm">{{ bin.name }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-white/55">{{ format_listing_date(bin) }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-white/55">{{ bin.size || '—' }}</td>
+              <td class="px-4 py-3 text-right whitespace-nowrap">
+                <button
+                  v-if="bin.notes"
+                  @click="show_release_notes(bin)"
+                  title="What's changed"
+                  class="inline-flex justify-center items-center w-8 h-8 mr-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors align-middle"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                  </svg>
+                </button>
+                <button
+                  @click="select_binary(bin)"
+                  class="inline-flex justify-center items-center py-1.5 px-4 text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-80 align-middle"
+                  style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);"
+                >Download</button>
+              </td>
+            </tr>
+            <tr v-if="!availableBinaries.length">
+              <td colspan="5" class="px-4 py-6 text-center text-white/50">No compatible binaries found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="mt-6 flex justify-end">
@@ -273,19 +307,24 @@ v-show="state=='select_network'"
       <!-- Download Binaries -->
       <button
         @click="downloadBinaries()"
-        class="glass-card glass-card-hover rounded-xl p-5 text-left flex flex-col items-start gap-3 cursor-pointer transition-all focus:outline-none"
+        :disabled="is_fetching_releases"
+        class="glass-card glass-card-hover rounded-xl p-5 text-left flex flex-col items-start gap-3 cursor-pointer transition-all focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
         style="border-color: rgba(139,92,246,0.40);"
       >
         <div class="flex items-center justify-between w-full">
           <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+            <svg v-if="!is_fetching_releases" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
+            <svg v-else class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+            </svg>
           </div>
-          <span class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">Recommended</span>
+          <span v-if="!is_fetching_releases" class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">Recommended</span>
         </div>
         <div>
-          <p class="text-white font-semibold text-sm">Download Binaries</p>
+          <p class="text-white font-semibold text-sm">{{ is_fetching_releases ? 'Checking GitHub releases…' : 'Download Binaries' }}</p>
           <p class="text-gray-400 text-xs mt-1 leading-relaxed">Automatically fetch the latest official Navio binaries from GitHub releases.</p>
         </div>
       </button>
@@ -568,6 +607,7 @@ v-show="state=='select_network'"
           remember:false,
           auto_login:false,
           is_downloading:false,
+          is_fetching_releases:false,
           fileinfo:{},
           availableBinaries: [],
           binarySelectionInfo: { platform: '', arch: '' },
@@ -579,16 +619,6 @@ v-show="state=='select_network'"
       const found = this.networks.find(n => n.name === val);
       if (found) this.port = found.port;
   }
-},
-computed: {
-    latestBinaryName() {
-        let best = null;
-        for (const b of this.availableBinaries) {
-            if (!b || !b.date) continue;
-            if (!best || b.date > best.date) best = b;
-        }
-        return best ? best.name : null;
-    }
 },
 methods: {
     friendly_platform: function(p) {
@@ -725,6 +755,43 @@ methods: {
         }
         return (bin && bin.dateRaw) || '—';
     },
+    format_release_notes: function(notes) {
+        if (!notes) return '<p style="opacity:0.6;margin:0;">No release notes available.</p>';
+        const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const inline = (s) => escapeHtml(s)
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#a78bfa;text-decoration:underline;">$1</a>');
+
+        const lines = notes.replace(/\r\n/g, '\n').split('\n');
+        let html = '';
+        let inList = false;
+        for (const raw of lines) {
+            const line = raw.trim();
+            const bullet = line.match(/^[*-]\s+(.*)$/);
+            const heading = line.match(/^(#{1,6})\s+(.*)$/);
+            if (bullet) {
+                if (!inList) { html += '<ul style="margin:0.3em 0;padding-left:1.2em;">'; inList = true; }
+                html += '<li style="margin:0.15em 0;">' + inline(bullet[1]) + '</li>';
+                continue;
+            }
+            if (inList) { html += '</ul>'; inList = false; }
+            if (!line) continue;
+            html += heading
+                ? '<h4 style="margin:0.6em 0 0.3em;font-weight:600;">' + inline(heading[2]) + '</h4>'
+                : '<p style="margin:0.3em 0;">' + inline(line) + '</p>';
+        }
+        if (inList) html += '</ul>';
+        return '<div style="text-align:left;max-height:55vh;overflow-y:auto;padding-right:4px;">' + html + '</div>';
+    },
+    show_release_notes: function(bin) {
+        Swal.fire({
+            theme: 'dark',
+            title: bin.tag || 'Release notes',
+            html: this.format_release_notes(bin.notes),
+            width: 640,
+            confirmButtonText: 'Close'
+        });
+    },
     select_binary: function(bin) {
         if (!bin || !bin.url) return;
         ipcRenderer.invoke('download-binary', { url: bin.url, name: bin.name }).then((extractPath) => {
@@ -744,16 +811,20 @@ methods: {
         });
     },
     downloadBinaries: function() {
+        this.is_fetching_releases = true;
         ipcRenderer.invoke('check-binary-exists').then((exists) => {
             if (exists) {
                 ipcRenderer.invoke('start-daemon').then((data) => {
                     console.log("start-daemon (existing binary): " + data);
                 }).catch((err) => {
                     alert('Error: ' + err.message);
+                }).finally(() => {
+                    this.is_fetching_releases = false;
                 });
                 return;
             }
             ipcRenderer.invoke('download-latest').then((extractPath) => {
+                this.is_fetching_releases = false;
                 if (!extractPath)
                 {
                     this.is_downloading=false;
@@ -774,8 +845,12 @@ methods: {
                 alert('Error: ' + err.message);
             });
          }).catch((err) => {
+            this.is_fetching_releases = false;
             alert('Error: ' + err.message);
         });
+        }).catch((err) => {
+            this.is_fetching_releases = false;
+            alert('Error: ' + err.message);
         });
  },
  connect: function() {
@@ -937,6 +1012,7 @@ mounted()
 })
     ipcRenderer.on('download-error', (event, errorMessage) => {
         this.is_downloading=false;
+        this.is_fetching_releases=false;
         Swal.fire({
             theme:'dark',
             title: 'Download Error',
@@ -951,6 +1027,7 @@ mounted()
         this.binarySelectionInfo = { platform: platform || '', arch: arch || '' };
         this.availableBinaries = Array.isArray(options) ? options : [];
         this.is_downloading = false;
+        this.is_fetching_releases = false;
         this.state = 'select_binary';
     });
     ipcRenderer.on('stop-daemon', (_event, value) =>

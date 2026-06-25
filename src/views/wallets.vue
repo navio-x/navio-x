@@ -215,7 +215,7 @@
           </svg>
           Audit Key
         </button>
-        <button @click="openRescanModal" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-if="!is_scanning" @click="openRescanModal" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
@@ -227,7 +227,7 @@
           </svg>
           Backup Wallet
         </button>
-        <button v-if="wallet_info && (wallet_info.scanning === true || typeof wallet_info.scanning === 'object')" @click="abortrescan" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">
+        <button v-if="is_scanning" @click="abortrescan" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
           </svg>
@@ -267,13 +267,21 @@
         </span>
         <span v-if="wallet_info.scanning.duration" class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-          {{wallet_info.scanning.duration}}s
+          {{ format_duration(wallet_info.scanning.duration) }}
         </span>
         <span v-if="wallet_info.scanning.progress" class="inline-flex items-center gap-1 bg-yellow-900/60 text-yellow-300 border border-yellow-500/30 text-xs font-medium px-2 py-0.5 rounded">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
           {{(wallet_info.scanning.progress*100).toFixed(2)}}%
         </span>
       </template>
+    </div>
+    <div v-if="typeof wallet_info.scanning === 'object' && wallet_info.scanning.progress" class="px-4 pb-3 -mt-1">
+      <div class="bg-white/[0.16] rounded-full h-1.5 overflow-hidden">
+        <div
+          class="h-1.5 rounded-full transition-all duration-500"
+          :style="{ background: 'linear-gradient(90deg, #7c3aed, #3b82f6)', width: (wallet_info.scanning.progress * 100) + '%' }"
+        ></div>
+      </div>
     </div>
   </div>
 
@@ -391,7 +399,24 @@
         mnemonic: []
       }
     },
+    computed: {
+      is_scanning() {
+        return !!(this.wallet_info && (this.wallet_info.scanning === true || typeof this.wallet_info.scanning === 'object'));
+      }
+    },
     methods:{
+      format_duration: function(seconds) {
+        seconds = Math.floor(Number(seconds) || 0);
+        if (seconds < 60) return seconds + (seconds === 1 ? ' second' : ' seconds');
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        const parts = [];
+        if (h) parts.push(h + (h === 1 ? ' hour' : ' hours'));
+        if (m) parts.push(m + (m === 1 ? ' minute' : ' minutes'));
+        if (!h && s) parts.push(s + (s === 1 ? ' second' : ' seconds'));
+        return parts.join(' ');
+      },
       set_active_wallet:function(wallet)
       {
         this.active_wallet=wallet.name;
