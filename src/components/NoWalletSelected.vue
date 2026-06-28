@@ -5,11 +5,22 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
       </svg>
     </div>
-    <h2 class="nws-title">No Wallet Selected</h2>
+    <h2 class="nws-title">{{ showCreate ? 'No Wallets Yet' : 'No Wallet Selected' }}</h2>
     <p class="nws-desc">
-      You need to load and activate a wallet to use this page.<br>Create or import one from the Wallets page.
+      <template v-if="showCreate">
+        You haven't created any wallets yet.<br>Get started by creating your first wallet.
+      </template>
+      <template v-else>
+        You need to load and activate a wallet to use this page.<br>Create or import one from the Wallets page.
+      </template>
     </p>
-    <router-link v-if="!hideLink" to="/wallets" class="nws-btn">
+    <button v-if="showCreate" @click="$emit('create')" class="nws-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Create your first wallet
+    </button>
+    <router-link v-if="!hideLink && !showCreate" to="/wallets" class="nws-btn">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
       </svg>
@@ -22,8 +33,10 @@
 export default {
   name: 'NoWalletSelected',
   props: {
-    hideLink: { type: Boolean, default: false }
-  }
+    hideLink: { type: Boolean, default: false },
+    showCreate: { type: Boolean, default: false }
+  },
+  emits: ['create']
 }
 </script>
 
