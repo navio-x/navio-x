@@ -130,6 +130,51 @@
     </div>
   </div>
 
+  <!-- Privacy Warning Modal -->
+  <transition name="fade">
+    <div v-if="showPrivacyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showPrivacyModal = false">
+      <div class="relative rounded-xl shadow-2xl glass-modal w-full max-w-md mx-4 overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-white/[0.10]" style="background: linear-gradient(90deg, rgba(220,38,38,0.12) 0%, rgba(124,58,237,0.06) 100%);">
+          <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <h3 class="text-base font-semibold tracking-tight text-white">Privacy Warning</h3>
+          </div>
+          <button @click="showPrivacyModal = false" class="text-white/40 hover:text-white/80 rounded-lg p-1.5 inline-flex items-center transition-colors focus:outline-none">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+        <div class="px-6 py-6 flex flex-col items-center text-center gap-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-full" style="background: rgba(220,38,38,0.10); border: 1px solid rgba(220,38,38,0.25);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" class="w-8 h-8 text-red-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-white/90 leading-relaxed">
+              You are about to view sensitive wallet information.
+            </p>
+            <p class="text-sm text-white/55 mt-1.5 leading-relaxed">
+              Please make sure no one around you is watching your screen before proceeding.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-3 px-6 py-4 border-t border-white/[0.08]">
+          <button @click="showPrivacyModal = false" class="flex-1 px-4 py-2.5 rounded-lg text-sm glass-btn-secondary transition duration-200">Close</button>
+          <button @click="confirmPrivacy" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            Show
+          </button>
+        </div>
+      </div>
+    </div>
+  </transition>
+
   <!-- Mnemonic Modal -->
   <transition name="fade">
     <div v-if="showMnemonicModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showMnemonicModal = false">
@@ -202,13 +247,13 @@
         Create Wallet
       </button>
       <template v-if="is_wallet_loaded">
-        <button v-on:click="getblsctseed()" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-on:click="privacyCheck(getblsctseed)" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
           </svg>
           Wallet Seed
         </button>
-        <button v-on:click="getblsctauditkey()" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-on:click="privacyCheck(getblsctauditkey)" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -221,7 +266,7 @@
           </svg>
           Rescan Wallet
         </button>
-        <button v-on:click="dumpmnemonic()" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-on:click="privacyCheck(dumpmnemonic)" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
           </svg>
@@ -349,15 +394,7 @@
   </div>
 
 </div>
-<div v-else class="flex flex-col items-center justify-center py-16 px-6">
-  <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white/70">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
-    </svg>
-  </div>
-  <h2 class="text-lg font-semibold text-white mb-2">No Wallets Found</h2>
-  <p class="text-sm text-white/70 text-center max-w-xs">You haven't created any wallets yet. Click <span class="text-white font-medium">Create Wallet</span> to get started.</p>
-</div>
+<NoWalletSelected v-else hide-link />
 
 </div>
 
@@ -368,6 +405,7 @@
   import { ipcRenderer } from 'electron';
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
+  import NoWalletSelected from '../components/NoWalletSelected.vue';
   const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -376,6 +414,7 @@
     timerProgressBar: true,
   })
   export default {
+    components: { NoWalletSelected },
     data() {
       return {
         loaded_wallets:undefined,
@@ -396,7 +435,9 @@
         showRescanModal: false,
         walletModal: null,
         showMnemonicModal: false,
-        mnemonic: []
+        mnemonic: [],
+        showPrivacyModal: false,
+        privacyAction: null
       }
     },
     computed: {
@@ -405,6 +446,17 @@
       }
     },
     methods:{
+      privacyCheck: function(action) {
+        this.privacyAction = action;
+        this.showPrivacyModal = true;
+      },
+      confirmPrivacy: function() {
+        this.showPrivacyModal = false;
+        if (this.privacyAction) {
+          this.privacyAction();
+          this.privacyAction = null;
+        }
+      },
       format_duration: function(seconds) {
         seconds = Math.floor(Number(seconds) || 0);
         if (seconds < 60) return seconds + (seconds === 1 ? ' second' : ' seconds');

@@ -169,13 +169,24 @@
       },
       open_log_file:function()
       {
+        const fs = require('fs');
+        if (!fs.existsSync(this.rpcinfo.logpath)) {
+          Swal.fire({ theme: 'dark', icon: 'error', title: 'File not found', text: this.rpcinfo.logpath });
+          return;
+        }
         ipcRenderer.invoke('shell-open-item', this.rpcinfo.logpath);
       },
       open_staker_log:function()
       {
+        const fs = require('fs');
         const sep = this.rpcinfo.logpath.includes('\\') ? '\\' : '/';
         const dir = this.rpcinfo.logpath.substring(0, this.rpcinfo.logpath.lastIndexOf(sep) + 1);
-        ipcRenderer.invoke('shell-open-item', dir + 'staker.log');
+        const stakerLogPath = dir + 'staker.log';
+        if (!fs.existsSync(stakerLogPath)) {
+          Swal.fire({ theme: 'dark', icon: 'error', title: 'File not found', text: stakerLogPath });
+          return;
+        }
+        ipcRenderer.invoke('shell-open-item', stakerLogPath);
       },
       open_bin_directory:function()
       {
