@@ -239,7 +239,7 @@
     </div>
   </transition>
   <div class="h-full w-full text-white bg-transparent">
-    <div class="flex items-center gap-2 px-4 pt-3 mb-5">
+    <div v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" class="flex items-center gap-2 px-4 pt-3 mb-5">
       <button v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" id="button" type="button" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-semibold text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -858,10 +858,12 @@
       {
         const modal = new Modal($modalElement, modalOptions);
         this.walletModal = modal;
-        $buttonElement.addEventListener('click', () => {
-          modal.toggle();
-          document.getElementById("wallet_name").focus();
-        });
+        if ($buttonElement) {
+          $buttonElement.addEventListener('click', () => {
+            modal.toggle();
+            document.getElementById("wallet_name").focus();
+          });
+        }
         $confirmButton.addEventListener('click', () =>
         {
           if (this.new_wallet_name)
