@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 import { execFile } from 'node:child_process';
@@ -60,6 +60,9 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     //const rpcpassword="y";
     var daemonBinaryStarted=false;
     var daemonProcess=null;
+    var daemonStderrLines=[];
+    var daemonStopExpected=false;
+    var daemonLogDir=null;
 
     function getNetwork() {
       try {
@@ -144,6 +147,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     {
       console.log("stop-daemon fired");
       e.preventDefault();
+      daemonStopExpected = true;
       win.webContents.send('stop-daemon',5);
     }
   });
@@ -276,6 +280,7 @@ ipcMain.handle('stop-staker', (_, pid) => {
 })
 
 ipcMain.handle('force-quit', () => {
+  daemonStopExpected = true;
   if (daemonProcess) {
     try { daemonProcess.kill(); } catch (e) { console.error('force-quit kill error:', e); }
     daemonProcess = null;
@@ -623,7 +628,7 @@ function startDaemon()
     console.error('Daemon binary found:', executablePath);
   }
 
-  const addnode = network === 'testnet' ? 'testnet-navio.nav.community' : 'mainnet.nav.io';
+  const addnode = network === 'testnet' ? 'testnet-navio.nav.community' : 'blocks.nav.io';
 
   const parameters = [
     ...(network !== 'mainnet' ? [`--${network}`] : []),
@@ -661,13 +666,37 @@ function startDaemon()
     proc.on('exit', (code) => {
       daemonBinaryStarted = false;
       console.log('Daemon exited with code:', code);
+      if (code !== 0 && code !== null && !daemonStopExpected) {
+        const stderrText = daemonStderrLines.slice(-80).join('').trim();
+        const detail = `Exit code: ${code}` + (stderrText ? `\n\nLast output:\n${stderrText.slice(-3000)}` : '');
+        const binDir = path.join(app.getPath('userData'), 'bin');
+        const logDir = daemonLogDir || app.getPath('userData');
+        win?.hide();
+        let clicked;
+        do {
+          clicked = dialog.showMessageBoxSync({
+            type: 'error',
+            title: 'Navio Daemon Crashed',
+            message: 'The Navio daemon exited unexpectedly.',
+            detail,
+            buttons: ['Open Binary Folder', 'Open Log Folder', 'Close Navio X'],
+            defaultId: 2,
+            cancelId: 2,
+          });
+          if (clicked === 0) shell.openPath(binDir);
+          if (clicked === 1) shell.openPath(logDir);
+        } while (clicked !== 2);
+      }
       app.quit();
-      process.exit(0);
+      process.exit(code ?? 0);
     });
 
     proc.stdout.on('data', (data) => {
       const out = data.toString();
       console.log('*', out);
+
+      const walletDirMatch = out.match(/Using wallet directory (.+)/);
+      if (walletDirMatch) daemonLogDir = walletDirMatch[1].trim();
 
       if (out.includes('Starting HTTP server')) {
         daemonBinaryStarted = true;
@@ -677,6 +706,8 @@ function startDaemon()
 
     proc.stderr.on('data', (data) => {
       const err = data.toString();
+      daemonStderrLines.push(err);
+      if (daemonStderrLines.length > 200) daemonStderrLines.shift();
       if (!err.startsWith('Warning')) {
         console.error('stderr:', err);
       }

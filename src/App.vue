@@ -1,9 +1,10 @@
 <script setup>
     import { Vue } from 'vue'
+    const isWeb = !!import.meta.env.VITE_WEB
 </script>
 
 <template>
-    <TitleBar :network="state === 'ready' ? chain : null" />
+    <TitleBar v-if="!isWeb" :network="state === 'ready' ? chain : null" />
 
     <section
     class="h-screen bg-transparent flex items-center justify-center pt-9"
@@ -655,7 +656,7 @@ methods: {
         this.port    = net.port;
         localStorage.setItem('network', net.name);
         ipcRenderer.invoke('save-network', net.name);
-        this.state = 'select_daemon_method';
+        this.state = import.meta.env.VITE_WEB ? 'setup' : 'select_daemon_method';
     },
     getBlockChainInfo: function() {
         const batch = [{ method: "getblockchaininfo" }];
@@ -862,11 +863,10 @@ methods: {
             host:this.host,
             port: this.port,
             username:this.username,
-            password:this.password, 
-            wallet:'wallet_1'
+            password:this.password,
         });
         console.log(this.client);
-        this.client.command([{ method: "getwalletinfo" }]).then((r) => 
+        this.client.command([{ method: "getblockchaininfo" }]).then((r) =>
         {
             if (this.remember)
             {
@@ -996,7 +996,7 @@ mounted()
         {
             if (!data.started)
             {
-                this.state="select_daemon_method";
+                this.state = import.meta.env.VITE_WEB ? 'setup' : 'select_daemon_method';
             }
             else
             {

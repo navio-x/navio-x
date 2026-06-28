@@ -65,7 +65,7 @@ const store = createStore({
   }
 })
 
-let Client = require('bitcoin-core');
+import Client from 'bitcoin-core';
 let app=createApp(App);
 app.use(router)
    .use(VueApexCharts)

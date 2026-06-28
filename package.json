@@ -29,7 +29,11 @@
     "flatpak:bundle": "flatpak build-bundle repo navio-x.flatpak io.github.navio-x",
     "flatpak:install": "flatpak install --reinstall navio-x.flatpak",
     "flatpak:run": "flatpak run io.github.navio-x",
-    "flatpak:all": "npm run flatpak:build && npm run flatpak:bundle && npm run flatpak:install"
+    "flatpak:all": "npm run flatpak:build && npm run flatpak:bundle && npm run flatpak:install",
+    "build:web": "vite build --config vite.config.web.ts",
+    "preview:web": "vite preview --config vite.config.web.ts --port 4173",
+    "start:web": "node proxy.js",
+    "dev:web": "node proxy.js & vite --config vite.config.web.ts"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
