@@ -110,7 +110,13 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
-          <button :disabled="!new_wallet_name || (wallet_type_id==2 && !import_seed_phrase) || (wallet_passphrase && wallet_passphrase !== wallet_passphrase_confirm)" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Create</button>
+          <button :disabled="!new_wallet_name || (wallet_type_id==2 && !import_seed_phrase) || (wallet_passphrase && wallet_passphrase !== wallet_passphrase_confirm) || creating_wallet" type="button" id="confirmButton" class="inline-flex items-center gap-2 text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+            <svg v-if="creating_wallet" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            {{ creating_wallet ? (wallet_type_id == 2 ? 'Importing...' : 'Creating...') : 'Create' }}
+          </button>
 
         </div>
       </div>
@@ -515,6 +521,7 @@
         import_seed_phrase:'',
         import_type:'seed',
         wallet_load_on_startup:1,
+        creating_wallet: false,
         scan_start_height:0,
         scan_stop_height:0,
         showRescanModal: false,
@@ -917,11 +924,13 @@
         if (this.wallet_passphrase) {
           parameters.passphrase = this.wallet_passphrase;
         }
+        vm.creating_wallet = true;
         this.client.command([{ method: "createwallet", parameters: parameters }]).then((r) =>
         {
           console.log(r);
           if (r[0].code)
           {
+            vm.creating_wallet = false;
             Swal.fire({
               theme:'dark',
               title: 'Error!',
@@ -932,6 +941,7 @@
           }
           else
           {
+           vm.creating_wallet = false;
            if (vm.walletModal) vm.walletModal.hide();
            vm.new_wallet_name="";
            vm.import_seed_phrase="";
@@ -970,6 +980,8 @@
              })
            }
          }
+       }).catch(() => {
+         vm.creating_wallet = false;
        });
       }
     },
@@ -1014,6 +1026,7 @@
           this.import_type="seed";
           this.wallet_passphrase="";
           this.wallet_passphrase_confirm="";
+          this.creating_wallet=false;
         });
       }
 
