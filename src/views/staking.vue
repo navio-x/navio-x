@@ -66,7 +66,7 @@
     <label class="stk-label">NAV to Lock</label>
     <div class="stk-row">
       <input v-model="amount_lock" type="number" min="0" placeholder="0.00" class="stk-input">
-      <button type="button" :disabled="!amount_lock" @click="lock_coins()" class="stk-btn stk-lock">
+      <button type="button" :disabled="!amount_lock" @click="requireUnlock(lock_coins)" class="stk-btn stk-lock">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
         </svg>
@@ -77,10 +77,16 @@
 
   <!-- Unlock group -->
   <div class="flex-1">
-    <label class="stk-label">NAV to Unlock</label>
+    <div class="flex items-center justify-between mb-1.5">
+      <label class="stk-label" style="margin-bottom:0">NAV to Unlock</label>
+      <button v-if="totalStakedAmount > 0" type="button" @click="amount_unlock = totalStakedAmount"
+        class="text-xs text-violet-400 hover:text-violet-300 transition-colors focus:outline-none">
+        Use All
+      </button>
+    </div>
     <div class="stk-row">
       <input v-model="amount_unlock" type="number" min="0" placeholder="0.00" class="stk-input">
-      <button type="button" :disabled="!amount_unlock" @click="unlock_coins()" class="stk-btn stk-unlock">
+      <button type="button" :disabled="!amount_unlock" @click="requireUnlock(unlock_coins)" class="stk-btn stk-unlock">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
         </svg>
@@ -98,6 +104,12 @@
 </div>
 <NoWalletSelected v-else />
 </div>
+
+<WalletUnlock
+  v-if="showUnlockModal"
+  @unlocked="onWalletUnlocked"
+  @cancel="showUnlockModal = false; pendingAction = null"
+/>
 </template>
 
 <script>
@@ -106,8 +118,9 @@
     import Swal from 'sweetalert2';
     import '@sweetalert2/theme-dark/dark.scss';
     import NoWalletSelected from '../components/NoWalletSelected.vue';
+    import WalletUnlock from '../components/WalletUnlock.vue';
     export default {
-        components: { NoWalletSelected },
+        components: { NoWalletSelected, WalletUnlock },
         data() {
             return {
                 staked_commitments:undefined,
@@ -115,10 +128,36 @@
                 amount_unlock:0,
                 options: undefined,
                 series: undefined,
-                txs:[]
+                txs:[],
+                showUnlockModal: false,
+                pendingAction: null
+            }
+        },
+        computed: {
+            totalStakedAmount() {
+                if (!this.staked_commitments) return 0;
+                return Object.values(this.staked_commitments).reduce((sum, c) => sum + (parseFloat(c.amount) || 0), 0);
             }
         },
         methods:{
+            requireUnlock(action) {
+                this.client.command([{ method: 'getwalletinfo' }]).then((r) => {
+                    const info = r[0];
+                    if (info && 'unlocked_until' in info && info.unlocked_until === 0) {
+                        this.pendingAction = action;
+                        this.showUnlockModal = true;
+                    } else {
+                        action();
+                    }
+                }).catch(() => action());
+            },
+            onWalletUnlocked() {
+                this.showUnlockModal = false;
+                if (this.pendingAction) {
+                    this.pendingAction();
+                    this.pendingAction = null;
+                }
+            },
             list_staked_commitments:function()
             {
                 let vm=this;

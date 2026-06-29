@@ -47,6 +47,10 @@
 					</div>
 					<div class="space-y-2 border-t border-white/[0.18] pt-4">
 						<div class="flex justify-between text-sm">
+							<span class="text-white/65">Pending</span>
+							<span class="text-white/90">{{formatNumbers(balance.mine.pending_staked_commitment_balance)}} NAV</span>
+						</div>
+						<div class="flex justify-between text-sm">
 							<span class="text-white/65">24H</span>
 							<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
 								{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV

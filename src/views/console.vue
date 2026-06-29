@@ -40,7 +40,7 @@
     return {
       result: this.$store.state.console_log,
       cmd:undefined,
-      items:['help','getblockchaininfo'],
+      items:['help','getblockchaininfo','liststakedcommitments'],
       contextMenu: { visible: false, x: 0, y: 0 }
     }
   },

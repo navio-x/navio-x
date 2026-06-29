@@ -88,6 +88,13 @@
 
     <NoWalletSelected v-else />
 
+    <!-- Wallet Unlock Modal -->
+    <WalletUnlock
+      v-if="showUnlockModal"
+      @unlocked="showUnlockModal = false; doSend()"
+      @cancel="showUnlockModal = false"
+    />
+
     <!-- Modal -->
     <transition name="fade" appear>
       <div v-if="showModal" @keydown.esc="showModal = false" tabindex="0"
@@ -143,15 +150,17 @@
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
   import NoWalletSelected from '../components/NoWalletSelected.vue';
+  import WalletUnlock from '../components/WalletUnlock.vue';
 
   export default {
-    components: { NoWalletSelected },
+    components: { NoWalletSelected, WalletUnlock },
     data() {
       return {
         address: "",
         amount: "",
         showModal: false,
-        isLoading: false
+        isLoading: false,
+        showUnlockModal: false
       };
     },
     mounted() {
@@ -168,6 +177,23 @@
         this.showModal = true;
       },
       confirmTransaction() {
+        this.isLoading = true;
+        this.client.command([{ method: "getwalletinfo" }])
+          .then((r) => {
+            const info = r[0];
+            if (info && 'unlocked_until' in info && info.unlocked_until === 0) {
+              this.isLoading = false;
+              this.showModal = false;
+              this.showUnlockModal = true;
+            } else {
+              this.doSend();
+            }
+          })
+          .catch(() => {
+            this.doSend();
+          });
+      },
+      doSend() {
         this.isLoading = true;
         this.client.command([{ method: "validateaddress", parameters: [this.address] }])
         .then((r) => {
@@ -212,7 +238,7 @@
           else
           {
             this.isLoading = false;
-            this.showModal = false;            
+            this.showModal = false;
             Swal.fire({
               theme:'dark',
               title: 'Address Validation Error',
@@ -232,7 +258,6 @@
             confirmButtonText: 'OK'
           });
         });
-
       }
     }
   };

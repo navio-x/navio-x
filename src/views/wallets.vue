@@ -51,6 +51,57 @@
             </label>
             <input type="text" id="import_seed_phrase" v-model="import_seed_phrase" class="glass-input text-sm block w-full p-2.5">
           </div>
+          <!-- Encrypt Wallet (Optional) -->
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              <label class="text-sm font-medium text-white">Encrypt Wallet <span class="text-white/40 font-normal">(Optional)</span></label>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="block mb-1.5 text-xs font-medium text-white/70">Passphrase</label>
+                <div class="relative">
+                  <input :type="show_passphrase ? 'text' : 'password'" v-model="wallet_passphrase" class="glass-input text-sm block w-full p-2.5 pr-10" placeholder="Leave empty to skip encryption">
+                  <button type="button" @click="show_passphrase = !show_passphrase" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors focus:outline-none">
+                    <svg v-if="!show_passphrase" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                  </button>
+                </div>
+                <!-- Strength meter -->
+                <div v-if="wallet_passphrase" class="mt-2">
+                  <div class="flex gap-1 mb-1">
+                    <div v-for="i in 4" :key="i" class="flex-1 h-1 rounded-full transition-all duration-300"
+                         :style="i <= passphraseStrength.score ? { background: passphraseStrength.color } : { background: 'rgba(255,255,255,0.12)' }"></div>
+                  </div>
+                  <p class="text-xs font-medium" :style="{ color: passphraseStrength.color }">{{ passphraseStrength.label }}</p>
+                </div>
+              </div>
+              <div v-if="wallet_passphrase">
+                <label class="block mb-1.5 text-xs font-medium text-white/70">Confirm Passphrase</label>
+                <div class="relative">
+                  <input :type="show_passphrase_confirm ? 'text' : 'password'" v-model="wallet_passphrase_confirm"
+                         class="glass-input text-sm block w-full p-2.5 pr-10"
+                         :class="wallet_passphrase_confirm && wallet_passphrase !== wallet_passphrase_confirm ? 'ring-1 ring-red-500/60' : ''">
+                  <button type="button" @click="show_passphrase_confirm = !show_passphrase_confirm" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors focus:outline-none">
+                    <svg v-if="!show_passphrase_confirm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                  </button>
+                </div>
+                <p v-if="wallet_passphrase_confirm && wallet_passphrase !== wallet_passphrase_confirm" class="mt-1.5 text-xs text-red-400">Passphrases do not match</p>
+              </div>
+            </div>
+          </div>
+
           <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" true-value="1" false-value="0" v-model="wallet_load_on_startup" class="sr-only peer">
             <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -59,7 +110,7 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center px-6 py-4 space-x-3 border-t border-white/[0.08] rounded-b">
-          <button :disabled="!new_wallet_name || (wallet_type_id==2 && !import_seed_phrase)" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Create</button>
+          <button :disabled="!new_wallet_name || (wallet_type_id==2 && !import_seed_phrase) || (wallet_passphrase && wallet_passphrase !== wallet_passphrase_confirm)" type="button" id="confirmButton" class="text-white font-semibold rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-40 transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">Create</button>
 
         </div>
       </div>
@@ -240,14 +291,14 @@
   </transition>
   <div class="h-full w-full text-white bg-transparent">
     <div v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" class="flex items-center gap-2 px-4 pt-3 mb-5">
-      <button v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" id="button" type="button" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-semibold text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+      <button v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" @click="openWalletModal" type="button" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-semibold text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
         Create Wallet
       </button>
       <template v-if="is_wallet_loaded">
-        <button v-on:click="privacyCheck(getblsctseed)" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-on:click="requireUnlock(() => privacyCheck(getblsctseed))" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
           </svg>
@@ -260,13 +311,13 @@
           </svg>
           Audit Key
         </button>
-        <button v-if="!is_scanning" @click="openRescanModal" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-if="!is_scanning" @click="requireUnlock(openRescanModal, 3600, 'Wallet will stay unlocked for 1 hour. You can lock it manually after rescan completes.')" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
           Rescan Wallet
         </button>
-        <button v-on:click="privacyCheck(dumpmnemonic)" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+        <button v-on:click="requireUnlock(() => privacyCheck(dumpmnemonic))" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
           </svg>
@@ -301,14 +352,14 @@
       </span>
       <template v-if="typeof wallet_info.scanning=='boolean' && wallet_info.scanning">
         <span class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
-          Scanning...
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 animate-spin"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+          <span class="scanning-text">Scanning...</span>
         </span>
       </template>
       <template v-if="typeof wallet_info.scanning=='object'">
         <span class="inline-flex items-center gap-1 bg-blue-900/60 text-blue-300 border border-blue-500/30 text-xs font-medium px-2 py-0.5 rounded">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
-          Scanning...
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 animate-spin"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+          <span class="scanning-text">Scanning...</span>
         </span>
         <span v-if="wallet_info.scanning.duration" class="inline-flex items-center gap-1 bg-green-900/60 text-green-300 border border-green-500/30 text-xs font-medium px-2 py-0.5 rounded">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
@@ -348,9 +399,9 @@
       </div>
     </div>
     <!-- Wallet rows -->
-    <div v-for="(wallet, index) in all_wallets.wallets" :key="wallet.name"
+    <div v-for="(wallet, index) in sortedWallets" :key="wallet.name"
          class="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.03]"
-         :class="{ 'border-b border-white/[0.05]': index < all_wallets.wallets.length - 1 }">
+         :class="{ 'border-b border-white/[0.05]': index < sortedWallets.length - 1 }">
       <!-- Wallet icon -->
       <div class="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
            :style="wallet.checked ? 'background: linear-gradient(135deg, rgba(124,58,237,0.30) 0%, rgba(59,130,246,0.20) 100%); border: 1px solid rgba(124,58,237,0.35);' : 'background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);'">
@@ -362,7 +413,32 @@
       </div>
       <!-- Wallet name -->
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium text-white truncate">{{wallet.name}}</p>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <p class="text-sm font-medium text-white truncate">{{wallet.name}}</p>
+          <template v-if="wallet.name === active_wallet && wallet_info && 'unlocked_until' in wallet_info">
+            <span v-if="wallet_info.unlocked_until === 0"
+              class="inline-flex items-center gap-1 bg-amber-900/50 text-amber-300 border border-amber-500/30 text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              Encrypted
+            </span>
+            <span v-else
+              class="inline-flex items-center gap-1 bg-green-900/50 text-green-300 border border-green-500/30 text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              Unlocked
+            </span>
+            <button v-if="wallet_info && wallet_info.unlocked_until > 0" @click.stop="lockwallet"
+              title="Lock wallet"
+              class="inline-flex items-center justify-center w-4 h-4 text-amber-400 hover:text-amber-300 transition-colors focus:outline-none flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+            </button>
+          </template>
+        </div>
         <p class="text-xs mt-0.5" :class="wallet.checked ? 'text-violet-400' : 'text-white/30'">
           {{wallet.checked ? 'Loaded' : 'Not loaded'}}
         </p>
@@ -398,6 +474,14 @@
 
 </div>
 
+<WalletUnlock
+  v-if="showUnlockModal"
+  :timeout="unlockTimeout"
+  :warning="unlockWarning"
+  @unlocked="onWalletUnlocked"
+  @cancel="showUnlockModal = false; pendingAction = null"
+/>
+
 </template>
 
 <script>
@@ -406,6 +490,7 @@
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
   import NoWalletSelected from '../components/NoWalletSelected.vue';
+  import WalletUnlock from '../components/WalletUnlock.vue';
   const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -414,7 +499,7 @@
     timerProgressBar: true,
   })
   export default {
-    components: { NoWalletSelected },
+    components: { NoWalletSelected, WalletUnlock },
     data() {
       return {
         loaded_wallets:undefined,
@@ -437,15 +522,68 @@
         showMnemonicModal: false,
         mnemonic: [],
         showPrivacyModal: false,
-        privacyAction: null
+        privacyAction: null,
+        showUnlockModal: false,
+        pendingAction: null,
+        unlockTimeout: 60,
+        unlockWarning: '',
+        wallet_passphrase: '',
+        wallet_passphrase_confirm: '',
+        show_passphrase: false,
+        show_passphrase_confirm: false
       }
     },
     computed: {
       is_scanning() {
         return !!(this.wallet_info && (this.wallet_info.scanning === true || typeof this.wallet_info.scanning === 'object'));
+      },
+      sortedWallets() {
+        if (!this.all_wallets?.wallets) return [];
+        return [...this.all_wallets.wallets].sort((a, b) => a.name.localeCompare(b.name));
+      },
+      passphraseStrength() {
+        const p = this.wallet_passphrase;
+        if (!p) return { score: 0, label: '', color: '' };
+        let s = 0;
+        if (p.length >= 8) s++;
+        if (p.length >= 12) s++;
+        if (/[A-Z]/.test(p)) s++;
+        if (/[0-9]/.test(p)) s++;
+        if (/[^A-Za-z0-9]/.test(p)) s++;
+        let level, label, color;
+        if (s <= 1)       { level = 1; label = 'Weak';   color = '#ef4444'; }
+        else if (s === 2) { level = 2; label = 'Fair';   color = '#f97316'; }
+        else if (s === 3) { level = 3; label = 'Good';   color = '#eab308'; }
+        else              { level = 4; label = 'Strong'; color = '#22c55e'; }
+        return { score: level, label, color };
       }
     },
     methods:{
+      requireUnlock(action, timeout = 60, warning = '') {
+        if (this.wallet_info && 'unlocked_until' in this.wallet_info && this.wallet_info.unlocked_until === 0) {
+          this.pendingAction = action;
+          this.unlockTimeout = timeout;
+          this.unlockWarning = warning;
+          this.showUnlockModal = true;
+        } else {
+          action();
+        }
+      },
+      onWalletUnlocked() {
+        this.showUnlockModal = false;
+        this.unlockWarning = '';
+        if (this.pendingAction) {
+          this.pendingAction();
+          this.pendingAction = null;
+        }
+      },
+      lockwallet() {
+        this.client.command([{ method: 'walletlock' }]).then(() => {
+          Toast.fire({ theme: 'dark', icon: 'success', title: 'Wallet locked' });
+        }).catch(() => {
+          Toast.fire({ theme: 'dark', icon: 'error', title: 'Failed to lock wallet' });
+        });
+      },
       openWalletModal: function() {
         if (this.walletModal) {
           this.walletModal.toggle();
@@ -776,6 +914,9 @@
           if (this.import_type==='seed') parameters.seed=this.import_seed_phrase;
           else if (this.import_type==='mnemonic') parameters.mnemonic=this.import_seed_phrase;
         }
+        if (this.wallet_passphrase) {
+          parameters.passphrase = this.wallet_passphrase;
+        }
         this.client.command([{ method: "createwallet", parameters: parameters }]).then((r) =>
         {
           console.log(r);
@@ -795,6 +936,8 @@
            vm.new_wallet_name="";
            vm.import_seed_phrase="";
            vm.import_type="seed";
+           vm.wallet_passphrase="";
+           vm.wallet_passphrase_confirm="";
            if (isFirstWallet)
            {
              vm.set_active_wallet({ name: r[0].name });
@@ -844,7 +987,6 @@
       },
       1000);
       initFlowbite();
-      const $buttonElement = document.querySelector('#button');
       const $modalElement = document.querySelector('#modal');
       const $confirmButton = document.querySelector('#confirmButton');
       const $closeButton = document.querySelector('#closeButton');
@@ -858,12 +1000,6 @@
       {
         const modal = new Modal($modalElement, modalOptions);
         this.walletModal = modal;
-        if ($buttonElement) {
-          $buttonElement.addEventListener('click', () => {
-            modal.toggle();
-            document.getElementById("wallet_name").focus();
-          });
-        }
         $confirmButton.addEventListener('click', () =>
         {
           if (this.new_wallet_name)
@@ -876,6 +1012,8 @@
           this.new_wallet_name="";
           this.import_seed_phrase="";
           this.import_type="seed";
+          this.wallet_passphrase="";
+          this.wallet_passphrase_confirm="";
         });
       }
 
@@ -890,4 +1028,12 @@
 <style scoped>
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; transform: scale(0.97); }
+
+.scanning-text {
+  animation: scanning-fade 2s ease-in-out infinite;
+}
+@keyframes scanning-fade {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
 </style>
