@@ -34,7 +34,7 @@
           </label>
           <textarea
             v-model="address"
-            rows="3"
+            rows="4"
             placeholder="Enter NAV recipient address..."
             class="w-full rounded-xl text-sm font-mono resize-none px-4 py-3 leading-relaxed glass-input"></textarea>
           <p class="mt-1.5 text-xs text-white/55 flex items-center gap-1">
@@ -50,9 +50,16 @@
 
         <!-- Amount -->
         <div class="mb-6">
-          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
-            Amount
-          </label>
+          <div class="flex items-center justify-between mb-2">
+            <label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+              Amount
+            </label>
+            <button v-if="balance && balance.mine.trusted > 0" type="button"
+              @click="amount = balance.mine.trusted"
+              class="text-xs text-violet-400 hover:text-violet-300 transition-colors focus:outline-none">
+              Use All ({{ balance.mine.trusted }} NAV)
+            </button>
+          </div>
           <div class="relative">
             <input
               v-model="amount"
@@ -160,11 +167,13 @@
         amount: "",
         showModal: false,
         isLoading: false,
-        showUnlockModal: false
+        showUnlockModal: false,
+        balance: null
       };
     },
     mounted() {
       window.addEventListener('keydown', this.handleKeydown);
+      this.fetchBalance();
     },
     beforeUnmount() {
       window.removeEventListener('keydown', this.handleKeydown);
@@ -172,6 +181,9 @@
     methods: {
       handleKeydown(e) {
         if (e.key === 'Escape') this.showModal = false;
+      },
+      fetchBalance() {
+        this.client.getBalances().then(r => { this.balance = r; }).catch(() => {});
       },
       submit() {
         this.showModal = true;

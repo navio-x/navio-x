@@ -619,8 +619,11 @@ v-show="state=='select_network'"
     network(val) {
       const found = this.networks.find(n => n.name === val);
       if (found) this.port = found.port;
-  }
-},
+    },
+    '$store.state.active_wallet'(val) {
+      if (this.client) this.client.wallet = val;
+    }
+  },
 methods: {
     friendly_platform: function(p) {
         const names = { win32: 'Windows', darwin: 'macOS', linux: 'Linux' };
@@ -864,6 +867,19 @@ methods: {
             port: this.port,
             username:this.username,
             password:this.password,
+            wallet: this.$store.state.active_wallet || undefined,
+        });
+        const _navioWalletMethods = [
+            'sendtoblsctaddress', 'getwalletinfo', 'walletpassphrase', 'walletlock',
+            'stakelock', 'stakeunlock', 'createwallet', 'loadwallet', 'unloadwallet',
+            'rescanblockchain', 'abortrescan', 'getblsctseed', 'getblsctauditkey',
+            'dumpmnemonic', 'liststakedcommitments', 'listtransactions', 'getbalances',
+            'listwallets', 'validateaddress',
+        ];
+        _navioWalletMethods.forEach(method => {
+            if (!this.client.methods[method]) {
+                this.client.methods[method] = { features: { multiwallet: { supported: true } } };
+            }
         });
         console.log(this.client);
         this.client.command([{ method: "getblockchaininfo" }]).then((r) =>
