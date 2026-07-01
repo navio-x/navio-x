@@ -10,10 +10,11 @@ const stubNodeApi = {
 };
 
 export default defineConfig({
+  base: './',
   plugins: [vue(), stubNodeApi],
   define: {
     'import.meta.env.VITE_WEB': 'true',
-    'process.env.BASE_URL': JSON.stringify('/'),
+    'process.env.BASE_URL': JSON.stringify('./'),
   },
   resolve: {
     alias: {

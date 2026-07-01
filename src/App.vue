@@ -7,7 +7,8 @@
     <TitleBar v-if="!isWeb" :network="state === 'ready' ? chain : null" />
 
     <section
-    class="h-screen bg-transparent flex items-center justify-center pt-9"
+    class="h-screen bg-transparent flex items-center justify-center"
+    :class="{ 'pt-9': !isWeb }"
     v-show="state === 'welcome'"
     >
     <div class="px-6 mx-auto max-w-screen-md text-center">
@@ -73,7 +74,7 @@
 </div>
 </section>
 
-<section class="h-screen bg-transparent flex items-center justify-center pt-9" v-show="state=='connection_error'">
+<section class="h-screen bg-transparent flex items-center justify-center" :class="{ 'pt-9': !isWeb }" v-show="state=='connection_error'">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
         <div class="flex justify-center items-center">
             <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
@@ -102,7 +103,7 @@
       </div>
   </div>
 </section>
-<section class="h-screen bg-transparent pt-9" v-show="state=='download_progress'">
+<section class="h-screen bg-transparent" :class="{ 'pt-9': !isWeb }" v-show="state=='download_progress'">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
       <div class="sm:px-16 lg:px-48 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
         <!-- From Uiverse.io by Z4drus --> 
@@ -125,7 +126,7 @@
 </div>
 </section>
 
-<section class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9 px-4" v-show="state=='select_binary'">
+<section class="min-h-screen bg-transparent flex flex-col items-center justify-center px-4" :class="{ 'pt-9': !isWeb }" v-show="state=='select_binary'">
   <div class="w-full max-w-3xl">
     <div class="flex items-center justify-between gap-4 mb-2">
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white brand">Select a Binary</h1>
@@ -210,7 +211,7 @@
   </div>
 </section>
 
-<section class="h-full w-full bg-transparent pt-9 overflow-auto" v-show="state=='agreement'">
+<section class="h-full w-full bg-transparent overflow-auto" :class="{ 'pt-9': !isWeb }" v-show="state=='agreement'">
     <div class="px-10 pt-6 pb-10 mx-auto max-w-screen-xl">
         <p class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white">License Agreement</p>
         <div class="w-full h-full text-white">
@@ -289,7 +290,8 @@ v-show="state=='select_network'"
 />
 
 <section
-  class="min-h-screen bg-transparent flex flex-col items-center justify-center pt-9"
+  class="min-h-screen bg-transparent flex flex-col items-center justify-center"
+  :class="{ 'pt-9': !isWeb }"
   v-show="state=='select_daemon_method'"
 >
   <div class="mb-8 flex justify-center">
@@ -362,7 +364,7 @@ v-show="state=='select_network'"
   </div>
 </section>
 
-<section class="h-screen bg-transparent pt-9" v-show="state=='setup'">
+<section class="h-screen bg-transparent" :class="{ 'pt-9': !isWeb }" v-show="state=='setup'">
   <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto h-full">
     <div class="w-full rounded-xl border sm:max-w-md" style="background: linear-gradient(160deg, rgba(34,26,68,0.95) 0%, rgba(22,28,58,0.95) 100%); border-color: rgba(255,255,255,0.18); backdrop-filter: blur(16px);">
       <div class="p-5 space-y-3">
@@ -417,7 +419,7 @@ v-show="state=='select_network'"
   </div>
 </section>
 
-<div class="flex items-center justify-center h-screen bg-transparent pt-9" v-show="state=='connected'">
+<div class="flex items-center justify-center h-screen bg-transparent" :class="{ 'pt-9': !isWeb }" v-show="state=='connected'">
     <div class="relative p-6 text-center rounded-2xl shadow-2xl sm:p-8 glass-card">
         <div class="w-14 h-14 rounded-full bg-green-900/60 border border-green-500/30 p-2 flex items-center justify-center mx-auto mb-3.5">
             <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
@@ -432,7 +434,7 @@ v-show="state=='select_network'"
 </div>
 
 <div id="nav" v-show="state=='ready'">
-  <aside id="default-sidebar" class="fixed top-9 left-0 z-40 w-64 h-[calc(100vh-36px)] flex flex-col sidebar-glass" aria-label="Sidebar">
+  <aside id="default-sidebar" class="fixed left-0 z-40 w-64 flex flex-col sidebar-glass" :class="isWeb ? 'top-0 h-screen' : 'top-9 h-[calc(100vh-36px)]'" aria-label="Sidebar">
 
     <!-- Ambient glow blobs -->
     <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-none">
@@ -551,7 +553,7 @@ v-show="state=='select_network'"
 
 </aside>
 
-<div class="sm:ml-64 h-[calc(100vh-36px)] mt-9">
+<div class="sm:ml-64" :class="isWeb ? 'h-screen' : 'h-[calc(100vh-36px)] mt-9'">
   <router-view />
 </div>
 </div>
@@ -1074,6 +1076,20 @@ mounted()
             theme:'dark',
             icon: 'success',
             title: "Staker successfully stopped for wallet '"+this.$store.state.staker_wallet + "'"
+        });
+    })
+    ipcRenderer.on('start-staker-error', (_event, error) =>
+    {
+        this.$store.commit('set_staker_pid',undefined);
+        this.$store.commit('set_staking_active',false);
+        let detail=error && error.message ? error.message : 'Unknown error.';
+        let code=error && (error.code !== undefined && error.code !== null) ? error.code : (error && error.signal ? error.signal : undefined);
+        Swal.fire({
+            theme:'dark',
+            title: 'Staking Error',
+            text: (code !== undefined ? "Error " + code + ": " : "") + detail,
+            icon: 'error',
+            confirmButtonText: 'OK'
         });
     })
 }

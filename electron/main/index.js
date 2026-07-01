@@ -63,6 +63,7 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     var daemonStderrLines=[];
     var daemonStopExpected=false;
     var daemonLogDir=null;
+    var stakerStopExpected=false;
 
     function getNetwork() {
       try {
@@ -732,7 +733,12 @@ function startDaemon()
 function stopStaker(pid)
 {
   console.log("Stopping staker. PID : " + pid);
-  process.kill(pid, 'SIGTERM');
+  stakerStopExpected = true;
+  try {
+    process.kill(pid, 'SIGTERM');
+  } catch (err) {
+    console.log("Failed to stop staker->" + err.message);
+  }
 }
 
 function startStaker(network, wallet, rpcuser, rpcpassword)
@@ -742,6 +748,9 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
   console.log(`${wallet}`);
   console.log(`${rpcuser}`);
   console.log(`${rpcpassword}`);
+
+  stakerStopExpected = false;
+  let stakerStderrLines = [];
 
   let binDir = path.join(app.getPath('userData'), 'bin');
   let bShell = (process.platform !== "win32");
@@ -780,12 +789,20 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
   {
     console.log("Setting staker file as executable " + executablePath);
 
-    execFile("chmod", ["+x", executablePath], defaults, function ()
+    execFile("chmod", ["+x", executablePath], defaults, function (chmodErr)
     {
+      if (chmodErr)
+      {
+        console.log("Failed to chmod staker binary->" + chmodErr.message);
+        win.webContents.send('start-staker-error', { code: chmodErr.code, message: chmodErr.message });
+        return;
+      }
+
       newProcess = spawn(executablePath, parameters, defaults);
 
       newProcess.on('error', (err) => {
         console.log("Failed to start staker->" + executablePath + "->" + err.message);
+        win.webContents.send('start-staker-error', { code: err.code, message: err.message });
       });
 
       if (newProcess.pid)
@@ -793,10 +810,23 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
         win.webContents.send('start-staker-success', newProcess.pid);
         console.log("Staker started. PID:" + newProcess.pid);
 
-        newProcess.on('exit', (code) => {
+        newProcess.on('exit', (code, signal) => {
           newProcess = null;
-          win.webContents.send('stop-staker-success');
-          console.log("Staker stopped. Exit Code : " + code);
+          if (code !== 0 && !stakerStopExpected)
+          {
+            console.log("Staker exited unexpectedly. Exit Code : " + code + " Signal : " + signal);
+            const stderrText = stakerStderrLines.join('').trim();
+            win.webContents.send('start-staker-error', {
+              code: code,
+              signal: signal,
+              message: stderrText || `Staker process exited with code ${code}`
+            });
+          }
+          else
+          {
+            win.webContents.send('stop-staker-success');
+            console.log("Staker stopped. Exit Code : " + code);
+          }
         });
 
         newProcess.stdout.on('data', (data) => {
@@ -804,16 +834,20 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
         });
 
         newProcess.stderr.on('data', (stderr) => {
-          console.log("stderr : " + stderr);
-          if (!stderr.toString().startsWith("Warning"))
+          const text = stderr.toString();
+          console.log("stderr : " + text);
+          if (!text.startsWith("Warning"))
           {
-            console.log("Staker start failed->" + stderr.toString());
+            console.log("Staker start failed->" + text);
           }
+          stakerStderrLines.push(text);
+          if (stakerStderrLines.length > 80) stakerStderrLines.shift();
         });
       }
       else
       {
         console.log("Staker start failed.");
+        win.webContents.send('start-staker-error', { message: 'Failed to start staker process.' });
       }
     });
   }
@@ -826,6 +860,7 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
     newProcess.on('error', (err) => {
       console.log('Failed to start staker.' + err.message);
       console.log(err);
+      win.webContents.send('start-staker-error', { code: err.code, message: err.message });
     });
 
     if (newProcess.pid)
@@ -833,10 +868,23 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
       win.webContents.send('start-staker-success', newProcess.pid);
       console.log("Staker started. PID:" + newProcess.pid);
 
-      newProcess.on('exit', (code) => {
+      newProcess.on('exit', (code, signal) => {
         newProcess = null;
-        win.webContents.send('stop-staker-success');
-        console.log("Staker stopped. Exit Code : " + code);
+        if (code !== 0 && !stakerStopExpected)
+        {
+          console.log("Staker exited unexpectedly. Exit Code : " + code + " Signal : " + signal);
+          const stderrText = stakerStderrLines.join('').trim();
+          win.webContents.send('start-staker-error', {
+            code: code,
+            signal: signal,
+            message: stderrText || `Staker process exited with code ${code}`
+          });
+        }
+        else
+        {
+          win.webContents.send('stop-staker-success');
+          console.log("Staker stopped. Exit Code : " + code);
+        }
       });
 
       newProcess.stdout.on('data', (data) => {
@@ -844,16 +892,20 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
       });
 
       newProcess.stderr.on('data', (stderr) => {
-        console.log("stderr : " + stderr);
-        if (!stderr.toString().startsWith("Warning"))
+        const text = stderr.toString();
+        console.log("stderr : " + text);
+        if (!text.startsWith("Warning"))
         {
-          console.log("Staker start failed", stderr.toString());
+          console.log("Staker start failed", text);
         }
+        stakerStderrLines.push(text);
+        if (stakerStderrLines.length > 80) stakerStderrLines.shift();
       });
     }
     else
     {
       console.log("Staker start failed.");
+      win.webContents.send('start-staker-error', { message: 'Failed to start staker process.' });
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen bg-transparent flex flex-col items-center justify-center px-6 py-12 pt-[calc(48px+2rem)]">
+  <section class="min-h-screen bg-transparent flex flex-col items-center justify-center px-6 py-12" :class="{ 'pt-[calc(48px+2rem)]': !isWeb }">
     <img src="../assets/logo.svg" class="w-36 mb-10" alt="Navio" />
 
     <h1 class="text-3xl font-extrabold text-white mb-2 text-center">Select Network</h1>
@@ -77,7 +77,8 @@ export default {
   emits: ['select', 'back'],
   data() {
     return {
-      selected: null
+      selected: null,
+      isWeb: !!import.meta.env.VITE_WEB
     }
   },
   mounted() {
