@@ -153,7 +153,8 @@
 
       <p class="text-sm text-white/70 mb-3">
         Navio-X is connected to a daemon you started manually, so staking can't be launched from inside the app.
-        Start the staker yourself by running the following command in a terminal on the machine running the daemon (e.g. Ubuntu):
+        Start the staker yourself by running the following command in a terminal on the machine running the daemon
+        ({{ isWindows ? 'Windows, Command Prompt or PowerShell' : 'Linux/macOS' }}):
       </p>
 
       <div class="relative rounded-lg border border-white/[0.15] bg-black/40 pl-3 pr-9 py-2.5 mb-1 font-mono text-xs text-emerald-300 break-all">
@@ -168,7 +169,12 @@
       <p v-if="manualCommandCopied" class="text-xs text-emerald-400 mb-3">Copied to clipboard.</p>
 
       <p class="text-xs text-white/40 mt-2">
-        <code>screen</code> keeps the staker running in the background after you close the terminal. Reattach anytime with <code>screen -r navio-staker</code>.
+        <template v-if="isWindows">
+          This opens the staker in its own window titled <code>navio-staker</code>. Leave that window open — closing it stops the staker.
+        </template>
+        <template v-else>
+          <code>screen</code> keeps the staker running in the background after you close the terminal. Reattach anytime with <code>screen -r navio-staker</code>.
+        </template>
       </p>
 
       <div class="flex gap-3 mt-5">
@@ -205,7 +211,8 @@
                 pendingAction: null,
                 showManualStakingModal: false,
                 manualCommandCopied: false,
-                balance: undefined
+                balance: undefined,
+                binDir: ''
             }
         },
         computed: {
@@ -216,9 +223,17 @@
             isManualConnection() {
                 return !this.$store.state.is_daemon_auto_started;
             },
+            isWindows() {
+                return process.platform === 'win32';
+            },
             manualStakingCommand() {
                 let vm=this;
-                return `screen -S navio-staker ./navio-staker -${vm.$store.state.network} -wallet=${vm.$store.state.active_wallet} -rpcuser=${vm.$store.state.rpcuser} -rpcpassword=${vm.$store.state.rpcpassword}`;
+                const dir = vm.binDir || '<navio-x bin folder>';
+                const args = `-${vm.$store.state.network} -wallet=${vm.$store.state.active_wallet} -rpcuser=${vm.$store.state.rpcuser} -rpcpassword=${vm.$store.state.rpcpassword}`;
+                if (vm.isWindows) {
+                    return `cd /d "${dir}" && start "navio-staker" navio-staker.exe ${args}`;
+                }
+                return `cd "${dir}" && screen -S navio-staker ./navio-staker ${args}`;
             },
             pendingStakedBalance() {
                 if (!this.balance || !this.balance.mine) return 0;
@@ -396,6 +411,7 @@
             this.list_staked_commitments();
             this.getbalance();
             this.balanceTimer = setInterval(() => { this.getbalance(); }, 5000);
+            ipcRenderer.invoke('get-bin-dir').then((dir) => { vm.binDir = dir; });
             console.log("staking rewards");
             console.log("listtransactions");
             vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
