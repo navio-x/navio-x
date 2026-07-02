@@ -12,12 +12,29 @@
                 </div>
             </div>
 
+            <!-- Pending staked commitment balance (info only) -->
+            <div v-if="pendingStakedBalance" class="px-3 pb-3">
+                <div class="flex items-center gap-2 px-3 py-2 rounded-lg glass-card">
+                    <svg class="flex-shrink-0 w-4 h-4 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <p class="text-sm text-gray-200">
+                        <span class="text-white/90 font-semibold">{{ formatNumbers(pendingStakedBalance) }} NAV</span>
+                        <span class="text-white/60"> pending staked commitment (awaiting confirmation).</span>
+                    </p>
+                </div>
+            </div>
+
             <!-- Status row: button | commitments | staker status -->
             <div class="flex items-stretch gap-3 px-3 pb-3">
 
                 <!-- Start / Stop button -->
                 <button v-if="!$store.state.is_staking_active" v-on:click="start_staking()"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 focus:outline-none whitespace-nowrap transition-all">
+                    :title="isManualConnection ? 'Manual connection detected — click for instructions' : ''"
+                    :class="isManualConnection
+                        ? 'text-blue-400/50 bg-blue-500/5 border-blue-500/15 cursor-not-allowed'
+                        : 'text-blue-400 bg-blue-500/10 border-blue-500/30 hover:bg-blue-500/20 hover:text-blue-300'"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold border rounded-lg focus:outline-none whitespace-nowrap transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
@@ -110,6 +127,61 @@
   @unlocked="onWalletUnlocked"
   @cancel="showUnlockModal = false; pendingAction = null"
 />
+
+<transition name="fade" appear>
+  <div v-if="showManualStakingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showManualStakingModal = false">
+    <div class="relative text-white rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl border border-white/[0.18]"
+      style="background: linear-gradient(160deg, rgba(40,30,78,0.98) 0%, rgba(24,30,62,0.98) 100%); backdrop-filter: blur(24px);">
+
+      <button @click="showManualStakingModal = false" class="absolute top-3 right-3 text-white/70 hover:text-white/95 transition-colors focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="flex items-center justify-center w-9 h-9 rounded-xl flex-shrink-0" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.30);">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3M3.375 4.5h17.25a1.125 1.125 0 0 1 1.125 1.125v13.5a1.125 1.125 0 0 1-1.125 1.125H3.375a1.125 1.125 0 0 1-1.125-1.125V5.625A1.125 1.125 0 0 1 3.375 4.5Z" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-base font-semibold">Manual Staking Required</h2>
+          <p class="text-xs text-white/50 mt-0.5">You're connected to a manually started node</p>
+        </div>
+      </div>
+
+      <p class="text-sm text-white/70 mb-3">
+        Navio-X is connected to a daemon you started manually, so staking can't be launched from inside the app.
+        Start the staker yourself by running the following command in a terminal on the machine running the daemon (e.g. Ubuntu):
+      </p>
+
+      <div class="relative rounded-lg border border-white/[0.15] bg-black/40 pl-3 pr-9 py-2.5 mb-1 font-mono text-xs text-emerald-300 break-all">
+        {{ manualStakingCommand }}
+        <button @click="copyManualCommand" title="Copy to clipboard"
+          class="absolute top-2 right-2 text-white/50 hover:text-white/90 transition-colors focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+          </svg>
+        </button>
+      </div>
+      <p v-if="manualCommandCopied" class="text-xs text-emerald-400 mb-3">Copied to clipboard.</p>
+
+      <p class="text-xs text-white/40 mt-2">
+        <code>screen</code> keeps the staker running in the background after you close the terminal. Reattach anytime with <code>screen -r navio-staker</code>.
+      </p>
+
+      <div class="flex gap-3 mt-5">
+        <button @click="showManualStakingModal = false"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition duration-200"
+          style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
+          Got it
+        </button>
+      </div>
+
+    </div>
+  </div>
+</transition>
 </template>
 
 <script>
@@ -130,13 +202,27 @@
                 series: undefined,
                 txs:[],
                 showUnlockModal: false,
-                pendingAction: null
+                pendingAction: null,
+                showManualStakingModal: false,
+                manualCommandCopied: false,
+                balance: undefined
             }
         },
         computed: {
             totalStakedAmount() {
                 if (!this.staked_commitments) return 0;
                 return Object.values(this.staked_commitments).reduce((sum, c) => sum + (parseFloat(c.amount) || 0), 0);
+            },
+            isManualConnection() {
+                return !this.$store.state.is_daemon_auto_started;
+            },
+            manualStakingCommand() {
+                let vm=this;
+                return `screen -S navio-staker ./navio-staker -${vm.$store.state.network} -wallet=${vm.$store.state.active_wallet} -rpcuser=${vm.$store.state.rpcuser} -rpcpassword=${vm.$store.state.rpcpassword}`;
+            },
+            pendingStakedBalance() {
+                if (!this.balance || !this.balance.mine) return 0;
+                return parseFloat(this.balance.mine.pending_staked_commitment_balance) || 0;
             }
         },
         methods:{
@@ -178,6 +264,11 @@
             start_staking : function()
             {
                 let vm=this;
+                if (vm.isManualConnection)
+                {
+                    vm.showManualStakingModal = true;
+                    return;
+                }
                 if (vm.$store.state.active_wallet)
                 {
                     console.log("Starting staking process...");
@@ -193,6 +284,27 @@
                         confirmButtonText: 'OK'
                     })
                 }
+            },
+            copyManualCommand : function()
+            {
+                let vm=this;
+                navigator.clipboard.writeText(vm.manualStakingCommand).then(() => {
+                    vm.manualCommandCopied = true;
+                    setTimeout(() => { vm.manualCommandCopied = false; }, 2000);
+                });
+            },
+            formatNumbers : function(n)
+            {
+                if (n==undefined) return;
+                n=parseFloat(n.toString());
+                var parts = n.toString().split(".");
+                return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
+            },
+            getbalance : function()
+            {
+                let vm=this;
+                vm.client.getBalances().then((r) => { vm.balance=r; })
+                    .catch((r) => { console.log(r); });
             },
             stop_staking : function()
             {
@@ -282,6 +394,8 @@
             let rewards= [];
 
             this.list_staked_commitments();
+            this.getbalance();
+            this.balanceTimer = setInterval(() => { this.getbalance(); }, 5000);
             console.log("staking rewards");
             console.log("listtransactions");
             vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
@@ -452,7 +566,11 @@ ipcRenderer.on('start-staker-success', (_event, pid) =>
 {
     vm.$store.commit('set_staking_active',true);
 });
-}
+},
+        beforeUnmount()
+        {
+            clearInterval(this.balanceTimer);
+        }
 }
 </script>
 
