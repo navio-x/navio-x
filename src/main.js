@@ -22,13 +22,23 @@ const store = createStore({
       rpcuser:undefined,
       rpcpassword:undefined,
       staker_pid:undefined,
-      console_log: ''
+      console_log: '',
+      auto_start_staking: false,
+      staking_auto_started: false
     }
   },
   mutations: {
     set_active_wallet (state,payload)
     {
       state.active_wallet=payload;
+    },
+    set_auto_start_staking (state,payload)
+    {
+      state.auto_start_staking=payload;
+    },
+    set_staking_auto_started (state,payload)
+    {
+      state.staking_auto_started=payload;
     },
     set_staking_active (state,payload)
     {

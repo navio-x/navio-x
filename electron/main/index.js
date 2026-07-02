@@ -764,7 +764,7 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
   let executablePath = path.join(binDir, filenames[process.platform]);
 
   var parameters = [
-    "-" + network,
+    ...(network === 'testnet' ? ['-' + network] : []),
     "-wallet=" + wallet,
     "-rpcuser=" + rpcuser,
     "-rpcpassword=" + rpcpassword

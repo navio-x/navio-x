@@ -69,6 +69,17 @@
         </button>
       </div>
 
+      <!-- Staking -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Staking</h5>
+        <p class="mb-4 text-sm text-white/60">Automatically start staking for the active wallet whenever Navio X launches.</p>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" true-value="1" false-value="0" v-model="auto_start_staking" @change="toggle_auto_start_staking" class="sr-only peer">
+          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-white dark:text-white">Auto-start staking on launch</span>
+        </label>
+      </div>
+
       <!-- Clear Settings -->
       <div class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Clear Settings</h5>
@@ -117,10 +128,22 @@
         currentNetwork,
         selectedNetwork: currentNetwork,
         rpcinfo:undefined,
-        binDir:undefined
+        binDir:undefined,
+        auto_start_staking: localStorage.getItem('auto_start_staking') === '1' ? '1' : '0'
       }
     },
     methods: {
+      toggle_auto_start_staking:function()
+      {
+        const enabled = this.auto_start_staking === '1';
+        localStorage.setItem('auto_start_staking', enabled ? '1' : '0');
+        this.$store.commit('set_auto_start_staking', enabled);
+        Toast.fire({
+          theme:'dark',
+          icon: 'success',
+          title: enabled ? 'Staking will auto-start on launch' : 'Auto-start staking disabled',
+        });
+      },
       switch_network:function()
       {
         const net = this.networks.find(n => n.name === this.selectedNetwork);

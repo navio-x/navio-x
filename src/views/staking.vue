@@ -72,6 +72,13 @@
                     <span class="text-sm font-medium">
                         {{ $store.state.is_staking_active ? `Running · ${$store.state.staker_wallet}` : 'Not running' }}
                     </span>
+                    <span v-if="$store.state.is_staking_active && $store.state.staking_auto_started"
+                        class="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-violet-300 bg-violet-500/15 border border-violet-500/30 rounded-full px-2 py-0.5 ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        Auto Started
+                    </span>
                 </div>
 
             </div>
@@ -229,7 +236,8 @@
             manualStakingCommand() {
                 let vm=this;
                 const dir = vm.binDir || '<navio-x bin folder>';
-                const args = `-${vm.$store.state.network} -wallet=${vm.$store.state.active_wallet} -rpcuser=${vm.$store.state.rpcuser} -rpcpassword=${vm.$store.state.rpcpassword}`;
+                const networkFlag = vm.$store.state.network === 'testnet' ? `-${vm.$store.state.network} ` : '';
+                const args = `${networkFlag}-wallet=${vm.$store.state.active_wallet} -rpcuser=${vm.$store.state.rpcuser} -rpcpassword=${vm.$store.state.rpcpassword}`;
                 if (vm.isWindows) {
                     return `cd /d "${dir}" && start "navio-staker" navio-staker.exe ${args}`;
                 }
@@ -287,6 +295,7 @@
                 if (vm.$store.state.active_wallet)
                 {
                     console.log("Starting staking process...");
+                    vm.$store.commit('set_staking_auto_started', false);
                     ipcRenderer.invoke('start-staker', vm.$store.state.network, vm.$store.state.active_wallet,vm.$store.state.rpcuser,vm.$store.state.rpcpassword);
                 }
                 else
@@ -576,11 +585,6 @@
             color: undefined
         }];
     }
-});
-
-ipcRenderer.on('start-staker-success', (_event, pid) =>
-{
-    vm.$store.commit('set_staking_active',true);
 });
 },
         beforeUnmount()

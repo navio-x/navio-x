@@ -615,6 +615,7 @@ v-show="state=='select_network'"
           availableBinaries: [],
           binarySelectionInfo: { platform: '', arch: '' },
           binDir: null,
+          autoStakingAttempted: false,
       }
   },
   watch: {
@@ -624,12 +625,29 @@ v-show="state=='select_network'"
     },
     '$store.state.active_wallet'(val) {
       if (this.client) this.client.wallet = val;
+      if (val && !this.autoStakingAttempted && this.$store.state.auto_start_staking && !this.$store.state.is_staking_active) {
+        this.autoStakingAttempted = true;
+        this.try_auto_start_staking();
+      }
     }
   },
 methods: {
     friendly_platform: function(p) {
         const names = { win32: 'Windows', darwin: 'macOS', linux: 'Linux' };
         return names[p] || p;
+    },
+    try_auto_start_staking: function() {
+        if (this.$store.state.is_daemon_auto_started) {
+            console.log("Auto-starting staking for wallet " + this.$store.state.active_wallet);
+            this.$store.commit('set_staking_auto_started', true);
+            ipcRenderer.invoke('start-staker', this.$store.state.network, this.$store.state.active_wallet, this.$store.state.rpcuser, this.$store.state.rpcpassword);
+        } else {
+            Toast.fire({
+                theme:'dark',
+                icon: 'info',
+                title: "Auto-start staking is enabled, but you're connected manually. Start the staker yourself from the Staking page."
+            });
+        }
     },
     open_bin_directory: function() {
         ipcRenderer.invoke('shell-open-folder', this.binDir);
@@ -947,6 +965,7 @@ mounted()
 {
     console.log("App mounted");
     this.app=getCurrentInstance();
+    this.$store.commit('set_auto_start_staking', localStorage.getItem('auto_start_staking') === '1');
     ipcRenderer.invoke('get-bin-dir').then((dir) => { if (dir) this.binDir = dir; });
     ipcRenderer.on('download-file', (e, fileinfo) => {
         this.fileinfo = fileinfo;
@@ -1062,6 +1081,7 @@ mounted()
     {
         this.$store.commit('set_staker_wallet',this.$store.state.active_wallet);
         this.$store.commit('set_staker_pid',pid);
+        this.$store.commit('set_staking_active',true);
         Toast.fire({
             theme:'dark',
             icon: 'success',
@@ -1072,6 +1092,7 @@ mounted()
     {
         this.$store.commit('set_staker_pid',undefined);
         this.$store.commit('set_staking_active',false);
+        this.$store.commit('set_staking_auto_started',false);
         Toast.fire({
             theme:'dark',
             icon: 'success',
@@ -1082,6 +1103,7 @@ mounted()
     {
         this.$store.commit('set_staker_pid',undefined);
         this.$store.commit('set_staking_active',false);
+        this.$store.commit('set_staking_auto_started',false);
         let detail=error && error.message ? error.message : 'Unknown error.';
         let code=error && (error.code !== undefined && error.code !== null) ? error.code : (error && error.signal ? error.signal : undefined);
         Swal.fire({
