@@ -5,8 +5,8 @@
             <!-- Intro (compact) -->
             <div class="px-3 pt-3 pb-3">
                 <div class="flex items-start gap-2 px-3 py-2 rounded-lg glass-card">
-                    <svg class="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"></path>
+                    <svg class="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                     </svg>
                     <p class="text-sm text-gray-200">Minimum 10,000 NAV required. Newly staked coins become eligible after 100 blocks.</p>
                 </div>
