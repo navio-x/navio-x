@@ -77,20 +77,24 @@
 <section class="h-screen bg-transparent flex items-center justify-center" :class="{ 'pt-9': !isWeb }" v-show="state=='connection_error'">
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 flex flex-col justify-center items-center h-full w-full">
         <div class="flex justify-center items-center">
-            <img src="./assets/nav_illustraion_01.png" style="width:300px;height:auto;">
+            <div class="w-24 h-24 rounded-full flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+            </div>
         </div>
         <h1 class="mt-5 mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white brand">Navio X</h1>
         <p class="mb-8 text-lg font-normal text-gray-300 sm:px-16 lg:px-48 dark:text-gray-200">Connection error</p>
-        <p class="mt-5 mb-8 text-sm font-normal text-gray-300 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon.</p>
-        <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500"><code>username</code></span> -rpcpassword=<span class="text-blue-500"><code>password</code></span></code>
+        <p class="mt-5 mb-8 text-sm font-normal text-gray-300 sm:px-16 lg:px-48 dark:text-gray-300">Unable to connect to Navio daemon. Please make sure that the Navio daemon is running and the RPC connection information (rpcuser & rpcpassword) matches the information you entered. Below you can find the command line required to run the Navio daemon (Linux/macOS example).</p>
+        <code class="mt-10 p-5 text-sm border text-white glass-card rounded-lg">screen ./naviod --printtoconsole --walletcrosschain -rpcuser=<span class="text-blue-500">username</span> -rpcpassword=<span class="text-blue-500">password</span></code>
         <div class="mt-10 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
             <button v-on:click="state='setup'" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                Connect
+                Try Again
                 <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                 </svg>
             </button>
-            <button v-on:click="downloadBinaries()" :disabled="is_fetching_releases" class="inline-flex justify-center items-center ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 disabled:opacity-60 disabled:cursor-not-allowed">
+            <button v-on:click="downloadBinaries()" :disabled="is_fetching_releases" class="inline-flex justify-center items-center sm:ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 disabled:opacity-60 disabled:cursor-not-allowed">
                 {{ is_fetching_releases ? 'Checking GitHub releases…' : 'Download binaries' }}
                 <svg v-if="!is_fetching_releases" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ms-2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
@@ -99,6 +103,9 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
               </svg>
+          </button>
+          <button v-on:click="select_daemon_method()" class="inline-flex justify-center items-center sm:ml-5 py-3 px-5 text-base font-medium text-center text-white rounded-lg glass-btn-secondary focus:outline-none">
+              Change Method
           </button>
       </div>
   </div>
@@ -290,15 +297,35 @@ v-show="state=='select_network'"
 />
 
 <section
-  class="min-h-screen bg-transparent flex flex-col items-center justify-center"
+  class="min-h-screen bg-transparent flex flex-col items-center justify-center relative"
   :class="{ 'pt-9': !isWeb }"
   v-show="state=='select_daemon_method'"
 >
+  <button
+    v-if="setupComplete"
+    @click="state='settings_standalone'"
+    title="Settings"
+    class="absolute right-4 w-10 h-10 flex items-center justify-center text-white/50 hover:text-white/80 transition-colors glass-btn-secondary rounded-lg focus:outline-none"
+    :class="isWeb ? 'top-4' : 'top-12'"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.02-.397-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  </button>
+
   <div class="mb-8 flex justify-center">
-    <img src="./assets/setup.svg" class="w-[72px] h-auto" />
+    <div class="relative">
+      <div class="absolute inset-0 rounded-full blur-2xl opacity-50" style="background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);"></div>
+      <div class="relative w-20 h-20 rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); box-shadow: 0 8px 30px rgba(124,58,237,0.35);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.019.02a.75.75 0 11-1.06-1.061l.02-.019a.75.75 0 011.06 1.06z" />
+        </svg>
+      </div>
+    </div>
   </div>
 
-  <div class="px-4 max-w-screen-sm w-full text-center">
+  <div class="px-4 w-full text-center" :class="binaryExists ? 'max-w-4xl' : 'max-w-screen-sm'">
     <h1 class="mb-3 text-4xl font-extrabold tracking-tight text-white brand">
       Choose a method
     </h1>
@@ -306,7 +333,7 @@ v-show="state=='select_network'"
       Download the official Navio binaries automatically, or connect to a node you manage yourself.
     </p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-4" :class="binaryExists ? 'sm:grid-cols-3' : 'sm:grid-cols-2'">
       <!-- Download Binaries -->
       <button
         @click="downloadBinaries()"
@@ -324,11 +351,37 @@ v-show="state=='select_network'"
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
           </div>
-          <span v-if="!is_fetching_releases" class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">Recommended</span>
+          <span v-if="!is_fetching_releases && !binaryExists" class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">Recommended</span>
         </div>
         <div>
           <p class="text-white font-semibold text-sm">{{ is_fetching_releases ? 'Checking GitHub releases…' : 'Download Binaries' }}</p>
           <p class="text-gray-400 text-xs mt-1 leading-relaxed">Automatically fetch the latest official Navio binaries from GitHub releases.</p>
+        </div>
+      </button>
+
+      <!-- Start with current binaries -->
+      <button
+        v-if="binaryExists"
+        @click="startWithCurrentBinaries()"
+        :disabled="is_starting_daemon"
+        class="glass-card glass-card-hover rounded-xl p-5 text-left flex flex-col items-start gap-3 cursor-pointer transition-all focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
+        style="border-color: rgba(16,185,129,0.40);"
+      >
+        <div class="flex items-center justify-between w-full">
+          <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+            <svg v-if="!is_starting_daemon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
+            </svg>
+            <svg v-else class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+            </svg>
+          </div>
+          <span v-if="!is_starting_daemon" class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">Recommended</span>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm">{{ is_starting_daemon ? 'Starting daemon…' : 'Start with Current Binaries' }}</p>
+          <p class="text-gray-400 text-xs mt-1 leading-relaxed">Use the Navio binaries already installed on this device without downloading again.</p>
         </div>
       </button>
 
@@ -349,8 +402,8 @@ v-show="state=='select_network'"
       </button>
     </div>
 
-    <!-- Open Binaries Folder (secondary) -->
-    <div v-if="binDir" class="mt-5 flex justify-center">
+    <!-- Secondary actions -->
+    <div v-if="!setupComplete && binDir" class="mt-5 flex justify-center">
       <button
         @click="open_bin_directory()"
         class="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white/80 transition-colors glass-btn-secondary rounded-lg px-4 py-2 focus:outline-none"
@@ -362,6 +415,14 @@ v-show="state=='select_network'"
       </button>
     </div>
   </div>
+</section>
+
+<section
+  class="h-screen bg-transparent"
+  :class="{ 'pt-9': !isWeb }"
+  v-show="state=='settings_standalone'"
+>
+  <SettingsView standalone @back="state='select_daemon_method'" />
 </section>
 
 <section class="h-screen bg-transparent" :class="{ 'pt-9': !isWeb }" v-show="state=='setup'">
@@ -567,6 +628,7 @@ v-show="state=='select_network'"
     import '@sweetalert2/theme-dark/dark.scss';
     import Client from 'bitcoin-core';
     import NetworkSelector from './views/network.vue';
+    import SettingsView from './views/settings.vue';
     import TitleBar from './components/TitleBar.vue';
     import {
         PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
@@ -582,7 +644,7 @@ v-show="state=='select_network'"
     })
     export default {
       components: {
-          NetworkSelector, TitleBar,
+          NetworkSelector, SettingsView, TitleBar,
           PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
           PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
           PhGearSix, PhInfo
@@ -615,6 +677,9 @@ v-show="state=='select_network'"
           availableBinaries: [],
           binarySelectionInfo: { platform: '', arch: '' },
           binDir: null,
+          binaryExists: false,
+          is_starting_daemon: false,
+          setupComplete: false,
           autoStakingAttempted: false,
       }
   },
@@ -877,6 +942,16 @@ methods: {
             alert('Error: ' + err.message);
         });
  },
+ startWithCurrentBinaries: function() {
+    this.is_starting_daemon = true;
+    ipcRenderer.invoke('start-daemon').then((data) => {
+        console.log("start-daemon (current binary): " + data);
+    }).catch((err) => {
+        alert('Error: ' + err.message);
+    }).finally(() => {
+        this.is_starting_daemon = false;
+    });
+ },
  connect: function() {
     let vm=this;
     if(this.username&&this.password)
@@ -967,6 +1042,12 @@ mounted()
     this.app=getCurrentInstance();
     this.$store.commit('set_auto_start_staking', localStorage.getItem('auto_start_staking') === '1');
     ipcRenderer.invoke('get-bin-dir').then((dir) => { if (dir) this.binDir = dir; });
+    ipcRenderer.invoke('check-binary-exists').then((exists) => { this.binaryExists = !!exists; });
+    ipcRenderer.invoke('get-setup-complete').then((v) => { this.setupComplete = !!v; });
+    window.addEventListener('focus', () => {
+        if (this.state !== 'select_daemon_method') return;
+        ipcRenderer.invoke('check-binary-exists').then((exists) => { this.binaryExists = !!exists; });
+    });
     ipcRenderer.on('download-file', (e, fileinfo) => {
         this.fileinfo = fileinfo;
         this.is_downloading = true;
@@ -1020,7 +1101,7 @@ mounted()
         this.port    = localStorage.getItem('port')    || (this.networks.find(n => n.name === this.network)?.port ?? 33677);
         this.username= localStorage.getItem('username');
         this.password= localStorage.getItem('password');
-        if (localStorage.getItem("auto_login"))
+        if (localStorage.getItem("auto_login") && data.daemonAutoStart !== false)
         {
             this.auto_login=true;
             this.connect();

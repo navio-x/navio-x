@@ -109,6 +109,18 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
         fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
       } catch (e) {}
     }
+
+    function getDaemonAutoStart() {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        if (fs.existsSync(configPath)) {
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          if (config.daemonAutoStart === undefined) return true;
+          return !!config.daemonAutoStart;
+        }
+      } catch (e) {}
+      return true;
+    }
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Navio X',
@@ -166,14 +178,15 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
   win.webContents.on('did-finish-load', () =>
   {
-    if (getSetupComplete()) {
+    if (getSetupComplete() && getDaemonAutoStart()) {
       startDaemon();
     } else {
       win.webContents.send('is-daemon-started', {
         started: false,
         network: getNetwork(),
         rpcuser,
-        rpcpassword
+        rpcpassword,
+        daemonAutoStart: getDaemonAutoStart()
       });
     }
     win?.webContents.send('main-process-message', new Date().toLocaleString())
@@ -259,6 +272,7 @@ ipcMain.handle('start-daemon', (_) => {
 
 ipcMain.handle('set-setup-complete', () => setSetupComplete(true));
 ipcMain.handle('clear-setup-complete', () => setSetupComplete(false));
+ipcMain.handle('get-setup-complete', () => getSetupComplete());
 
 ipcMain.handle('check-binary-exists', () => {
   const filenames = { win32: 'naviod.exe', linux: 'naviod', darwin: 'naviod' };
@@ -291,6 +305,21 @@ ipcMain.handle('save-debug-setting', (_, enabled) => {
       if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     } catch (e) {}
     config.debug = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+
+ipcMain.handle('save-daemon-autostart-setting', (_, enabled) => {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {}
+    config.daemonAutoStart = !!enabled;
     fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
     return { success: true };
   } catch (e) {

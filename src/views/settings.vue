@@ -2,6 +2,17 @@
   <div class="h-full bg-transparent text-white overflow-auto">
     <div class="w-full p-4 space-y-4 bg-transparent">
 
+      <!-- Standalone header (shown when opened before connecting) -->
+      <div v-if="standalone" class="flex items-center gap-3">
+        <button v-on:click="$emit('back')" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg glass-btn-secondary focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          Back
+        </button>
+        <h5 class="text-base font-semibold text-white">Settings</h5>
+      </div>
+
       <!-- Debug -->
       <div class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Debug</h5>
@@ -57,6 +68,18 @@
         </div>
       </div>
 
+      <!-- Daemon Auto-Start -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Daemon Auto-Start</h5>
+        <p class="mb-3 text-sm text-white/60">Automatically start the local Navio daemon on launch. Turn off to choose your connection method (download binaries or manual connection) each time the app starts.</p>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" true-value="1" false-value="0" v-model="daemon_auto_start" @change="toggle_daemon_auto_start" class="sr-only peer">
+          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-white dark:text-white">Auto-start daemon on launch</span>
+        </label>
+        <p class="text-xs text-white/50 mt-3">Takes effect the next time Navio X starts.</p>
+      </div>
+
       <!-- Network -->
       <div class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Network</h5>
@@ -99,7 +122,7 @@
       </div>
 
       <!-- Stop Daemon -->
-      <div class="w-full p-5 glass-card rounded-xl">
+      <div v-if="hasClient" class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Stop Navio Daemon</h5>
         <p class="mb-3 text-sm text-white/60">Stops the background daemon. Wallets will be unavailable until the daemon is restarted.</p>
         <button v-on:click="stop_daemon()" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg bg-orange-600/80 hover:bg-orange-600 focus:outline-none transition">
@@ -126,6 +149,10 @@
     timerProgressBar: true,
   })
   export default {
+    props: {
+      standalone: { type: Boolean, default: false }
+    },
+    emits: ['back'],
     data() {
       const networks = [
         { name: 'mainnet', label: 'Mainnet', port: 48471 },
@@ -139,10 +166,22 @@
         rpcinfo:undefined,
         binDir:undefined,
         auto_start_staking: localStorage.getItem('auto_start_staking') === '1' ? '1' : '0',
-        daemon_debug: localStorage.getItem('daemon_debug') === '1' ? '1' : '0'
+        daemon_debug: localStorage.getItem('daemon_debug') === '1' ? '1' : '0',
+        daemon_auto_start: localStorage.getItem('daemon_auto_start') === '0' ? '0' : '1'
       }
     },
     methods: {
+      toggle_daemon_auto_start:function()
+      {
+        const enabled = this.daemon_auto_start === '1';
+        localStorage.setItem('daemon_auto_start', enabled ? '1' : '0');
+        ipcRenderer.invoke('save-daemon-autostart-setting', enabled);
+        Toast.fire({
+          theme:'dark',
+          icon: 'success',
+          title: enabled ? 'Daemon will auto-start on launch' : 'Auto-start disabled — you\'ll choose a connection method on next launch',
+        });
+      },
       toggle_daemon_debug:function()
       {
         const enabled = this.daemon_debug === '1';
@@ -187,7 +226,7 @@
           ipcRenderer.invoke('save-network', net.name);
           this.currentNetwork = net.name;
           this.$store.commit('set_network', net.name);
-          this.client.command([{ method: "stop", parameters: [] }]);
+          if (this.client) this.client.command([{ method: "stop", parameters: [] }]);
         });
       },
       clear:function()
@@ -282,6 +321,9 @@
     computed: {
       isManualConnection() {
         return !this.$store.state.is_daemon_auto_started;
+      },
+      hasClient() {
+        return !!this.client;
       }
     },
     mounted()
@@ -290,9 +332,11 @@
       ipcRenderer.invoke('get-bin-dir').then((binDir) => {
         if (binDir) this.binDir = binDir;
       });
-      this.client.command([{ method: "getrpcinfo" }]).then((r) => {
-        vm.rpcinfo = r[0];
-      });
+      if (this.client) {
+        this.client.command([{ method: "getrpcinfo" }]).then((r) => {
+          vm.rpcinfo = r[0];
+        });
+      }
     }
   }
 </script>
