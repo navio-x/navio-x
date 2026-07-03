@@ -76,6 +76,17 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       return 'mainnet';
     }
 
+    function getDebugEnabled() {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        if (fs.existsSync(configPath)) {
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          return !!config.debug;
+        }
+      } catch (e) {}
+      return false;
+    }
+
     function getSetupComplete() {
       try {
         const configPath = path.join(app.getPath('userData'), 'config.json');
@@ -265,6 +276,21 @@ ipcMain.handle('save-network', (_, networkName) => {
       if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     } catch (e) {}
     config.network = networkName;
+    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+
+ipcMain.handle('save-debug-setting', (_, enabled) => {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {}
+    config.debug = !!enabled;
     fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
     return { success: true };
   } catch (e) {
@@ -587,6 +613,7 @@ childWindow.loadURL(`${arg}`);*/
 function startDaemon()
 {
   const network = getNetwork();
+  const debugEnabled = getDebugEnabled();
   const filenames = {
     win32: 'naviod.exe',
     linux: 'naviod',
@@ -640,7 +667,16 @@ function startDaemon()
     `-rpcpassword=${rpcpassword}`,
     '-txindex=1',
     `-addnode=${addnode}`,
-    '-debug=1'
+    ...(debugEnabled ? [
+      '-debug=1',
+      '-debugexclude=libevent',
+      '-debugexclude=http',
+      '-debugexclude=rpc',
+      '-debugexclude=leveldb',
+      '-debugexclude=bench',
+      '-debugexclude=net',
+      '-debugexclude=addrman'
+    ] : [])
   ];
   console.log("Daemon Parameters : [" + parameters + "]");
 
