@@ -329,7 +329,7 @@
 			{
 				let vm=this;
 				console.log("listtransactions");
-				vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
+				vm.client.command([{ method: "listtransactions", parameters: ["*", 10] }]).then((r) =>
 				{
 					if (r[0].name=="RpcError"||r[0].code)
 					{

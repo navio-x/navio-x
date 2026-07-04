@@ -1,6 +1,16 @@
 <template>
   <div class="h-full flex flex-col bg-transparent text-white overflow-hidden">
-    <div v-if="$store.state.active_wallet && ready" class="flex flex-col h-full min-h-0">
+    <div v-if="$store.state.active_wallet && !ready" class="flex flex-col items-center justify-center h-full pb-16 px-6">
+      <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
+        <svg class="w-10 h-10 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+      </div>
+      <h2 class="text-lg font-semibold text-white mb-2">Loading Transactions</h2>
+      <p class="text-sm text-white/80 text-center max-w-xs">Fetching transaction history from the wallet. This may take a moment.</p>
+    </div>
+    <div v-else-if="$store.state.active_wallet && ready" class="flex flex-col h-full min-h-0">
 
       <!-- ── Filter bar ── -->
       <div class="px-4 py-3 shrink-0 border-b border-white/10">
@@ -439,14 +449,26 @@
                 return dec ? intFmt + '.' + dec : intFmt;
             },
             listtransactions() {
-                this.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) => {
-                    if (r[0].name === "RpcError" || r[0].code) {
+                this.ready = false;
+                this.txs = [];
+                const chunkSize = 1000;
+                const fetchChunk = (skip) => {
+                    this.client.command([{ method: "listtransactions", parameters: ["*", chunkSize, skip] }]).then((r) => {
+                        const result = r[0];
+                        if (result.name === "RpcError" || result.code) {
+                            this.ready = true;
+                            return;
+                        }
+                        // Each chunk is returned oldest-first; newer chunks arrive later,
+                        // so prepend to keep the accumulated list newest-first overall.
+                        this.txs = result.slice().reverse().concat(this.txs);
                         this.ready = true;
-                    } else {
-                        this.txs = r[0].reverse();
-                        this.ready = true;
-                    }
-                });
+                        if (result.length === chunkSize) {
+                            fetchChunk(skip + chunkSize);
+                        }
+                    });
+                };
+                fetchChunk(0);
             },
             resetFilters() {
                 this.selectedCategory = "";

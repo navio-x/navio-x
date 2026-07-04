@@ -595,7 +595,7 @@ v-show="state=='select_network'"
 </router-link>
 </div>
 <div class="border-t border-white/[0.14] pt-2 flex items-center justify-between">
-  <span class="text-[11px] text-white/55">Blocks</span>
+  <a href="https://blocks.nav.io" target="_blank" rel="noopener" class="text-[11px] text-white/55 hover:text-white/80 transition-colors">Blocks</a>
   <span class="text-[11px] font-mono">
     <span class="text-white/80">{{ blocks.toLocaleString() }}</span>
     <span class="text-white/45 mx-1">/</span>
@@ -969,16 +969,29 @@ methods: {
         });
         const _navioWalletMethods = [
             'sendtoblsctaddress', 'getwalletinfo', 'walletpassphrase', 'walletlock',
-            'stakelock', 'stakeunlock', 'createwallet', 'loadwallet', 'unloadwallet',
-            'rescanblockchain', 'abortrescan', 'getblsctseed', 'getblsctauditkey',
+            'stakelock', 'stakeunlock', 'abortrescan', 'getblsctseed', 'getblsctauditkey',
             'dumpmnemonic', 'liststakedcommitments', 'listtransactions', 'getbalances',
-            'listwallets', 'validateaddress',
+            'listwallets',
         ];
+        // createwallet/loadwallet/unloadwallet are deliberately excluded above: they
+        // take an explicit wallet_name parameter and must stay on the non-wallet-scoped
+        // endpoint. Forcing multiwallet on them routes the call to /wallet/<current>,
+        // and bitcoind then rejects it whenever wallet_name differs from that wallet
+        // (e.g. unloading/loading any wallet other than the currently active one).
         _navioWalletMethods.forEach(method => {
             if (!this.client.methods[method]) {
                 this.client.methods[method] = { features: { multiwallet: { supported: true } } };
             }
         });
+        // rescanblockchain has no wallet_name parameter — it must be wallet-scoped —
+        // but the bitcoin-core npm package's method table omits multiwallet for it
+        // (unlike every other wallet-scoped RPC), so patch just this one explicitly.
+        if (!this.client.methods.rescanblockchain || !this.client.methods.rescanblockchain.features || !this.client.methods.rescanblockchain.features.multiwallet || !this.client.methods.rescanblockchain.features.multiwallet.supported) {
+            this.client.methods.rescanblockchain = {
+                ...this.client.methods.rescanblockchain,
+                features: { ...(this.client.methods.rescanblockchain && this.client.methods.rescanblockchain.features), multiwallet: { supported: true } }
+            };
+        }
         console.log(this.client);
         this.client.command([{ method: "getblockchaininfo" }]).then((r) =>
         {

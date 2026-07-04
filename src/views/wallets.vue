@@ -339,8 +339,18 @@
     </div>
 <div class="px-4 pb-4 space-y-4" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
 
+  <!-- Wallet Info Card: loading state (only while we actually expect a wallet's info) -->
+  <div v-if="!is_wallet_loaded && active_wallet" class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.20); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+    <div class="flex items-center gap-2 px-4 py-3" style="background: rgba(139,92,246,0.07);">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400 animate-spin">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+      </svg>
+      <span class="text-sm font-semibold text-white/90">Loading wallet info…</span>
+    </div>
+  </div>
+
   <!-- Wallet Info Card -->
-  <div v-if="is_wallet_loaded && wallet_info" class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.20); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+  <div v-else-if="wallet_info" class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.20); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
     <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.07]" style="background: rgba(139,92,246,0.07);">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
         <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
@@ -630,7 +640,7 @@
       listwallets:function()
       {
         let vm=this;
-        this.client.command('listwallets').then((r) =>
+        return this.client.command('listwallets').then((r) =>
         {
           vm.loaded_wallets=r;
           console.log("All wallets");
@@ -706,6 +716,7 @@
             console.log("Stopping staking process...");
             ipcRenderer.invoke('stop-staker', this.$store.state.staker_pid);
           }
+          const wasActive = this.active_wallet === wallet.name;
           this.client.command([{ method: "unloadwallet", parameters: [wallet.name] }]).then((r) =>
           {
             console.log("unloading wallet -> " + wallet.name);
@@ -714,7 +725,15 @@
             {
               ipcRenderer.invoke('update-startup-wallets', { logpath: vm.logpath, walletName: wallet.name, action: 'remove' });
             }
-            vm.listwallets();
+            vm.listwallets().then(() => {
+              // If the wallet that was just unloaded was the active one, promote
+              // another still-loaded wallet to active automatically (picks the
+              // only remaining one if there's just one left).
+              if (wasActive && vm.loaded_wallets.length > 0) {
+                const nextWallet = vm.sortedWallets.find(w => vm.loaded_wallets.includes(w.name));
+                if (nextWallet) vm.set_active_wallet(nextWallet);
+              }
+            });
           });
         }
       },
