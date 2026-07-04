@@ -57,9 +57,7 @@
           </div>
         </div>
 
-        <!-- Memo & Comment To: disabled for now, RPC doesn't seem to persist/return these
-             (gettransaction shows no comment/comment_to/memo/to field). Re-enable once
-             confirmed working against the daemon.
+        <!-- Memo -->
         <div class="mb-4">
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
             Memo <span class="normal-case font-normal text-white/40">(optional)</span>
@@ -74,6 +72,9 @@
           <p class="mt-1.5 text-xs text-white/55">Visible to the recipient.</p>
         </div>
 
+        <!-- Comment To: disabled for now, RPC doesn't seem to persist/return this
+             (gettransaction shows no comment_to/to field). Re-enable once confirmed
+             working against the daemon.
         <div class="mb-4">
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
             Comment To <span class="normal-case font-normal text-white/40">(optional)</span>
@@ -89,7 +90,7 @@
         </div>
         -->
 
-        <!-- Comment (private note) -->
+        <!-- Comment (private note): disabled for now
         <div class="mb-4">
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
             Comment <span class="normal-case font-normal text-white/40">(optional)</span>
@@ -103,6 +104,7 @@
             class="w-full rounded-xl text-sm px-3 py-2.5 glass-input">
           <p class="mt-1.5 text-xs text-white/55">Only you can see this — kept locally in this app, never sent anywhere.</p>
         </div>
+        -->
 
         <!-- Subtract fee from amount -->
         <div class="mb-5 flex items-center justify-between gap-3">
@@ -182,20 +184,20 @@
               <p class="text-2xl font-bold text-white">{{ amount }} <span class="text-base text-white/95">NAV</span></p>
               <p v-if="subtractFeeFromAmount" class="text-xs text-amber-400/90 mt-1">Fee will be subtracted from this amount</p>
             </div>
-            <!--
             <div v-if="memo" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
               <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Memo</p>
               <p class="text-sm text-white/95 break-words">{{ memo }}</p>
             </div>
+            <!--
             <div v-if="commentTo" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
               <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Comment To</p>
               <p class="text-sm text-white/95 break-words">{{ commentTo }}</p>
             </div>
-            -->
             <div v-if="comment" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
               <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Comment (private)</p>
               <p class="text-sm text-white/95 break-words">{{ comment }}</p>
             </div>
+            -->
           </div>
 
           <div class="flex gap-3">
@@ -231,9 +233,9 @@
       return {
         address: "",
         amount: "",
-        // memo: "",
+        memo: "",
         // commentTo: "",
-        comment: "",
+        // comment: "",
         subtractFeeFromAmount: false,
         showModal: false,
         isLoading: false,
@@ -285,8 +287,8 @@
             this.client.command([{ method: "sendtoaddress", parameters: {
               address: this.address,
               amount: this.amount,
-              // memo: this.memo || "",
-              comment: this.comment || "",
+              memo: this.memo || "",
+              // comment: this.comment || "",
               // comment_to: this.commentTo || "",
               subtractfeefromamount: this.subtractFeeFromAmount
             } }])
@@ -301,12 +303,12 @@
                   confirmButtonText: 'OK'
                 });
               } else {
-                if (this.comment) setTxComment(r[0], this.comment);
+                // if (this.comment) setTxComment(r[0], this.comment);
                 this.address = "";
                 this.amount = "";
-                // this.memo = "";
+                this.memo = "";
                 // this.commentTo = "";
-                this.comment = "";
+                // this.comment = "";
                 this.subtractFeeFromAmount = false;
                 this.showModal = false;
                 Swal.fire({
