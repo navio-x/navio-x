@@ -176,9 +176,15 @@
 
         <!-- Pagination -->
         <div class="px-6 py-2.5 shrink-0 border-t border-white/10 flex items-center justify-between">
-          <button @click="currentPage--" :disabled="currentPage === 1" class="hst-page-btn">← Prev</button>
+          <div class="flex gap-2">
+            <button @click="currentPage = 1" :disabled="currentPage === 1" class="hst-page-btn">« First</button>
+            <button @click="currentPage--" :disabled="currentPage === 1" class="hst-page-btn">← Prev</button>
+          </div>
           <span class="text-[12px] text-white/55">Page {{ currentPage }} of {{ totalPages }}</span>
-          <button @click="currentPage++" :disabled="currentPage === totalPages" class="hst-page-btn">Next →</button>
+          <div class="flex gap-2">
+            <button @click="currentPage++" :disabled="currentPage === totalPages" class="hst-page-btn">Next →</button>
+            <button @click="currentPage = totalPages" :disabled="currentPage === totalPages" class="hst-page-btn">Last »</button>
+          </div>
         </div>
       </template>
 

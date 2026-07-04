@@ -1,16 +1,27 @@
 <template>
 	<div class="h-full bg-transparent text-white overflow-auto">
-		<div v-if="loading" class="flex flex-col items-center justify-center h-full pb-16 px-6">
-			<div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
-				<svg class="w-10 h-10 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
-					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-				</svg>
+		<template v-if="$store.state.active_wallet">
+			<!-- Fetching data card (non-blocking) -->
+			<div v-if="loading" class="p-6">
+				<div class="relative overflow-hidden rounded-xl p-5 border border-blue-500/20 flex items-center gap-4"
+					style="background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(139,92,246,0.08) 100%); backdrop-filter: blur(12px);">
+					<div class="flex items-center justify-center w-11 h-11 rounded-full glass-card shrink-0">
+						<svg class="w-6 h-6 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+						</svg>
+					</div>
+					<div class="flex-1 min-w-0">
+						<div class="text-sm font-semibold text-white mb-1">Fetching Wallet Data</div>
+						<p class="text-xs text-white/70 mb-2.5">Balance bilgileri ve son işlem geçmişi alınıyor…</p>
+						<div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+							<div class="progress-indeterminate h-full rounded-full bg-gradient-to-r from-blue-400 to-violet-500"></div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<h2 class="text-lg font-semibold text-white mb-2">Loading Wallet</h2>
-			<p class="text-sm text-white/80 text-center max-w-xs">Blockchain is syncing and wallet data is being loaded. This may take a moment.</p>
-		</div>
-		<div v-else-if="balance">
+
+			<div v-if="balance">
 			<!-- Balance Cards -->
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
 				<!-- Available -->
@@ -176,7 +187,8 @@
 					</div>
 				</div>
 			</div>
-		</div>
+			</div>
+		</template>
 
 		<NoWalletSelected v-else />
 	</div>
@@ -362,6 +374,16 @@
 	}
 </script>
 <style>
+	.progress-indeterminate {
+		width: 40%;
+		animation: progress-indeterminate 1.4s ease-in-out infinite;
+	}
+	@keyframes progress-indeterminate {
+		0%   { transform: translateX(-100%); }
+		50%  { transform: translateX(60%); }
+		100% { transform: translateX(250%); }
+	}
+
 	/* 3D tower loader made by: csozi | Website: www.csozi.hu*/
 
 	.loader {
