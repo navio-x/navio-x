@@ -53,24 +53,28 @@
         <div class="px-6 pt-3 shrink-0">
           <table class="w-full table-fixed border-separate [border-spacing:0]">
             <colgroup>
-              <col style="width:8%">
               <col style="width:10%">
+              <col style="width:13%">
+              <!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:12%">
               <col style="width:10%">
-              <col style="width:11%">
-              <col style="width:11%">
-              <col style="width:7%">
-              <col style="width:6%">
+              -->
+              <col style="width:16%">
+              <col style="width:15%">
+              <col style="width:8%">
               <col style="width:7%">
               <col style="width:8%">
-              <col style="width:10%">
+              <col style="width:9%">
+              <col style="width:14%">
             </colgroup>
             <thead>
               <tr class="hst-thead-row">
                 <th class="hst-th text-left">Type</th>
                 <th class="hst-th text-left">Amount</th>
+                <!--
                 <th class="hst-th text-left">Memo</th>
                 <th class="hst-th text-left">To</th>
+                -->
                 <th class="hst-th text-left">Comment</th>
                 <th class="hst-th text-left">Date</th>
                 <th class="hst-th text-right">Fee</th>
@@ -87,17 +91,19 @@
         <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
           <table class="w-full table-fixed border-separate [border-spacing:0]">
             <colgroup>
-              <col style="width:8%">
               <col style="width:10%">
+              <col style="width:13%">
+              <!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:12%">
               <col style="width:10%">
-              <col style="width:11%">
-              <col style="width:11%">
-              <col style="width:7%">
-              <col style="width:6%">
+              -->
+              <col style="width:16%">
+              <col style="width:15%">
+              <col style="width:8%">
               <col style="width:7%">
               <col style="width:8%">
-              <col style="width:10%">
+              <col style="width:9%">
+              <col style="width:14%">
             </colgroup>
             <tbody>
               <tr v-for="tx in paginatedTxs" :key="tx.txid + tx.time" class="hst-row">
@@ -135,17 +141,16 @@
                   <span class="text-[11px] text-white/55 ml-1">NAV</span>
                 </td>
 
-                <!-- Memo -->
+                <!--
                 <td class="hst-td hst-td--muted text-sm">
                   <span v-if="tx.memo" class="italic truncate block max-w-[12rem]" :title="tx.memo">{{ tx.memo }}</span>
                   <span v-else class="text-white/40">—</span>
                 </td>
-
-                <!-- To -->
                 <td class="hst-td hst-td--muted text-sm">
                   <span v-if="tx.to" class="truncate block max-w-[10rem]" :title="tx.to">{{ tx.to }}</span>
                   <span v-else class="text-white/40">—</span>
                 </td>
+                -->
 
                 <!-- Comment (private, local-only) -->
                 <td class="hst-td hst-td--muted text-sm">
@@ -282,6 +287,7 @@
                 </div>
               </div>
 
+              <!--
               <div v-if="modalTx.memo" class="txm-field txm-field--full">
                 <span class="txm-label">Memo</span>
                 <span class="txm-value break-words">{{ modalTx.memo }}</span>
@@ -291,6 +297,7 @@
                 <span class="txm-label">Comment To</span>
                 <span class="txm-value break-words">{{ modalTx.to }}</span>
               </div>
+              -->
 
               <div v-if="localComment(modalTx.txid)" class="txm-field txm-field--full">
                 <span class="txm-label">Comment (private)</span>

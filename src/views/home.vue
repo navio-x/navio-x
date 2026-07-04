@@ -126,8 +126,10 @@
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+									<!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
+									-->
 								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
@@ -140,8 +142,10 @@
 									<td class="px-4 py-3"><div class="skeleton h-3.5 w-14 rounded"></div></td>
 									<td class="px-4 py-3"><div class="skeleton h-4 w-10 rounded"></div></td>
 									<td class="px-4 py-3"><div class="skeleton h-4 w-12 rounded"></div></td>
+									<!--
 									<td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded"></div></td>
 									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+									-->
 									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
 									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
 									<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
@@ -159,8 +163,10 @@
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+									<!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
+									-->
 								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
@@ -179,6 +185,7 @@
 									<td class="px-4 py-3">
 										<span v-if="tx.label" class="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-2 py-0.5 rounded whitespace-nowrap">{{tx.label}}</span>
 									</td>
+									<!--
 									<td class="px-4 py-3 max-w-[10rem]">
 										<span v-if="tx.memo" class="text-xs text-white/65 italic truncate block" :title="tx.memo">{{tx.memo}}</span>
 										<span v-else class="text-xs text-white/30">—</span>
@@ -187,6 +194,7 @@
 										<span v-if="tx.to" class="text-xs text-white/65 truncate block" :title="tx.to">{{tx.to}}</span>
 										<span v-else class="text-xs text-white/30">—</span>
 									</td>
+									-->
 									<td class="px-4 py-3 max-w-[8rem]">
 										<span v-if="localComment(tx.txid)" class="text-xs text-white/65 italic truncate block" :title="localComment(tx.txid)">{{localComment(tx.txid)}}</span>
 										<span v-else class="text-xs text-white/30">—</span>

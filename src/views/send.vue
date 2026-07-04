@@ -57,7 +57,9 @@
           </div>
         </div>
 
-        <!-- Memo -->
+        <!-- Memo & Comment To: disabled for now, RPC doesn't seem to persist/return these
+             (gettransaction shows no comment/comment_to/memo/to field). Re-enable once
+             confirmed working against the daemon.
         <div class="mb-4">
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
             Memo <span class="normal-case font-normal text-white/40">(optional)</span>
@@ -72,7 +74,6 @@
           <p class="mt-1.5 text-xs text-white/55">Visible to the recipient.</p>
         </div>
 
-        <!-- Comment To -->
         <div class="mb-4">
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
             Comment To <span class="normal-case font-normal text-white/40">(optional)</span>
@@ -86,6 +87,7 @@
             class="w-full rounded-xl text-sm px-3 py-2.5 glass-input">
           <p class="mt-1.5 text-xs text-white/55">Only you can see this — kept in your wallet, not sent anywhere.</p>
         </div>
+        -->
 
         <!-- Comment (private note) -->
         <div class="mb-4">
@@ -180,6 +182,7 @@
               <p class="text-2xl font-bold text-white">{{ amount }} <span class="text-base text-white/95">NAV</span></p>
               <p v-if="subtractFeeFromAmount" class="text-xs text-amber-400/90 mt-1">Fee will be subtracted from this amount</p>
             </div>
+            <!--
             <div v-if="memo" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
               <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Memo</p>
               <p class="text-sm text-white/95 break-words">{{ memo }}</p>
@@ -188,6 +191,7 @@
               <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Comment To</p>
               <p class="text-sm text-white/95 break-words">{{ commentTo }}</p>
             </div>
+            -->
             <div v-if="comment" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
               <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Comment (private)</p>
               <p class="text-sm text-white/95 break-words">{{ comment }}</p>
@@ -227,8 +231,8 @@
       return {
         address: "",
         amount: "",
-        memo: "",
-        commentTo: "",
+        // memo: "",
+        // commentTo: "",
         comment: "",
         subtractFeeFromAmount: false,
         showModal: false,
@@ -281,8 +285,9 @@
             this.client.command([{ method: "sendtoaddress", parameters: {
               address: this.address,
               amount: this.amount,
-              comment: this.memo || "",
-              comment_to: this.commentTo || "",
+              // memo: this.memo || "",
+              comment: this.comment || "",
+              // comment_to: this.commentTo || "",
               subtractfeefromamount: this.subtractFeeFromAmount
             } }])
             .then((r) => {
@@ -299,8 +304,8 @@
                 if (this.comment) setTxComment(r[0], this.comment);
                 this.address = "";
                 this.amount = "";
-                this.memo = "";
-                this.commentTo = "";
+                // this.memo = "";
+                // this.commentTo = "";
                 this.comment = "";
                 this.subtractFeeFromAmount = false;
                 this.showModal = false;
