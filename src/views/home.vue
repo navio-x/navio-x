@@ -122,13 +122,16 @@
 			<div class="relative overflow-hidden rounded-xl border border-white/[0.16]"
 			style="background: linear-gradient(160deg, rgba(34,26,68,0.7) 0%, rgba(22,28,58,0.7) 100%); backdrop-filter: blur(12px);">
 			<!-- header -->
-			<div class="flex items-center gap-2 px-6 py-4 border-b border-white/[0.16]">
-				<div class="flex items-center justify-center w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20">
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-					</svg>
+			<div class="flex items-center justify-between gap-2 px-6 py-4 border-b border-white/[0.16]">
+				<div class="flex items-center gap-2">
+					<div class="flex items-center justify-center w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+						</svg>
+					</div>
+					<h2 class="text-sm font-semibold text-white">Recent Transactions</h2>
 				</div>
-				<h2 class="text-sm font-semibold text-white">Recent Transactions</h2>
+				<router-link to="/history" class="text-xs font-medium text-violet-300 hover:text-violet-200 transition-colors">Show All</router-link>
 			</div>
 
 			<div v-if="txsLoading" class="overflow-x-auto">
@@ -168,7 +171,7 @@
 				</table>
 			</div>
 
-			<div v-else-if="txs.length > 0" class="overflow-x-auto">
+			<div v-else-if="recentTxs.length > 0" class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
@@ -187,7 +190,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
+						<tr v-for="(tx, index) in recentTxs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
 							<td class="px-4 py-3">
 								<div class="flex items-center gap-1.5">
 									<svg v-if="tx.category=='receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-emerald-400 shrink-0">
@@ -302,6 +305,9 @@
 		computed: {
 			dataLoading() {
 				return this.loading || !this.balance;
+			},
+			recentTxs() {
+				return this.txs.slice(0, 5);
 			},
 			generateSums() {
 				const now = Math.floor(Date.now() / 1000);
