@@ -818,7 +818,6 @@ function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
   let stakerStderrLines = [];
 
   let binDir = path.join(app.getPath('userData'), 'bin');
-  let bShell = (process.platform !== "win32");
 
   let filenames = {
     linux: "navio-staker",
@@ -841,8 +840,8 @@ function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
   const defaults = {
     cwd: binDir,
     env: process.env,
-    shell: bShell,
-    windowsVerbatimArguments: true
+    shell: false,
+    windowsVerbatimArguments: false
   };
 
   console.log("Platform : " + process.platform);

@@ -968,11 +968,12 @@
         let vm=this;
         const isFirstWallet = !vm.all_wallets || Object.keys(vm.all_wallets.wallets).length === 0;
         let parameters={};
+        let trimmed_wallet_name=(this.new_wallet_name||"").trim();
         if (this.wallet_type_id==1) {
-          parameters={"wallet_name":this.new_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
+          parameters={"wallet_name":trimmed_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
         }
         if (this.wallet_type_id==2) {
-          parameters={"wallet_name":this.new_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
+          parameters={"wallet_name":trimmed_wallet_name,"blsct":true,load_on_startup:(vm.wallet_load_on_startup=="1"?true:false)};
           if (this.import_type==='seed') parameters.seed=this.import_seed_phrase;
           else if (this.import_type==='mnemonic') parameters.mnemonic=this.import_seed_phrase;
         }
