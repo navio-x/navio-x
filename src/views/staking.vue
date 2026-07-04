@@ -281,10 +281,10 @@
                     }
                 }).catch(() => action());
             },
-            onWalletUnlocked() {
+            onWalletUnlocked(passphrase) {
                 this.showUnlockModal = false;
                 if (this.pendingAction) {
-                    this.pendingAction();
+                    this.pendingAction(passphrase);
                     this.pendingAction = null;
                 }
             },
@@ -315,9 +315,7 @@
                 }
                 if (vm.$store.state.active_wallet)
                 {
-                    console.log("Starting staking process...");
-                    vm.$store.commit('set_staking_auto_started', false);
-                    ipcRenderer.invoke('start-staker', vm.$store.state.network, vm.$store.state.active_wallet,vm.$store.state.rpcuser,vm.$store.state.rpcpassword);
+                    vm.requireUnlock((passphrase) => vm.doStartStaking(passphrase));
                 }
                 else
                 {
@@ -329,6 +327,13 @@
                         confirmButtonText: 'OK'
                     })
                 }
+            },
+            doStartStaking : function(passphrase)
+            {
+                let vm=this;
+                console.log("Starting staking process...");
+                vm.$store.commit('set_staking_auto_started', false);
+                ipcRenderer.invoke('start-staker', vm.$store.state.network, vm.$store.state.active_wallet, vm.$store.state.rpcuser, vm.$store.state.rpcpassword, passphrase);
             },
             copyManualCommand : function()
             {

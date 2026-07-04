@@ -121,8 +121,9 @@ export default {
         if (r[0] && r[0].code) {
           this.error = r[0].message;
         } else {
+          const passphrase = this.passphrase;
           this.passphrase = '';
-          this.$emit('unlocked');
+          this.$emit('unlocked', passphrase);
         }
       } catch (err) {
         this.error = err.message || 'Failed to unlock wallet';

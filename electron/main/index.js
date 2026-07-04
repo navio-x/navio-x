@@ -327,8 +327,8 @@ ipcMain.handle('save-daemon-autostart-setting', (_, enabled) => {
   }
 });
 
-ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword) => {
-  startStaker(network,wallet,rpcuser,rpcpassword);
+ipcMain.handle('start-staker', (_, network, wallet, rpcuser, rpcpassword, walletpassphrase) => {
+  startStaker(network,wallet,rpcuser,rpcpassword,walletpassphrase);
 })
 
 ipcMain.handle('stop-staker', (_, pid) => {
@@ -806,7 +806,7 @@ function stopStaker(pid)
   }
 }
 
-function startStaker(network, wallet, rpcuser, rpcpassword)
+function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
 {
   console.log("Starting staker...");
   console.log(`${network}`);
@@ -832,10 +832,11 @@ function startStaker(network, wallet, rpcuser, rpcpassword)
     ...(network === 'testnet' ? ['-' + network] : []),
     "-wallet=" + wallet,
     "-rpcuser=" + rpcuser,
-    "-rpcpassword=" + rpcpassword
+    "-rpcpassword=" + rpcpassword,
+    ...(walletpassphrase ? ["-walletpassphrase=" + walletpassphrase] : [])
   ];
 
-  console.log("Binary Parameters : [" + parameters + "]");
+  console.log("Binary Parameters : [" + parameters.map(p => p.startsWith('-walletpassphrase=') ? '-walletpassphrase=***' : p) + "]");
 
   const defaults = {
     cwd: binDir,
