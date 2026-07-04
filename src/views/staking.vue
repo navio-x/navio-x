@@ -1,6 +1,16 @@
 <template>
     <div class="h-full bg-transparent text-white">
-        <div v-if="$store.state.active_wallet">
+        <div v-if="$store.state.active_wallet && !ready" class="flex flex-col items-center justify-center h-full pb-16 px-6">
+            <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
+                <svg class="w-10 h-10 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+            </div>
+            <h2 class="text-lg font-semibold text-white mb-2">Loading Staking Data</h2>
+            <p class="text-sm text-white/80 text-center max-w-xs">Fetching transaction history from the wallet. This may take a moment.</p>
+        </div>
+        <div v-else-if="$store.state.active_wallet && ready">
 
             <!-- Intro (compact) -->
             <div class="px-3 pt-3 pb-3">
@@ -224,6 +234,7 @@
                 options: undefined,
                 series: undefined,
                 txs:[],
+                ready: false,
                 showUnlockModal: false,
                 pendingAction: null,
                 showManualStakingModal: false,
@@ -421,18 +432,13 @@
                });
             }
         },
-        mounted()
+        list_transactions()
         {
             let vm=this;
             let categories = [];
             let rewards= [];
 
-            this.list_staked_commitments();
-            this.getbalance();
-            this.balanceTimer = setInterval(() => { this.getbalance(); }, 5000);
-            ipcRenderer.invoke('get-bin-dir').then((dir) => { vm.binDir = dir; });
-            console.log("staking rewards");
-            console.log("listtransactions");
+            this.ready = false;
             vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
             {
                 if (r[0].name=="RpcError"||r[0].code)
@@ -441,7 +447,7 @@
                     console.log(r);
                 }
                 else
-                { 
+                {
                     vm.txs=r[0];
                     const now = new Date();
                     const oneDayMs = 1000 * 60 * 60 * 24;
@@ -595,8 +601,19 @@
             color: undefined
         }];
     }
+    vm.ready = true;
 });
-},
+        },
+        mounted()
+        {
+            let vm=this;
+
+            this.list_staked_commitments();
+            this.getbalance();
+            this.balanceTimer = setInterval(() => { this.getbalance(); }, 5000);
+            ipcRenderer.invoke('get-bin-dir').then((dir) => { vm.binDir = dir; });
+            this.list_transactions();
+        },
         beforeUnmount()
         {
             clearInterval(this.balanceTimer);
