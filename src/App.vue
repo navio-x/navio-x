@@ -472,7 +472,7 @@ v-show="state=='select_network'"
               <span class="text-sm text-white">Auto login</span>
             </label>
           </div>
-          <button :disabled="!username||!password" v-on:click="connect()" class="w-full text-white disabled:opacity-40 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 hover:bg-blue-800 focus:outline-none transition">Connect</button>
+          <button :disabled="!username||!password" v-on:click="connect(true)" class="w-full text-white disabled:opacity-40 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 hover:bg-blue-800 focus:outline-none transition">Connect</button>
           <button v-on:click="select_daemon_method()" class="w-full font-medium rounded-lg text-sm px-5 py-2 text-center glass-btn-secondary focus:outline-none">Back</button>
         </div>
       </div>
@@ -883,6 +883,7 @@ methods: {
     },
     select_binary: function(bin) {
         if (!bin || !bin.url) return;
+        localStorage.removeItem('connection_method');
         ipcRenderer.invoke('download-binary', { url: bin.url, name: bin.name }).then((extractPath) => {
             if (!extractPath) {
                 this.is_downloading = false;
@@ -900,6 +901,7 @@ methods: {
         });
     },
     downloadBinaries: function() {
+        localStorage.removeItem('connection_method');
         this.is_fetching_releases = true;
         ipcRenderer.invoke('check-binary-exists').then((exists) => {
             if (exists) {
@@ -943,6 +945,7 @@ methods: {
         });
  },
  startWithCurrentBinaries: function() {
+    localStorage.removeItem('connection_method');
     this.is_starting_daemon = true;
     ipcRenderer.invoke('start-daemon').then((data) => {
         console.log("start-daemon (current binary): " + data);
@@ -952,7 +955,7 @@ methods: {
         this.is_starting_daemon = false;
     });
  },
- connect: function() {
+ connect: function(isManual) {
     let vm=this;
     if(this.username&&this.password)
     {
@@ -979,14 +982,13 @@ methods: {
         console.log(this.client);
         this.client.command([{ method: "getblockchaininfo" }]).then((r) =>
         {
-            if (this.remember)
+            if (this.remember || this.auto_login)
             {
                 localStorage.setItem('host', this.host);
                 localStorage.setItem('port', this.port);
                 localStorage.setItem('network', this.network);
                 localStorage.setItem('username', this.username);
                 localStorage.setItem('password', this.password);
-                if (this.auto_login) localStorage.setItem('auto_login', true);
             }
             else
             {
@@ -995,6 +997,16 @@ methods: {
                 localStorage.removeItem('network');
                 localStorage.removeItem('username');
                 localStorage.removeItem('password');
+            }
+            if (this.auto_login)
+            {
+                localStorage.setItem('auto_login', true);
+                if (isManual) localStorage.setItem('connection_method', 'manual');
+            }
+            else
+            {
+                localStorage.removeItem('auto_login');
+                localStorage.removeItem('connection_method');
             }
             console.log(r);
             if (this.auto_login)
@@ -1101,7 +1113,7 @@ mounted()
         this.port    = localStorage.getItem('port')    || (this.networks.find(n => n.name === this.network)?.port ?? 33677);
         this.username= localStorage.getItem('username');
         this.password= localStorage.getItem('password');
-        if (localStorage.getItem("auto_login") && data.daemonAutoStart !== false)
+        if (localStorage.getItem("auto_login") && (localStorage.getItem("connection_method") === 'manual' || data.daemonAutoStart !== false))
         {
             this.auto_login=true;
             this.connect();
