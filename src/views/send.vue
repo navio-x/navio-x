@@ -106,7 +106,7 @@
         </div>
         -->
 
-        <!-- Subtract fee from amount -->
+        <!-- 
         <div class="mb-5 flex items-center justify-between gap-3">
           <label class="text-xs font-semibold uppercase tracking-widest text-white/70"
             title="Recipient receives the amount minus the network fee, instead of the full amount.">
@@ -122,6 +122,7 @@
                         peer-checked:after:translate-x-[18px]"></div>
           </label>
         </div>
+        !-->
 
         <!-- Send Button -->
         <button
@@ -287,7 +288,7 @@
             this.client.command([{ method: "sendtoaddress", parameters: {
               address: this.address,
               amount: this.amount,
-              memo: this.memo || "",
+              comment: this.memo || "",
               // comment: this.comment || "",
               // comment_to: this.commentTo || "",
               subtractfeefromamount: this.subtractFeeFromAmount

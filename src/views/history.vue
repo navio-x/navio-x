@@ -71,11 +71,11 @@
               <tr class="hst-thead-row">
                 <th class="hst-th text-left">Type</th>
                 <th class="hst-th text-left">Amount</th>
-                <!--
                 <th class="hst-th text-left">Memo</th>
+                <!--
                 <th class="hst-th text-left">To</th>
-                -->
                 <th class="hst-th text-left">Comment</th>
+                -->
                 <th class="hst-th text-left">Date</th>
                 <th class="hst-th text-right">Fee</th>
                 <th class="hst-th text-right">Conf.</th>
@@ -93,11 +93,11 @@
             <colgroup>
               <col style="width:14%">
               <col style="width:16%">
-              <!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:12%">
+              <!--
               <col style="width:10%">
-              -->
               <col style="width:14%">
+              -->
               <col style="width:13%">
               <col style="width:7%">
               <col style="width:6%">
@@ -141,22 +141,21 @@
                   <span class="text-[11px] text-white/55 ml-1">NAV</span>
                 </td>
 
-                <!--
                 <td class="hst-td hst-td--muted text-sm">
                   <span v-if="tx.memo" class="italic truncate block max-w-[12rem]" :title="tx.memo">{{ tx.memo }}</span>
                   <span v-else class="text-white/40">—</span>
                 </td>
+                <!--
                 <td class="hst-td hst-td--muted text-sm">
                   <span v-if="tx.to" class="truncate block max-w-[10rem]" :title="tx.to">{{ tx.to }}</span>
                   <span v-else class="text-white/40">—</span>
                 </td>
-                -->
 
-                <!-- Comment (private, local-only) -->
                 <td class="hst-td hst-td--muted text-sm">
                   <span v-if="localComment(tx.txid)" class="italic truncate block max-w-[10rem]" :title="localComment(tx.txid)">{{ localComment(tx.txid) }}</span>
                   <span v-else class="text-white/40">—</span>
                 </td>
+                -->
 
                 <!-- Date -->
                 <td class="hst-td hst-td--muted text-sm whitespace-nowrap" :title="formatDate(tx.time)">
