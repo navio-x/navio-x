@@ -1,27 +1,7 @@
 <template>
 	<div class="h-full bg-transparent text-white overflow-auto">
 		<template v-if="$store.state.active_wallet">
-			<!-- Fetching data card (non-blocking) -->
-			<div v-if="loading" class="p-6">
-				<div class="relative overflow-hidden rounded-xl p-5 border border-blue-500/20 flex items-center gap-4"
-					style="background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(139,92,246,0.08) 100%); backdrop-filter: blur(12px);">
-					<div class="flex items-center justify-center w-11 h-11 rounded-full glass-card shrink-0">
-						<svg class="w-6 h-6 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-						</svg>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-sm font-semibold text-white mb-1">Fetching Wallet Data</div>
-						<p class="text-xs text-white/70 mb-2.5">Balance bilgileri ve son işlem geçmişi alınıyor…</p>
-						<div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-							<div class="progress-indeterminate h-full rounded-full bg-gradient-to-r from-blue-400 to-violet-500"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div v-if="balance">
+			<div>
 			<!-- Balance Cards -->
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
 				<!-- Available -->
@@ -29,23 +9,42 @@
 					style="background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(139,92,246,0.08) 100%); backdrop-filter: blur(12px);">
 					<div class="pointer-events-none absolute -top-6 -right-6 w-28 h-28 bg-blue-500/10 rounded-full blur-2xl"></div>
 					<div class="text-xs font-semibold uppercase tracking-widest text-blue-400/70 mb-2">Available Balance</div>
-					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-cyan-300 to-blue-500 text-transparent mb-4">
-						{{formatNumbers(balance.mine.trusted)}} <span class="text-lg">NAV</span>
-					</div>
-					<div class="space-y-2 border-t border-white/[0.18] pt-4">
-						<div class="flex justify-between text-sm">
-							<span class="text-white/65">Pending</span>
-							<span class="text-white/90">{{formatNumbers(balance.mine.untrusted_pending)}} NAV</span>
+					<template v-if="dataLoading">
+						<div class="skeleton h-8 w-36 rounded-md mb-4"></div>
+						<div class="space-y-2 border-t border-white/[0.18] pt-4">
+							<div class="flex justify-between text-sm items-center">
+								<span class="text-white/65">Pending</span>
+								<div class="skeleton h-4 w-16 rounded"></div>
+							</div>
+							<div class="flex justify-between text-sm items-center">
+								<span class="text-white/65" title="Immature staking coins will mature after 100 blocks.">Immature</span>
+								<div class="skeleton h-4 w-16 rounded"></div>
+							</div>
+							<div class="flex justify-between text-sm items-center border-t border-white/[0.18] pt-2">
+								<span class="text-white/80 font-medium">Total</span>
+								<div class="skeleton h-4 w-20 rounded"></div>
+							</div>
 						</div>
-						<div class="flex justify-between text-sm">
-							<span class="text-white/65" title="Immature staking coins will mature after 100 blocks.">Immature</span>
-							<span class="text-white/90">{{formatNumbers(balance.mine.immature)}} NAV</span>
+					</template>
+					<template v-else>
+						<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-cyan-300 to-blue-500 text-transparent mb-4">
+							{{formatNumbers(balance.mine.trusted)}} <span class="text-lg">NAV</span>
 						</div>
-						<div class="flex justify-between text-sm border-t border-white/[0.18] pt-2">
-							<span class="text-white/80 font-medium">Total</span>
-							<span class="text-white font-semibold">{{formatNumbers(getTotal(balance))}} NAV</span>
+						<div class="space-y-2 border-t border-white/[0.18] pt-4">
+							<div class="flex justify-between text-sm">
+								<span class="text-white/65">Pending</span>
+								<span class="text-white/90">{{formatNumbers(balance.mine.untrusted_pending)}} NAV</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-white/65" title="Immature staking coins will mature after 100 blocks.">Immature</span>
+								<span class="text-white/90">{{formatNumbers(balance.mine.immature)}} NAV</span>
+							</div>
+							<div class="flex justify-between text-sm border-t border-white/[0.18] pt-2">
+								<span class="text-white/80 font-medium">Total</span>
+								<span class="text-white font-semibold">{{formatNumbers(getTotal(balance))}} NAV</span>
+							</div>
 						</div>
-					</div>
+					</template>
 				</div>
 
 				<!-- Private Staking -->
@@ -53,33 +52,56 @@
 					style="background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(219,39,119,0.07) 100%); backdrop-filter: blur(12px);">
 					<div class="pointer-events-none absolute -top-6 -right-6 w-28 h-28 bg-violet-500/10 rounded-full blur-2xl"></div>
 					<div class="text-xs font-semibold uppercase tracking-widest text-violet-400/70 mb-2">Private Staking</div>
-					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-4">
-						{{formatNumbers(balance.mine.staked_commitment_balance)}} <span class="text-lg">NAV</span>
-					</div>
-					<div class="space-y-2 border-t border-white/[0.18] pt-4">
-						<div class="flex justify-between text-sm">
-							<span class="text-white/65">Pending</span>
-							<span class="text-white/90">{{formatNumbers(balance.mine.pending_staked_commitment_balance)}} NAV</span>
+					<template v-if="dataLoading">
+						<div class="skeleton h-8 w-36 rounded-md mb-4"></div>
+						<div class="space-y-2 border-t border-white/[0.18] pt-4">
+							<div class="flex justify-between text-sm items-center">
+								<span class="text-white/65">Pending</span>
+								<div class="skeleton h-4 w-16 rounded"></div>
+							</div>
+							<div class="flex justify-between text-sm items-center">
+								<span class="text-white/65">24H</span>
+								<div class="skeleton h-4 w-14 rounded"></div>
+							</div>
+							<div class="flex justify-between text-sm items-center">
+								<span class="text-white/65">7D</span>
+								<div class="skeleton h-4 w-14 rounded"></div>
+							</div>
+							<div class="flex justify-between text-sm items-center">
+								<span class="text-white/65">30D</span>
+								<div class="skeleton h-4 w-14 rounded"></div>
+							</div>
 						</div>
-						<div class="flex justify-between text-sm">
-							<span class="text-white/65">24H</span>
-							<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV
-							</span>
+					</template>
+					<template v-else>
+						<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-4">
+							{{formatNumbers(balance.mine.staked_commitment_balance)}} <span class="text-lg">NAV</span>
 						</div>
-						<div class="flex justify-between text-sm">
-							<span class="text-white/65">7D</span>
-							<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.week > 0 ? '+' : '' }}{{ generateSums.week }} NAV
-							</span>
+						<div class="space-y-2 border-t border-white/[0.18] pt-4">
+							<div class="flex justify-between text-sm">
+								<span class="text-white/65">Pending</span>
+								<span class="text-white/90">{{formatNumbers(balance.mine.pending_staked_commitment_balance)}} NAV</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-white/65">24H</span>
+								<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+									{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV
+								</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-white/65">7D</span>
+								<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+									{{ generateSums.week > 0 ? '+' : '' }}{{ generateSums.week }} NAV
+								</span>
+							</div>
+							<div class="flex justify-between text-sm">
+								<span class="text-white/65">30D</span>
+								<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+									{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
+								</span>
+							</div>
 						</div>
-						<div class="flex justify-between text-sm">
-							<span class="text-white/65">30D</span>
-							<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
-							</span>
-						</div>
-					</div>
+					</template>
 				</div>
 			</div>
 
@@ -97,7 +119,34 @@
 						<h2 class="text-sm font-semibold text-white">Recent Transactions</h2>
 					</div>
 
-					<div v-if="txs.length > 0" class="overflow-x-auto">
+					<div v-if="txsLoading" class="overflow-x-auto">
+						<table class="w-full text-sm">
+							<thead>
+								<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="n in 5" :key="n" class="border-b border-white/[0.14] last:border-0">
+									<td class="px-4 py-3"><div class="skeleton h-3.5 w-14 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-4 w-10 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-4 w-12 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-3.5 w-10 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div v-else-if="txs.length > 0" class="overflow-x-auto">
 						<table class="w-full text-sm">
 							<thead>
 								<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
@@ -207,10 +256,14 @@
 				balance:undefined,
 				txs: [],
 				alltxs:[],
-				loading: true
+				loading: true,
+				txsLoading: true
 			}
 		},
 		computed: {
+			dataLoading() {
+				return this.loading || !this.balance;
+			},
 			generateSums() {
 				const now = Math.floor(Date.now() / 1000);
 				const oneDay = 60 * 60 * 24;
@@ -324,6 +377,15 @@
 			{
 				let vm=this;
 				console.log("listtransactions");
+				// naviod runs on localhost and often answers within a few ms, faster
+				// than the browser's next paint — without a floor the skeleton and
+				// loaded renders land in the same frame and never becomes visible.
+				const loadStart = Date.now();
+				const minLoadingMs = 400;
+				const finish = () => {
+					const wait = Math.max(0, minLoadingMs - (Date.now() - loadStart));
+					setTimeout(() => { vm.txsLoading = false; }, wait);
+				};
 				vm.client.command([{ method: "listtransactions", parameters: [] }]).then((r) =>
 				{
 					if (r[0].name=="RpcError"||r[0].code)
@@ -332,9 +394,15 @@
 						console.log(r);
 					}
 					else
-					{ 
+					{
 						vm.txs=r[0].reverse();
 					}
+					finish();
+				})
+				.catch((r) =>
+				{
+					console.log(r);
+					finish();
 				});
 			},
 			listalltransactions: function()
@@ -374,14 +442,15 @@
 	}
 </script>
 <style>
-	.progress-indeterminate {
-		width: 40%;
-		animation: progress-indeterminate 1.4s ease-in-out infinite;
+	.skeleton {
+		display: inline-block;
+		background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.15) 37%, rgba(255,255,255,0.06) 63%);
+		background-size: 400% 100%;
+		animation: skeleton-shimmer 1.4s ease infinite;
 	}
-	@keyframes progress-indeterminate {
-		0%   { transform: translateX(-100%); }
-		50%  { transform: translateX(60%); }
-		100% { transform: translateX(250%); }
+	@keyframes skeleton-shimmer {
+		0%   { background-position: 100% 50%; }
+		100% { background-position: 0 50%; }
 	}
 
 	/* 3D tower loader made by: csozi | Website: www.csozi.hu*/

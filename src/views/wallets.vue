@@ -339,6 +339,17 @@
     </div>
 <div class="px-4 pb-4 space-y-4" v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0">
 
+  <!-- No active wallet -->
+  <div v-if="loaded_wallets && loaded_wallets.length === 0" class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(251,191,36,0.25); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+    <div class="flex items-center gap-2 px-4 py-3" style="background: rgba(251,191,36,0.08);">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+      </svg>
+      <span class="text-sm font-semibold text-white/90">There is no active wallet</span>
+    </div>
+    <p class="text-xs text-white/60 px-4 py-3">No wallet is currently loaded. Toggle "Load" on a wallet below to make it active.</p>
+  </div>
+
   <!-- Wallet Info Card: loading state (only while we actually expect a wallet's info) -->
   <div v-if="!is_wallet_loaded && active_wallet" class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.20); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
     <div class="flex items-center gap-2 px-4 py-3" style="background: rgba(139,92,246,0.07);">
@@ -649,11 +660,6 @@
           console.log(vm.loaded_wallets);
           if (vm.loaded_wallets.length==0)
           {
-            Toast.fire({
-              theme:'dark',
-              icon: 'info',
-              title: 'There is no active wallet!',
-            });
             this.active_wallet=undefined;
             this.$store.commit('set_active_wallet',undefined);
           }
@@ -684,9 +690,18 @@
         })
         .catch((r) =>
         {
-          vm.is_wallet_loaded=false;
-          vm.wallet_info=undefined;
           console.log(r);
+          // getwalletinfo runs as a single (non-batch) command, so any RPC hiccup
+          // (daemon momentarily busy, request timeout, etc.) rejects the promise
+          // instead of resolving with an error object. Only treat a genuine
+          // "wallet not loaded" response (-18) as a real state change — otherwise
+          // keep showing the last known-good info instead of flickering the
+          // loading card every second on a transient failure.
+          if (r && r.code === -18)
+          {
+            vm.is_wallet_loaded=false;
+            vm.wallet_info=undefined;
+          }
         });
       },
       manage_wallet:function(wallet)
