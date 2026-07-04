@@ -575,9 +575,12 @@ v-show="state=='select_network'"
 <!-- Status card -->
 <div class="relative px-3 py-4 border-t border-white/[0.14] shrink-0">
   <div v-if="chain" class="status-glass rounded-xl px-3 py-3 space-y-2.5">
-    <div class="flex items-center gap-2 min-w-0">
-      <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
-      <span class="text-xs text-white/90 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
+    <div class="flex items-center justify-between gap-2 min-w-0">
+      <div class="flex items-center gap-2 min-w-0">
+        <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
+        <span class="text-xs text-white/90 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
+      </div>
+      <span v-if="networkinfo.subversion" class="text-[10px] text-white/35 shrink-0">{{ formatSubversion(networkinfo.subversion) }}</span>
   </div>
   <div>
       <div class="flex items-center justify-between mb-1.5">
@@ -778,7 +781,7 @@ methods: {
     getNetworkInfo: function() {
         const batch = [{ method: "getnetworkinfo" }];
         let vm=this;
-        this.client.command(batch).then((r) => 
+        this.client.command(batch).then((r) =>
         {
             vm.networkinfo=r[0];
             //console.log(r);
@@ -786,6 +789,11 @@ methods: {
         {
             console.log(r);
         });
+    },
+    formatSubversion: function(subversion) {
+        if (!subversion) return '';
+        const match = subversion.match(/:v?([\d.]+)/i);
+        return match ? `Navio Core v${match[1]}` : subversion;
     },
     stop_staking : function()
     {

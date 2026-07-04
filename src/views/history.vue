@@ -691,7 +691,7 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 .hst-row:hover td { background: rgba(255,255,255,0.07); }
 
 .hst-td {
-  padding: 10px 12px;
+  padding: 6px 12px;
   font-size: 13px;
   color: rgba(255,255,255,0.93);
   vertical-align: middle;
