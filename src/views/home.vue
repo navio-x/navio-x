@@ -123,34 +123,34 @@
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
 							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
 									<!--
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
 								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
 							-->
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
 							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="n in 5" :key="n" class="border-b border-white/[0.14] last:border-0">
-							<td class="px-4 py-3"><div class="skeleton h-3.5 w-14 rounded"></div></td>
-							<td class="px-4 py-3"><div class="skeleton h-4 w-10 rounded"></div></td>
-							<td class="px-4 py-3"><div class="skeleton h-4 w-12 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
 							<td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded"></div></td>
 									<!--
 									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
 									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
 							-->
-							<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-3.5 w-14 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-4 w-10 rounded"></div></td>
 							<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-4 w-12 rounded"></div></td>
 							<td class="px-4 py-3"><div class="skeleton h-3.5 w-10 rounded"></div></td>
-							<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
 						</tr>
 					</tbody>
 				</table>
@@ -160,43 +160,22 @@
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
 							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
 									<!--
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
 								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
 							-->
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
-							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
 							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
-							<td class="px-4 py-3 whitespace-nowrap">
-								<span class="text-xs text-white/60" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
-							</td>
-							<td class="px-4 py-3">
-								<span v-if="tx.blockheight" class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{{tx.blockheight}}</span>
-							</td>
-							<td class="px-4 py-3">
-								<span v-if="tx.label" class="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-2 py-0.5 rounded whitespace-nowrap">{{tx.label}}</span>
-							</td>
-							<td class="px-4 py-3 max-w-[10rem]">
-								<span v-if="tx.memo" class="text-xs text-white/65 italic truncate block" :title="tx.memo">{{tx.memo}}</span>
-								<span v-else class="text-xs text-white/30">—</span>
-							</td>
-									<!--
-									<td class="px-4 py-3 max-w-[8rem]">
-										<span v-if="tx.to" class="text-xs text-white/65 truncate block" :title="tx.to">{{tx.to}}</span>
-										<span v-else class="text-xs text-white/30">—</span>
-									</td>
-									<td class="px-4 py-3 max-w-[8rem]">
-									</td>
-							-->
 							<td class="px-4 py-3">
 								<div class="flex items-center gap-1.5">
 									<svg v-if="tx.category=='receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-emerald-400 shrink-0">
@@ -236,16 +215,37 @@
 									{{ tx.amount > 0 ? '+' : '−' }}{{ formatNav(tx.amount) }} NAV
 								</span>
 							</td>
+							<td class="px-4 py-3 max-w-[10rem]">
+								<span v-if="tx.memo" class="text-xs text-white/65 italic truncate block" :title="tx.memo">{{tx.memo}}</span>
+								<span v-else class="text-xs text-white/30">—</span>
+							</td>
+									<!--
+									<td class="px-4 py-3 max-w-[8rem]">
+										<span v-if="tx.to" class="text-xs text-white/65 truncate block" :title="tx.to">{{tx.to}}</span>
+										<span v-else class="text-xs text-white/30">—</span>
+									</td>
+									<td class="px-4 py-3 max-w-[8rem]">
+									</td>
+							-->
 							<td class="px-4 py-3 whitespace-nowrap">
-								<span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-xs text-orange-300/80 font-medium" :title="'Fee: ' + Math.abs(tx.fee) + ' NAV'">
-									{{ formatNav(tx.fee) }} NAV
-								</span>
-								<span v-else class="text-xs text-white/80">—</span>
+								<span class="text-xs text-white/60" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
+							</td>
+							<td class="px-4 py-3">
+								<span v-if="tx.blockheight" class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{{tx.blockheight}}</span>
 							</td>
 							<td class="px-4 py-3">
 								<span v-if="tx.address" class="text-xs text-white/60 font-mono">
 									{{tx.address.substring(0,6)}}…{{tx.address.slice(-6)}}
 								</span>
+							</td>
+							<td class="px-4 py-3">
+								<span v-if="tx.label" class="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-2 py-0.5 rounded whitespace-nowrap">{{tx.label}}</span>
+							</td>
+							<td class="px-4 py-3 whitespace-nowrap">
+								<span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-xs text-orange-300/80 font-medium" :title="'Fee: ' + Math.abs(tx.fee) + ' NAV'">
+									{{ formatNav(tx.fee) }} NAV
+								</span>
+								<span v-else class="text-xs text-white/80">—</span>
 							</td>
 						</tr>
 					</tbody>
