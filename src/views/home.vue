@@ -467,7 +467,7 @@
 				this.listtransactions();
 				this.listalltransactions();
 			},
-			5000);
+			10000);
 		},
 		beforeUnmount()
 		{

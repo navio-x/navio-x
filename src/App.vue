@@ -580,7 +580,15 @@ v-show="state=='select_network'"
         <span :class="$store.state.active_wallet ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-white/20'" class="w-1.5 h-1.5 rounded-full shrink-0 transition-all"></span>
         <span class="text-xs text-white/90 truncate font-medium">{{ $store.state.active_wallet || 'No wallet selected' }}</span>
       </div>
-      <span v-if="networkinfo.subversion" class="text-[10px] text-white/35 shrink-0">{{ formatSubversion(networkinfo.subversion) }}</span>
+      <span v-if="networkinfo.subversion" class="flex items-center gap-1 shrink-0">
+        <span class="text-[10px] text-white/35">{{ formatSubversion(networkinfo.subversion) }}</span>
+        <button v-if="latestRelease" @click="show_release_notes(latestRelease)" type="button"
+          class="text-white/35 hover:text-white/70 transition-colors focus:outline-none" :title="'Latest release: ' + latestRelease.tag">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+          </svg>
+        </button>
+      </span>
   </div>
   <div>
       <div class="flex items-center justify-between mb-1.5">
@@ -676,6 +684,7 @@ v-show="state=='select_network'"
           auto_login:false,
           is_downloading:false,
           is_fetching_releases:false,
+          latestRelease: null,
           fileinfo:{},
           availableBinaries: [],
           binarySelectionInfo: { platform: '', arch: '' },
@@ -1077,6 +1086,11 @@ mounted()
     ipcRenderer.invoke('get-bin-dir').then((dir) => { if (dir) this.binDir = dir; });
     ipcRenderer.invoke('check-binary-exists').then((exists) => { this.binaryExists = !!exists; });
     ipcRenderer.invoke('get-setup-complete').then((v) => { this.setupComplete = !!v; });
+    ipcRenderer.invoke('list-binaries').then((result) => {
+        if (result && result.success && Array.isArray(result.options)) {
+            this.latestRelease = result.options.find((o) => o.latest) || null;
+        }
+    }).catch(() => {});
     window.addEventListener('focus', () => {
         if (this.state !== 'select_daemon_method') return;
         ipcRenderer.invoke('check-binary-exists').then((exists) => { this.binaryExists = !!exists; });
