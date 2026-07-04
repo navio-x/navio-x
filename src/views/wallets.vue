@@ -296,6 +296,17 @@
     </div>
   </transition>
   <div class="h-full w-full text-white bg-transparent">
+    <div v-if="walletsLoading" class="flex flex-col items-center justify-center h-full pb-16 px-6">
+      <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
+        <svg class="w-10 h-10 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+      </div>
+      <h2 class="text-lg font-semibold text-white mb-2">Loading Wallets</h2>
+      <p class="text-sm text-white/80 text-center max-w-xs">Fetching wallet list from the daemon. This may take a moment.</p>
+    </div>
+    <template v-else>
     <div v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" class="flex items-center gap-2 px-4 pt-3 mb-5">
       <button v-if="all_wallets && all_wallets.wallets && all_wallets.wallets.length > 0" @click="openWalletModal" type="button" class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-semibold text-white rounded-lg focus:outline-none transition-opacity hover:opacity-85" style="background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -498,6 +509,7 @@
 
 </div>
 <NoWalletSelected v-else hide-link show-create @create="openWalletModal" />
+</template>
 
 </div>
 
@@ -529,6 +541,7 @@
     components: { NoWalletSelected, WalletUnlock },
     data() {
       return {
+        walletsLoading: true,
         loaded_wallets:undefined,
         new_wallet_name: undefined,
         all_wallets: undefined,
@@ -677,7 +690,15 @@
         this.client.command('listwalletdir').then((r) =>
         {
           vm.all_wallets=r;
-          vm.listwallets();
+          return vm.listwallets();
+        })
+        .catch((r) =>
+        {
+          console.log(r);
+        })
+        .finally(() =>
+        {
+          vm.walletsLoading=false;
         });
       },
       getwalletinfo:function()
