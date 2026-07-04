@@ -53,17 +53,17 @@
         <div class="px-6 pt-3 shrink-0">
           <table class="w-full table-fixed border-separate [border-spacing:0]">
             <colgroup>
-              <col style="width:10%">
-              <col style="width:13%">
+              <col style="width:14%">
+              <col style="width:16%">
               <!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:12%">
               <col style="width:10%">
               -->
-              <col style="width:16%">
-              <col style="width:15%">
-              <col style="width:8%">
+              <col style="width:14%">
+              <col style="width:13%">
               <col style="width:7%">
-              <col style="width:8%">
+              <col style="width:6%">
+              <col style="width:7%">
               <col style="width:9%">
               <col style="width:14%">
             </colgroup>
@@ -91,17 +91,17 @@
         <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
           <table class="w-full table-fixed border-separate [border-spacing:0]">
             <colgroup>
-              <col style="width:10%">
-              <col style="width:13%">
+              <col style="width:14%">
+              <col style="width:16%">
               <!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:12%">
               <col style="width:10%">
               -->
-              <col style="width:16%">
-              <col style="width:15%">
-              <col style="width:8%">
+              <col style="width:14%">
+              <col style="width:13%">
               <col style="width:7%">
-              <col style="width:8%">
+              <col style="width:6%">
+              <col style="width:7%">
               <col style="width:9%">
               <col style="width:14%">
             </colgroup>
