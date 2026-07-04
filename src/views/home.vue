@@ -100,6 +100,18 @@
 								{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
 							</span>
 						</div>
+						<div class="flex justify-between text-sm">
+							<span class="text-white/65">1 Year</span>
+							<span :class="generateSums.year > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+								{{ generateSums.year > 0 ? '+' : '' }}{{ generateSums.year }} NAV
+							</span>
+						</div>
+						<div class="flex justify-between text-sm">
+							<span class="text-white/65">ALL</span>
+							<span :class="generateSums.all > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+								{{ generateSums.all > 0 ? '+' : '' }}{{ generateSums.all }} NAV
+							</span>
+						</div>
 					</div>
 				</template>
 			</div>
@@ -275,7 +287,6 @@
 	import sb from 'satoshi-bitcoin';
 	import { computed } from 'vue';
 	import NoWalletSelected from '../components/NoWalletSelected.vue';
-	import { getTxComment } from '../utils/txComments';
 
 	export default {
 		components: { NoWalletSelected },
@@ -297,22 +308,29 @@
 				const oneDay = 60 * 60 * 24;
 				const oneWeek = oneDay * 7;
 				const oneMonth = oneDay * 30;
+				const oneYear = oneDay * 365;
 
 				let result = {
 					day: 0,
 					week: 0,
-					month: 0
+					month: 0,
+					year: 0,
+					all: 0
 				};
 
 				this.alltxs.forEach(tx => {
 					if (tx.category === 'generate') {
 						const diff = now - tx.time;
-						if (diff <= oneMonth) {
-							result.month += tx.amount;
-							if (diff <= oneWeek) {
-								result.week += tx.amount;
-								if (diff <= oneDay) {
-									result.day += tx.amount;
+						result.all += tx.amount;
+						if (diff <= oneYear) {
+							result.year += tx.amount;
+							if (diff <= oneMonth) {
+								result.month += tx.amount;
+								if (diff <= oneWeek) {
+									result.week += tx.amount;
+									if (diff <= oneDay) {
+										result.day += tx.amount;
+									}
 								}
 							}
 						}
@@ -324,10 +342,6 @@
 		},
 		methods:
 		{
-			localComment(txid)
-			{
-				return getTxComment(txid);
-			},
 			getTotal: function(balance)
 			{
 				return sb.toBitcoin(sb.toSatoshi(balance.mine.trusted)+sb.toSatoshi(balance.mine.untrusted_pending)+sb.toSatoshi(balance.mine.immature)+sb.toSatoshi(balance.mine.staked_commitment_balance));
@@ -441,7 +455,7 @@
 			{
 				let vm=this;
 				console.log("listtransactions");
-				vm.client.command([{ method: "listtransactions", parameters: ["*", 10] }]).then((r) =>
+				vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
 				{
 					if (r[0].name=="RpcError"||r[0].code)
 					{

@@ -226,7 +226,6 @@
   import '@sweetalert2/theme-dark/dark.scss';
   import NoWalletSelected from '../components/NoWalletSelected.vue';
   import WalletUnlock from '../components/WalletUnlock.vue';
-  import { setTxComment } from '../utils/txComments';
 
   export default {
     components: { NoWalletSelected, WalletUnlock },
@@ -304,7 +303,6 @@
                   confirmButtonText: 'OK'
                 });
               } else {
-                // if (this.comment) setTxComment(r[0], this.comment);
                 this.address = "";
                 this.amount = "";
                 this.memo = "";

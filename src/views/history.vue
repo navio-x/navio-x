@@ -150,11 +150,6 @@
                   <span v-if="tx.to" class="truncate block max-w-[10rem]" :title="tx.to">{{ tx.to }}</span>
                   <span v-else class="text-white/40">—</span>
                 </td>
-
-                <td class="hst-td hst-td--muted text-sm">
-                  <span v-if="localComment(tx.txid)" class="italic truncate block max-w-[10rem]" :title="localComment(tx.txid)">{{ localComment(tx.txid) }}</span>
-                  <span v-else class="text-white/40">—</span>
-                </td>
                 -->
 
                 <!-- Date -->
@@ -298,11 +293,6 @@
               </div>
               -->
 
-              <div v-if="localComment(modalTx.txid)" class="txm-field txm-field--full">
-                <span class="txm-label">Comment (private)</span>
-                <span class="txm-value break-words">{{ localComment(modalTx.txid) }}</span>
-              </div>
-
               <div class="txm-field">
                 <span class="txm-label">Amount</span>
                 <span :class="['txm-value font-semibold', modalTx.category === 'send' ? 'hst-amount--out' : 'hst-amount--in']">
@@ -430,7 +420,6 @@
 
 <script>
     import NoWalletSelected from '../components/NoWalletSelected.vue';
-    import { getTxComment } from '../utils/txComments';
     export default {
         components: { NoWalletSelected },
         data() {
@@ -471,9 +460,6 @@
             filteredTxs() { this.currentPage = 1; }
         },
         methods: {
-            localComment(txid) {
-                return getTxComment(txid);
-            },
             formatDate(ts) {
                 return new Date(ts * 1000).toLocaleString('en-GB', {
                     day: '2-digit', month: 'short', year: 'numeric',
