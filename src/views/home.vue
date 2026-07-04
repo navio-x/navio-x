@@ -2,10 +2,10 @@
 	<div class="h-full bg-transparent text-white overflow-auto">
 		<template v-if="$store.state.active_wallet">
 			<div>
-			<!-- Balance Cards -->
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
-				<!-- Available -->
-				<div class="relative overflow-hidden rounded-xl p-6 border border-blue-500/20"
+				<!-- Balance Cards -->
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
+					<!-- Available -->
+					<div class="relative overflow-hidden rounded-xl p-6 border border-blue-500/20"
 					style="background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(139,92,246,0.08) 100%); backdrop-filter: blur(12px);">
 					<div class="pointer-events-none absolute -top-6 -right-6 w-28 h-28 bg-blue-500/10 rounded-full blur-2xl"></div>
 					<div class="text-xs font-semibold uppercase tracking-widest text-blue-400/70 mb-2">Available Balance</div>
@@ -49,227 +49,225 @@
 
 				<!-- Private Staking -->
 				<div class="relative overflow-hidden rounded-xl p-6 border border-violet-500/20"
-					style="background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(219,39,119,0.07) 100%); backdrop-filter: blur(12px);">
-					<div class="pointer-events-none absolute -top-6 -right-6 w-28 h-28 bg-violet-500/10 rounded-full blur-2xl"></div>
-					<div class="text-xs font-semibold uppercase tracking-widest text-violet-400/70 mb-2">Private Staking</div>
-					<template v-if="dataLoading">
-						<div class="skeleton h-8 w-36 rounded-md mb-4"></div>
-						<div class="space-y-2 border-t border-white/[0.18] pt-4">
-							<div class="flex justify-between text-sm items-center">
-								<span class="text-white/65">Pending</span>
-								<div class="skeleton h-4 w-16 rounded"></div>
-							</div>
-							<div class="flex justify-between text-sm items-center">
-								<span class="text-white/65">24H</span>
-								<div class="skeleton h-4 w-14 rounded"></div>
-							</div>
-							<div class="flex justify-between text-sm items-center">
-								<span class="text-white/65">7D</span>
-								<div class="skeleton h-4 w-14 rounded"></div>
-							</div>
-							<div class="flex justify-between text-sm items-center">
-								<span class="text-white/65">30D</span>
-								<div class="skeleton h-4 w-14 rounded"></div>
-							</div>
+				style="background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(219,39,119,0.07) 100%); backdrop-filter: blur(12px);">
+				<div class="pointer-events-none absolute -top-6 -right-6 w-28 h-28 bg-violet-500/10 rounded-full blur-2xl"></div>
+				<div class="text-xs font-semibold uppercase tracking-widest text-violet-400/70 mb-2">Private Staking</div>
+				<template v-if="dataLoading">
+					<div class="skeleton h-8 w-36 rounded-md mb-4"></div>
+					<div class="space-y-2 border-t border-white/[0.18] pt-4">
+						<div class="flex justify-between text-sm items-center">
+							<span class="text-white/65">Pending</span>
+							<div class="skeleton h-4 w-16 rounded"></div>
 						</div>
-					</template>
-					<template v-else>
-						<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-4">
-							{{formatNumbers(balance.mine.staked_commitment_balance)}} <span class="text-lg">NAV</span>
+						<div class="flex justify-between text-sm items-center">
+							<span class="text-white/65">24H</span>
+							<div class="skeleton h-4 w-14 rounded"></div>
 						</div>
-						<div class="space-y-2 border-t border-white/[0.18] pt-4">
-							<div class="flex justify-between text-sm">
-								<span class="text-white/65">Pending</span>
-								<span class="text-white/90">{{formatNumbers(balance.mine.pending_staked_commitment_balance)}} NAV</span>
-							</div>
-							<div class="flex justify-between text-sm">
-								<span class="text-white/65">24H</span>
-								<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-									{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV
-								</span>
-							</div>
-							<div class="flex justify-between text-sm">
-								<span class="text-white/65">7D</span>
-								<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-									{{ generateSums.week > 0 ? '+' : '' }}{{ generateSums.week }} NAV
-								</span>
-							</div>
-							<div class="flex justify-between text-sm">
-								<span class="text-white/65">30D</span>
-								<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-									{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
-								</span>
-							</div>
+						<div class="flex justify-between text-sm items-center">
+							<span class="text-white/65">7D</span>
+							<div class="skeleton h-4 w-14 rounded"></div>
 						</div>
-					</template>
+						<div class="flex justify-between text-sm items-center">
+							<span class="text-white/65">30D</span>
+							<div class="skeleton h-4 w-14 rounded"></div>
+						</div>
+					</div>
+				</template>
+				<template v-else>
+					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-4">
+						{{formatNumbers(balance.mine.staked_commitment_balance)}} <span class="text-lg">NAV</span>
+					</div>
+					<div class="space-y-2 border-t border-white/[0.18] pt-4">
+						<div class="flex justify-between text-sm">
+							<span class="text-white/65">Pending</span>
+							<span class="text-white/90">{{formatNumbers(balance.mine.pending_staked_commitment_balance)}} NAV</span>
+						</div>
+						<div class="flex justify-between text-sm">
+							<span class="text-white/65">24H</span>
+							<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+								{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV
+							</span>
+						</div>
+						<div class="flex justify-between text-sm">
+							<span class="text-white/65">7D</span>
+							<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+								{{ generateSums.week > 0 ? '+' : '' }}{{ generateSums.week }} NAV
+							</span>
+						</div>
+						<div class="flex justify-between text-sm">
+							<span class="text-white/65">30D</span>
+							<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
+								{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
+							</span>
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+
+		<!-- Recent Transactions -->
+		<div class="px-6 pb-6">
+			<div class="relative overflow-hidden rounded-xl border border-white/[0.16]"
+			style="background: linear-gradient(160deg, rgba(34,26,68,0.7) 0%, rgba(22,28,58,0.7) 100%); backdrop-filter: blur(12px);">
+			<!-- header -->
+			<div class="flex items-center gap-2 px-6 py-4 border-b border-white/[0.16]">
+				<div class="flex items-center justify-center w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+					</svg>
 				</div>
+				<h2 class="text-sm font-semibold text-white">Recent Transactions</h2>
 			</div>
 
-			<!-- Recent Transactions -->
-			<div class="px-6 pb-6">
-				<div class="relative overflow-hidden rounded-xl border border-white/[0.16]"
-					style="background: linear-gradient(160deg, rgba(34,26,68,0.7) 0%, rgba(22,28,58,0.7) 100%); backdrop-filter: blur(12px);">
-					<!-- header -->
-					<div class="flex items-center gap-2 px-6 py-4 border-b border-white/[0.16]">
-						<div class="flex items-center justify-center w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-violet-400">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-							</svg>
-						</div>
-						<h2 class="text-sm font-semibold text-white">Recent Transactions</h2>
-					</div>
-
-					<div v-if="txsLoading" class="overflow-x-auto">
-						<table class="w-full text-sm">
-							<thead>
-								<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
-									<!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
-									-->
-								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="n in 5" :key="n" class="border-b border-white/[0.14] last:border-0">
-									<td class="px-4 py-3"><div class="skeleton h-3.5 w-14 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-4 w-10 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-4 w-12 rounded"></div></td>
+			<div v-if="txsLoading" class="overflow-x-auto">
+				<table class="w-full text-sm">
+					<thead>
+						<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
 									<!--
-									<td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
-									-->
-									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-3.5 w-10 rounded"></div></td>
-									<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-
-					<div v-else-if="txs.length > 0" class="overflow-x-auto">
-						<table class="w-full text-sm">
-							<thead>
-								<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
-									<!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
 									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
-									-->
 								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
-									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
-									<td class="px-4 py-3 whitespace-nowrap">
-										<span class="text-xs text-white/60" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
-									</td>
-									<td class="px-4 py-3">
-										<span v-if="tx.blockheight" class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{{tx.blockheight}}</span>
-									</td>
-									<td class="px-4 py-3">
-										<span v-if="tx.label" class="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-2 py-0.5 rounded whitespace-nowrap">{{tx.label}}</span>
-									</td>
+							-->
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="n in 5" :key="n" class="border-b border-white/[0.14] last:border-0">
+							<td class="px-4 py-3"><div class="skeleton h-3.5 w-14 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-4 w-10 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-4 w-12 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded"></div></td>
 									<!--
-									<td class="px-4 py-3 max-w-[10rem]">
-										<span v-if="tx.memo" class="text-xs text-white/65 italic truncate block" :title="tx.memo">{{tx.memo}}</span>
-										<span v-else class="text-xs text-white/30">—</span>
-									</td>
+									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+									<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+							-->
+							<td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-3.5 w-10 rounded"></div></td>
+							<td class="px-4 py-3"><div class="skeleton h-3.5 w-16 rounded"></div></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div v-else-if="txs.length > 0" class="overflow-x-auto">
+				<table class="w-full text-sm">
+					<thead>
+						<tr class="border-b border-white/[0.10]" style="background: rgba(255,255,255,0.04);">
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">Time</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Block</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Label</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Memo</th>
+									<!--
+									<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">To</th>
+								<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Comment</th>
+							-->
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Type</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Amount</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Fee</th>
+							<th class="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-widest text-white/40">Address</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(tx, index) in txs" :key="index" class="border-b border-white/[0.14] last:border-0 hover:bg-violet-500/[0.05] transition-colors">
+							<td class="px-4 py-3 whitespace-nowrap">
+								<span class="text-xs text-white/60" :title="format(tx.time,'DD.MM.YY HH:mm:ss')">{{timeAgo(tx.time)}}</span>
+							</td>
+							<td class="px-4 py-3">
+								<span v-if="tx.blockheight" class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium px-2 py-0.5 rounded">{{tx.blockheight}}</span>
+							</td>
+							<td class="px-4 py-3">
+								<span v-if="tx.label" class="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium px-2 py-0.5 rounded whitespace-nowrap">{{tx.label}}</span>
+							</td>
+							<td class="px-4 py-3 max-w-[10rem]">
+								<span v-if="tx.memo" class="text-xs text-white/65 italic truncate block" :title="tx.memo">{{tx.memo}}</span>
+								<span v-else class="text-xs text-white/30">—</span>
+							</td>
+									<!--
 									<td class="px-4 py-3 max-w-[8rem]">
 										<span v-if="tx.to" class="text-xs text-white/65 truncate block" :title="tx.to">{{tx.to}}</span>
 										<span v-else class="text-xs text-white/30">—</span>
 									</td>
-									-->
 									<td class="px-4 py-3 max-w-[8rem]">
-										<span v-if="localComment(tx.txid)" class="text-xs text-white/65 italic truncate block" :title="localComment(tx.txid)">{{localComment(tx.txid)}}</span>
-										<span v-else class="text-xs text-white/30">—</span>
 									</td>
-									<td class="px-4 py-3">
-										<div class="flex items-center gap-1.5">
-											<svg v-if="tx.category=='receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-emerald-400 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-											</svg>
-											<svg v-else-if="tx.category=='send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-red-400 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-											</svg>
-											<svg v-else-if="tx.category=='generate'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-violet-400 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-											</svg>
-											<svg v-else-if="tx.category=='stake'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-blue-400 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-											</svg>
-											<svg v-else-if="tx.category=='orphan'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
-											</svg>
-											<svg v-else-if="tx.category=='immature'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-400 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25z" />
-											</svg>
-											<svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-white/50 shrink-0">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-											</svg>
-											<span :class="{
-												'text-emerald-400': tx.category=='receive',
-												'text-red-400': tx.category=='send',
-												'text-violet-400': tx.category=='generate',
-												'text-blue-400': tx.category=='stake',
-												'text-gray-400': tx.category=='orphan',
-												'text-amber-400': tx.category=='immature',
-												'text-white/70': !['receive','send','generate','stake','orphan','immature'].includes(tx.category)
-											}" class="text-xs capitalize">{{tx.category}}</span>
-										</div>
-									</td>
-									<td class="px-4 py-3">
-										<span :class="tx.amount > 0 ? 'text-green-400' : 'text-red-400'" class="text-sm font-medium">
-											{{ tx.amount > 0 ? '+' : '−' }}{{ formatNav(tx.amount) }} NAV
-										</span>
-									</td>
-									<td class="px-4 py-3 whitespace-nowrap">
-										<span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-xs text-orange-300/80 font-medium" :title="'Fee: ' + Math.abs(tx.fee) + ' NAV'">
-											{{ formatNav(tx.fee) }} NAV
-										</span>
-										<span v-else class="text-xs text-white/80">—</span>
-									</td>
-									<td class="px-4 py-3">
-										<span v-if="tx.address" class="text-xs text-white/60 font-mono">
-											{{tx.address.substring(0,6)}}…{{tx.address.slice(-6)}}
-										</span>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+							-->
+							<td class="px-4 py-3">
+								<div class="flex items-center gap-1.5">
+									<svg v-if="tx.category=='receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-emerald-400 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+									</svg>
+									<svg v-else-if="tx.category=='send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-red-400 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+									</svg>
+									<svg v-else-if="tx.category=='generate'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-violet-400 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+									</svg>
+									<svg v-else-if="tx.category=='stake'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-blue-400 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+									</svg>
+									<svg v-else-if="tx.category=='orphan'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+									</svg>
+									<svg v-else-if="tx.category=='immature'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-400 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25z" />
+									</svg>
+									<svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-white/50 shrink-0">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+									</svg>
+									<span :class="{
+										'text-emerald-400': tx.category=='receive',
+										'text-red-400': tx.category=='send',
+										'text-violet-400': tx.category=='generate',
+										'text-blue-400': tx.category=='stake',
+										'text-gray-400': tx.category=='orphan',
+										'text-amber-400': tx.category=='immature',
+										'text-white/70': !['receive','send','generate','stake','orphan','immature'].includes(tx.category)
+									}" class="text-xs capitalize">{{tx.category}}</span>
+								</div>
+							</td>
+							<td class="px-4 py-3">
+								<span :class="tx.amount > 0 ? 'text-green-400' : 'text-red-400'" class="text-sm font-medium">
+									{{ tx.amount > 0 ? '+' : '−' }}{{ formatNav(tx.amount) }} NAV
+								</span>
+							</td>
+							<td class="px-4 py-3 whitespace-nowrap">
+								<span v-if="tx.fee !== undefined && tx.fee !== 0" class="text-xs text-orange-300/80 font-medium" :title="'Fee: ' + Math.abs(tx.fee) + ' NAV'">
+									{{ formatNav(tx.fee) }} NAV
+								</span>
+								<span v-else class="text-xs text-white/80">—</span>
+							</td>
+							<td class="px-4 py-3">
+								<span v-if="tx.address" class="text-xs text-white/60 font-mono">
+									{{tx.address.substring(0,6)}}…{{tx.address.slice(-6)}}
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-					<div v-else class="flex flex-col items-center justify-center py-12 px-6">
-						<div class="flex items-center justify-center w-14 h-14 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-violet-400/60">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-							</svg>
-						</div>
-						<p class="text-sm font-medium text-white mb-1">No Transactions Yet</p>
-						<p class="text-xs text-white/65 text-center max-w-xs">Your recent transactions will appear here once you send or receive NAV.</p>
-					</div>
+			<div v-else class="flex flex-col items-center justify-center py-12 px-6">
+				<div class="flex items-center justify-center w-14 h-14 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-violet-400/60">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+					</svg>
 				</div>
+				<p class="text-sm font-medium text-white mb-1">No Transactions Yet</p>
+				<p class="text-xs text-white/65 text-center max-w-xs">Your recent transactions will appear here once you send or receive NAV.</p>
 			</div>
-			</div>
-		</template>
-
-		<NoWalletSelected v-else />
+		</div>
 	</div>
+</div>
+</template>
+
+<NoWalletSelected v-else />
+</div>
 </template>
 
 <script>
