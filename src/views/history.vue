@@ -469,9 +469,10 @@
                             if (!firstChunkHandled) { firstChunkHandled = true; revealReady(); }
                             return;
                         }
-                        // Each chunk is returned oldest-first; newer chunks arrive later,
-                        // so prepend to keep the accumulated list newest-first overall.
-                        this.txs = result.slice().reverse().concat(this.txs);
+                        // Each chunk is oldest-first internally, but skip=0 is the newest
+                        // batch and each subsequent chunk is strictly older, so reverse the
+                        // chunk to newest-first and append it after what's already loaded.
+                        this.txs = this.txs.concat(result.slice().reverse());
                         if (!firstChunkHandled) { firstChunkHandled = true; revealReady(); }
                         if (result.length === chunkSize) {
                             fetchChunk(skip + chunkSize);
