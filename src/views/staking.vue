@@ -430,10 +430,9 @@
                     })
                    }
                });
-            }
-        },
-        list_transactions()
-        {
+            },
+            list_transactions()
+            {
             let vm=this;
             let categories = [];
             let rewards= [];
@@ -602,7 +601,11 @@
         }];
     }
     vm.ready = true;
+}).catch((r) => {
+    console.log(r);
+    vm.ready = true;
 });
+            }
         },
         mounted()
         {
