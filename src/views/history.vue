@@ -452,17 +452,27 @@
                 this.ready = false;
                 this.txs = [];
                 const chunkSize = 1000;
+                // naviod runs on localhost and often answers within a few ms, faster
+                // than the browser's next paint — without a floor the loading and
+                // loaded renders land in the same frame and the spinner never shows.
+                const loadStart = Date.now();
+                const minLoadingMs = 400;
+                let firstChunkHandled = false;
+                const revealReady = () => {
+                    const wait = Math.max(0, minLoadingMs - (Date.now() - loadStart));
+                    setTimeout(() => { this.ready = true; }, wait);
+                };
                 const fetchChunk = (skip) => {
                     this.client.command([{ method: "listtransactions", parameters: ["*", chunkSize, skip] }]).then((r) => {
                         const result = r[0];
                         if (result.name === "RpcError" || result.code) {
-                            this.ready = true;
+                            if (!firstChunkHandled) { firstChunkHandled = true; revealReady(); }
                             return;
                         }
                         // Each chunk is returned oldest-first; newer chunks arrive later,
                         // so prepend to keep the accumulated list newest-first overall.
                         this.txs = result.slice().reverse().concat(this.txs);
-                        this.ready = true;
+                        if (!firstChunkHandled) { firstChunkHandled = true; revealReady(); }
                         if (result.length === chunkSize) {
                             fetchChunk(skip + chunkSize);
                         }

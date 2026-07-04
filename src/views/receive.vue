@@ -19,7 +19,17 @@
 
   <!-- Page -->
   <div class="h-full bg-transparent text-white">
-    <div v-if="$store.state.active_wallet">
+    <div v-if="$store.state.active_wallet && !ready" class="flex flex-col items-center justify-center h-full pb-16 px-6">
+      <div class="flex items-center justify-center w-20 h-20 rounded-full glass-card mb-6">
+        <svg class="w-10 h-10 text-blue-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+      </div>
+      <h2 class="text-lg font-semibold text-white mb-2">Loading Addresses</h2>
+      <p class="text-sm text-white/80 text-center max-w-xs">Fetching your receive addresses from the wallet. This may take a moment.</p>
+    </div>
+    <div v-else-if="$store.state.active_wallet && ready">
 
       <!-- Header -->
       <div class="px-4 py-3">
@@ -106,6 +116,7 @@
         data() {
             return {
                 all_addresses: undefined,
+                ready: false,
                 qr_address: undefined,
                 modal: undefined,
                 prefix: 'nav:'
@@ -126,12 +137,14 @@
             },
             list_all_addresses() {
                 let vm = this;
+                this.ready = false;
                 this.client.command([{ method: "listreceivedbyaddress", parameters: [0, true] }]).then((r) => {
                     if (r[0].name == "RpcError" || r[0].code) {
                         console.log("RpcError", r);
                     } else {
                         vm.all_addresses = r[0];
                     }
+                    vm.ready = true;
                 });
             },
             generate_new_address() {
