@@ -267,6 +267,11 @@
 </script>
 
 <style scoped>
+#result {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 :deep(.json-key)     { color: #7dd3fc; }
 :deep(.json-string)  { color: #86efac; }
 :deep(.json-number)  { color: #fbbf24; }

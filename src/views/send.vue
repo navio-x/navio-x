@@ -4,8 +4,8 @@
     <div v-if="$store.state.active_wallet" class="max-w-lg mx-auto px-6 py-8">
 
       <!-- Header -->
-      <div class="mb-8">
-        <div class="flex items-center gap-3 mb-1">
+      <div class="mb-5">
+        <div class="flex items-center gap-3">
           <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/25">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/>
@@ -13,11 +13,10 @@
           </div>
           <h3 class="text-xl font-semibold text-white">Send NAV</h3>
         </div>
-        <p class="text-xs text-white/70 ml-12">Transfer funds to another wallet</p>
       </div>
 
       <!-- Card -->
-      <div class="relative overflow-hidden rounded-2xl border border-white/[0.16] p-6"
+      <div class="relative overflow-hidden rounded-2xl border border-white/[0.16] p-5"
         style="background: linear-gradient(160deg, rgba(34,26,68,0.8) 0%, rgba(22,28,58,0.8) 100%); backdrop-filter: blur(16px);">
 
         <!-- subtle glow -->
@@ -25,38 +24,25 @@
         <div class="pointer-events-none absolute -bottom-10 -left-10 w-32 h-32 bg-violet-600/10 rounded-full blur-3xl"></div>
 
         <!-- Address -->
-        <div class="mb-5">
-          <label class="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
-            </svg>
+        <div class="mb-4">
+          <label class="flex items-center gap-2 mb-1.5 text-xs font-semibold uppercase tracking-widest text-white/70">
             Recipient Address
           </label>
           <textarea
             v-model="address"
             rows="4"
             placeholder="Enter NAV recipient address..."
+            title="Double-check the address — transactions cannot be reversed."
             class="w-full rounded-xl text-sm font-mono resize-none px-4 py-3 leading-relaxed glass-input"></textarea>
-          <p class="mt-1.5 text-xs text-white/55 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-            </svg>
-            Double-check the address — transactions cannot be reversed.
-          </p>
         </div>
 
-        <!-- Divider -->
-        <div class="border-t border-white/[0.16] my-5"></div>
-
         <!-- Amount -->
-        <div class="mb-6">
-          <div class="flex items-center justify-between mb-2">
-            <label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/70">
-              Amount
-            </label>
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-semibold uppercase tracking-widest text-white/70">Amount</label>
             <button v-if="balance && balance.mine.trusted > 0" type="button"
               @click="amount = balance.mine.trusted"
-              class="text-xs text-violet-400 hover:text-violet-300 transition-colors focus:outline-none">
+              class="text-[11px] text-violet-400 hover:text-violet-300 transition-colors focus:outline-none">
               Use All ({{ balance.mine.trusted }} NAV)
             </button>
           </div>
@@ -66,9 +52,71 @@
               type="number"
               min="0"
               placeholder="0.00"
-              class="w-full rounded-xl text-2xl font-bold px-4 py-4 pr-20 glass-input">
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-white/60 tracking-wider">NAV</span>
+              class="w-full rounded-xl text-lg font-bold px-3 py-2.5 pr-12 glass-input">
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-white/60 tracking-wider">NAV</span>
           </div>
+        </div>
+
+        <!-- Memo -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
+            Memo <span class="normal-case font-normal text-white/40">(optional)</span>
+          </label>
+          <input
+            v-model="memo"
+            type="text"
+            maxlength="255"
+            placeholder="What's this transaction for?"
+            title="Sent on-chain as a BLSCT memo — the recipient can read this."
+            class="w-full rounded-xl text-sm px-3 py-2.5 glass-input">
+          <p class="mt-1.5 text-xs text-white/55">Visible to the recipient.</p>
+        </div>
+
+        <!-- Comment To -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
+            Comment To <span class="normal-case font-normal text-white/40">(optional)</span>
+          </label>
+          <input
+            v-model="commentTo"
+            type="text"
+            maxlength="255"
+            placeholder="Who is this going to?"
+            title="Stored only in your wallet, not on-chain."
+            class="w-full rounded-xl text-sm px-3 py-2.5 glass-input">
+          <p class="mt-1.5 text-xs text-white/55">Only you can see this — kept in your wallet, not sent anywhere.</p>
+        </div>
+
+        <!-- Comment (private note) -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-white/70">
+            Comment <span class="normal-case font-normal text-white/40">(optional)</span>
+          </label>
+          <input
+            v-model="comment"
+            type="text"
+            maxlength="255"
+            placeholder="A private note for yourself..."
+            title="Only visible to you, stored locally in this app."
+            class="w-full rounded-xl text-sm px-3 py-2.5 glass-input">
+          <p class="mt-1.5 text-xs text-white/55">Only you can see this — kept locally in this app, never sent anywhere.</p>
+        </div>
+
+        <!-- Subtract fee from amount -->
+        <div class="mb-5 flex items-center justify-between gap-3">
+          <label class="text-xs font-semibold uppercase tracking-widest text-white/70"
+            title="Recipient receives the amount minus the network fee, instead of the full amount.">
+            Subtract Fee From Amount
+          </label>
+          <label class="inline-flex items-center cursor-pointer flex-shrink-0">
+            <input type="checkbox" v-model="subtractFeeFromAmount" class="sr-only peer">
+            <div class="relative w-10 h-5 rounded-full border border-white/20 transition-colors duration-200
+                        bg-white/10 peer-checked:bg-violet-600 peer-checked:border-violet-500
+                        after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                        after:w-4 after:h-4 after:bg-white after:rounded-full after:shadow
+                        after:transition-transform after:duration-200
+                        peer-checked:after:translate-x-[18px]"></div>
+          </label>
         </div>
 
         <!-- Send Button -->
@@ -130,6 +178,19 @@
             <div class="rounded-xl p-3 border border-blue-500/20" style="background: rgba(37,99,235,0.08)">
               <p class="text-xs text-blue-400/60 mb-1 uppercase tracking-widest">Amount</p>
               <p class="text-2xl font-bold text-white">{{ amount }} <span class="text-base text-white/95">NAV</span></p>
+              <p v-if="subtractFeeFromAmount" class="text-xs text-amber-400/90 mt-1">Fee will be subtracted from this amount</p>
+            </div>
+            <div v-if="memo" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
+              <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Memo</p>
+              <p class="text-sm text-white/95 break-words">{{ memo }}</p>
+            </div>
+            <div v-if="commentTo" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
+              <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Comment To</p>
+              <p class="text-sm text-white/95 break-words">{{ commentTo }}</p>
+            </div>
+            <div v-if="comment" class="rounded-xl p-3 border border-white/[0.16]" style="background: rgba(255,255,255,0.10)">
+              <p class="text-xs text-white/70 mb-1 uppercase tracking-widest">Comment (private)</p>
+              <p class="text-sm text-white/95 break-words">{{ comment }}</p>
             </div>
           </div>
 
@@ -158,6 +219,7 @@
   import '@sweetalert2/theme-dark/dark.scss';
   import NoWalletSelected from '../components/NoWalletSelected.vue';
   import WalletUnlock from '../components/WalletUnlock.vue';
+  import { setTxComment } from '../utils/txComments';
 
   export default {
     components: { NoWalletSelected, WalletUnlock },
@@ -165,6 +227,10 @@
       return {
         address: "",
         amount: "",
+        memo: "",
+        commentTo: "",
+        comment: "",
+        subtractFeeFromAmount: false,
         showModal: false,
         isLoading: false,
         showUnlockModal: false,
@@ -212,7 +278,13 @@
           let result=r[0];
           if (result.isvalid && result.isblsct)
           {
-            this.client.command([{ method: "sendtoblsctaddress", parameters: [this.address, this.amount] }])
+            this.client.command([{ method: "sendtoaddress", parameters: {
+              address: this.address,
+              amount: this.amount,
+              comment: this.memo || "",
+              comment_to: this.commentTo || "",
+              subtractfeefromamount: this.subtractFeeFromAmount
+            } }])
             .then((r) => {
               this.isLoading = false;
               if (r[0].name === "RpcError" || r[0].code) {
@@ -224,8 +296,13 @@
                   confirmButtonText: 'OK'
                 });
               } else {
+                if (this.comment) setTxComment(r[0], this.comment);
                 this.address = "";
                 this.amount = "";
+                this.memo = "";
+                this.commentTo = "";
+                this.comment = "";
+                this.subtractFeeFromAmount = false;
                 this.showModal = false;
                 Swal.fire({
                   theme:'dark',
