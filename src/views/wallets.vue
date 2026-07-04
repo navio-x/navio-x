@@ -687,7 +687,7 @@
       listwalletdir:function()
       {
         let vm=this;
-        this.client.command('listwalletdir').then((r) =>
+        return this.client.command('listwalletdir').then((r) =>
         {
           vm.all_wallets=r;
           return vm.listwallets();
@@ -1042,17 +1042,19 @@
     },
     mounted() {
       this.active_wallet=this.client.wallet;
-      this.listwalletdir();
-      this.getwalletinfo();
       let vm=this;
+      this.listwalletdir().then(() =>
+      {
+        vm.getwalletinfo();
+        vm.timer = setInterval(() =>
+        {
+          vm.getwalletinfo();
+        },
+        1000);
+      });
       this.client.command([{ method: "getrpcinfo" }]).then((r) => {
         if (r[0] && r[0].logpath) vm.logpath = r[0].logpath;
       });
-      this.timer = setInterval(() => 
-      {
-        this.getwalletinfo();
-      },
-      1000);
       initFlowbite();
       const $modalElement = document.querySelector('#modal');
       const $confirmButton = document.querySelector('#confirmButton');
