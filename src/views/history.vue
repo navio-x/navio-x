@@ -764,8 +764,9 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 .hst-summary-card {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 12px 14px;
+  row-gap: 3px;
+  column-gap: 10px;
+  padding: 8px 12px;
   background: transparent;
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: 10px;
@@ -774,7 +775,7 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 8px 10px;
+  padding: 3px 10px;
   background: transparent;
   border: none;
   border-radius: 8px;
