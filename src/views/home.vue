@@ -325,8 +325,7 @@
 				};
 
 				this.alltxs.forEach(tx => {
-					const isStakeReward = tx.category === 'generate' || tx.category === 'stake'
-						|| (tx.category === 'receive' && tx.label === 'Staking');
+					const isStakeReward = tx.memo === 'Reward' && tx.label === 'Staking' && tx.category !== 'immature';
 					if (isStakeReward) {
 						const diff = now - tx.time;
 						result.all += tx.amount;

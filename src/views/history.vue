@@ -47,31 +47,43 @@
         </div>
       </div>
 
+      <!-- ── Summary card ── -->
+      <div v-if="categorySummary.length" class="px-6 pt-3 shrink-0">
+        <div class="hst-summary-card">
+          <div v-for="g in categorySummary" :key="g.key" class="hst-summary-item">
+            <span :class="['hst-badge', `hst-badge--${g.key}`]">{{ summaryLabel(g.key) }}</span>
+            <span class="hst-summary-count">{{ g.count }}×</span>
+            <span :class="['hst-summary-amount', g.total < 0 ? 'hst-amount--out' : 'hst-amount--in']">
+              {{ g.total < 0 ? '−' : '+' }}{{ formatNav(g.total) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
       <!-- ── Table ── -->
       <template v-if="filteredTxs.length">
         <!-- Fixed header — outside scroll container -->
         <div class="px-6 pt-3 shrink-0">
           <table class="w-full table-fixed border-separate [border-spacing:0]">
             <colgroup>
-              <col style="width:14%">
-              <col style="width:16%">
-              <!-- Memo/To: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:12%">
+              <col style="width:15%">
+              <!-- To/Comment: disabled for now, RPC doesn't seem to persist/return these
               <col style="width:10%">
               -->
-              <col style="width:14%">
+              <col style="width:17%">
               <col style="width:13%">
+              <col style="width:11%">
               <col style="width:7%">
+              <col style="width:8%">
+              <col style="width:11%">
               <col style="width:6%">
-              <col style="width:7%">
-              <col style="width:9%">
-              <col style="width:14%">
             </colgroup>
             <thead>
               <tr class="hst-thead-row">
                 <th class="hst-th text-left">Type</th>
                 <th class="hst-th text-left">Amount</th>
-                <th class="hst-th text-left">Memo</th>
+                <th class="hst-th text-left">Label</th>
                 <!--
                 <th class="hst-th text-left">To</th>
                 <th class="hst-th text-left">Comment</th>
@@ -91,19 +103,18 @@
         <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
           <table class="w-full table-fixed border-separate [border-spacing:0]">
             <colgroup>
-              <col style="width:14%">
-              <col style="width:16%">
               <col style="width:12%">
+              <col style="width:15%">
+              <col style="width:17%">
               <!--
               <col style="width:10%">
-              <col style="width:14%">
               -->
               <col style="width:13%">
+              <col style="width:11%">
               <col style="width:7%">
+              <col style="width:8%">
+              <col style="width:11%">
               <col style="width:6%">
-              <col style="width:7%">
-              <col style="width:9%">
-              <col style="width:14%">
             </colgroup>
             <tbody>
               <tr v-for="tx in paginatedTxs" :key="tx.txid + tx.time" class="hst-row">
@@ -142,8 +153,11 @@
                 </td>
 
                 <td class="hst-td hst-td--muted text-sm">
-                  <span v-if="tx.memo" class="italic truncate block max-w-[12rem]" :title="tx.memo">{{ tx.memo }}</span>
-                  <span v-else class="text-white/40">—</span>
+                  <div class="flex flex-col leading-tight max-w-[13rem]">
+                    <span v-if="tx.label" class="hst-label truncate" :title="tx.label">{{ tx.label }}</span>
+                    <span v-if="tx.memo" class="italic text-white/55 truncate" :title="tx.memo">{{ tx.memo }}</span>
+                    <span v-if="!tx.label && !tx.memo" class="text-white/40">—</span>
+                  </div>
                 </td>
                 <!--
                 <td class="hst-td hst-td--muted text-sm">
@@ -188,8 +202,8 @@
 
                 <!-- Details -->
                 <td class="hst-td text-right">
-                  <button @click="openModal(tx)" class="hst-detail-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+                  <button @click="openModal(tx)" class="hst-detail-btn" title="Details">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                     </svg>
                   </button>
@@ -448,6 +462,27 @@
                     return matchesCategory && matchesStart && matchesEnd;
                 });
             },
+            categorySummary() {
+                const order = ['receive', 'send', 'staking-reward', 'generate', 'immature', 'orphan'];
+                const groups = {};
+                this.filteredTxs.forEach(tx => {
+                    if (tx.category === 'stake') return; // locked-stake principal, not a category total worth surfacing here
+                    const isStakingReward = tx.category === 'receive' && tx.label === 'Staking' && tx.memo === 'Reward';
+                    const key = isStakingReward ? 'staking-reward' : tx.category;
+                    if (!groups[key]) groups[key] = { key, count: 0, total: 0 };
+                    groups[key].count++;
+                    groups[key].total += parseFloat(tx.amount) || 0;
+                });
+                return Object.keys(groups)
+                    .sort((a, b) => {
+                        const ai = order.indexOf(a), bi = order.indexOf(b);
+                        if (ai === -1 && bi === -1) return a.localeCompare(b);
+                        if (ai === -1) return 1;
+                        if (bi === -1) return -1;
+                        return ai - bi;
+                    })
+                    .map(key => groups[key]);
+            },
             totalPages() {
                 return Math.max(1, Math.ceil(this.filteredTxs.length / this.pageSize));
             },
@@ -465,6 +500,18 @@
                     day: '2-digit', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
+            },
+            summaryLabel(key) {
+                const labels = {
+                    'staking-reward': 'Staking Reward',
+                    'receive': 'Receive',
+                    'send': 'Send',
+                    'generate': 'Generate',
+                    'stake': 'Locked Stake',
+                    'immature': 'Immature',
+                    'orphan': 'Orphan'
+                };
+                return labels[key] || key;
             },
             timeAgo(timestamp) {
                 if (!timestamp) return "";
@@ -552,10 +599,11 @@
                 });
             },
             exportToCSV() {
-                const header = ['Category', 'Amount', 'Fee', 'Date', 'Confirmations', 'Block', 'Address'];
+                const header = ['Category', 'Amount', 'Label', 'Fee', 'Date', 'Confirmations', 'Block', 'Address'];
                 const rows = this.filteredTxs.map(tx => [
                     tx.category,
                     tx.amount,
+                    tx.label || '',
                     tx.fee !== undefined ? tx.fee : '',
                     this.formatDate(tx.time),
                     tx.confirmations,
@@ -685,6 +733,13 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 .hst-row:last-child .hst-td { border-bottom: none; }
 .hst-td--muted { color: rgba(255,255,255,0.65); }
 
+/* Label (in Label/Memo cell) */
+.hst-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.88);
+}
+
 /* Category badge */
 .hst-badge {
   display: inline-flex;
@@ -703,7 +758,47 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
 .hst-badge--stake    { background: rgba(96,165,250,0.1);  color: #60a5fa; }
 .hst-badge--orphan   { background: rgba(107,114,128,0.12); color: #9ca3af; }
 .hst-badge--immature { background: rgba(251,191,36,0.12);  color: #fbbf24; }
+.hst-badge--staking-reward { background: rgba(244,114,182,0.12); color: #f472b6; }
 
+/* ── Summary card ──────────────────────────────── */
+.hst-summary-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 12px 14px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+}
+.hst-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  min-width: 0;
+}
+.hst-summary-item .hst-badge {
+  flex: 0 0 106px;
+  justify-content: flex-start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hst-summary-count {
+  flex: 0 0 26px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+.hst-summary-amount {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
 /* Amount */
 .hst-amount {
   font-size: 13px;
@@ -782,8 +877,8 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: rgba(255,255,255,0.25);
   background: transparent;
   border: none;
