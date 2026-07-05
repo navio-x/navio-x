@@ -85,31 +85,31 @@
 						<div class="flex justify-between text-sm">
 							<span class="text-white/65">24H</span>
 							<span :class="generateSums.day > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.day > 0 ? '+' : '' }}{{ generateSums.day }} NAV
+								{{ generateSums.day > 0 ? '+' : '' }}{{ formatNav(generateSums.day) }} NAV
 							</span>
 						</div>
 						<div class="flex justify-between text-sm">
 							<span class="text-white/65">7D</span>
 							<span :class="generateSums.week > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.week > 0 ? '+' : '' }}{{ generateSums.week }} NAV
+								{{ generateSums.week > 0 ? '+' : '' }}{{ formatNav(generateSums.week) }} NAV
 							</span>
 						</div>
 						<div class="flex justify-between text-sm">
 							<span class="text-white/65">30D</span>
 							<span :class="generateSums.month > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.month > 0 ? '+' : '' }}{{ generateSums.month }} NAV
+								{{ generateSums.month > 0 ? '+' : '' }}{{ formatNav(generateSums.month) }} NAV
 							</span>
 						</div>
 						<div class="flex justify-between text-sm">
 							<span class="text-white/65">1 Year</span>
 							<span :class="generateSums.year > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.year > 0 ? '+' : '' }}{{ generateSums.year }} NAV
+								{{ generateSums.year > 0 ? '+' : '' }}{{ formatNav(generateSums.year) }} NAV
 							</span>
 						</div>
 						<div class="flex justify-between text-sm">
 							<span class="text-white/65">ALL</span>
 							<span :class="generateSums.all > 0 ? 'text-green-400 font-medium' : 'text-white/90'">
-								{{ generateSums.all > 0 ? '+' : '' }}{{ generateSums.all }} NAV
+								{{ generateSums.all > 0 ? '+' : '' }}{{ formatNav(generateSums.all) }} NAV
 							</span>
 						</div>
 					</div>
@@ -325,7 +325,7 @@
 				};
 
 				this.alltxs.forEach(tx => {
-					if (tx.category === 'generate') {
+					if (tx.category === 'generate' || tx.category === 'stake') {
 						const diff = now - tx.time;
 						result.all += tx.amount;
 						if (diff <= oneYear) {
