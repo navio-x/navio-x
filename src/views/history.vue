@@ -51,7 +51,27 @@
       <div v-if="categorySummary.length" class="px-6 pt-3 shrink-0">
         <div class="hst-summary-card">
           <div v-for="g in categorySummary" :key="g.key" class="hst-summary-item">
-            <span :class="['hst-badge', `hst-badge--${g.key}`]">{{ summaryLabel(g.key) }}</span>
+            <span :class="['hst-badge', `hst-badge--${g.key}`]">
+              <svg v-if="g.key === 'receive'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"/>
+              </svg>
+              <svg v-else-if="g.key === 'send'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/>
+              </svg>
+              <svg v-else-if="g.key === 'staking-reward'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
+              </svg>
+              <svg v-else-if="g.key === 'generate'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+              </svg>
+              <svg v-else-if="g.key === 'immature'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25z"/>
+              </svg>
+              <svg v-else-if="g.key === 'orphan'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>
+              </svg>
+              {{ summaryLabel(g.key) }}
+            </span>
             <span class="hst-summary-count">{{ g.count }}×</span>
             <span :class="['hst-summary-amount', g.total < 0 ? 'hst-amount--out' : 'hst-amount--in']">
               {{ g.total < 0 ? '−' : '+' }}{{ formatNav(g.total) }}
@@ -782,7 +802,7 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
   min-width: 0;
 }
 .hst-summary-item .hst-badge {
-  flex: 0 0 106px;
+  flex: 0 0 118px;
   justify-content: flex-start;
   overflow: hidden;
   text-overflow: ellipsis;
