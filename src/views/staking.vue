@@ -471,7 +471,9 @@
                     const nowEpoch = Math.floor(now.getTime() / 1000);
 
                     vm.txs.forEach(tx => {
-                      if (tx.category === 'generate' || tx.category === 'stake') {
+                      const isStakeReward = tx.category === 'generate' || tx.category === 'stake'
+                        || (tx.category === 'receive' && tx.label === 'Staking');
+                      if (isStakeReward) {
                         const dayDiff = Math.floor((nowEpoch - tx.time) / (60 * 60 * 24));
                         if (dayDiff >= 0 && dayDiff < 15) {
                           result[14 - dayDiff].total += tx.amount;

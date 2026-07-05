@@ -325,7 +325,9 @@
 				};
 
 				this.alltxs.forEach(tx => {
-					if (tx.category === 'generate' || tx.category === 'stake') {
+					const isStakeReward = tx.category === 'generate' || tx.category === 'stake'
+						|| (tx.category === 'receive' && tx.label === 'Staking');
+					if (isStakeReward) {
 						const diff = now - tx.time;
 						result.all += tx.amount;
 						if (diff <= oneYear) {
