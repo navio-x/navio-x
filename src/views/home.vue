@@ -8,7 +8,17 @@
 					<div class="relative overflow-hidden rounded-xl p-6 border border-blue-500/20"
 					style="background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(139,92,246,0.08) 100%); backdrop-filter: blur(12px);">
 					<div class="pointer-events-none absolute -top-6 -right-6 w-28 h-28 bg-blue-500/10 rounded-full blur-2xl"></div>
-					<div class="text-xs font-semibold uppercase tracking-widest text-blue-400/70 mb-2">Available Balance</div>
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs font-semibold uppercase tracking-widest text-blue-400/70">Available Balance</span>
+						<span v-if="show_fiat_value && unitPrice" class="text-[11px] font-medium text-white/50 flex items-center gap-1">
+							1 NAV ≈ {{ unitPrice }}
+							<span v-if="navPrice.change24h !== null"
+								class="px-1.5 py-0.5 rounded-full"
+								:class="navPrice.change24h >= 0 ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'">
+								{{ navPrice.change24h > 0 ? '+' : '' }}{{ navPrice.change24h.toFixed(2) }}%
+							</span>
+						</span>
+					</div>
 					<template v-if="dataLoading">
 						<div class="skeleton h-8 w-36 rounded-md mb-4"></div>
 						<div class="space-y-2 border-t border-white/[0.18] pt-4">
@@ -43,6 +53,10 @@
 								<span class="text-white/80 font-medium">Total</span>
 								<span class="text-white font-semibold">{{formatNumbers(getTotal(balance))}} NAV</span>
 							</div>
+							<div v-if="show_fiat_value" class="flex justify-end items-center gap-2 -mt-1 min-h-[1.25rem]">
+								<span v-if="fiatValue" class="text-xs text-white/60">≈ {{ fiatValue }}</span>
+								<span v-else-if="navPrice.loading" class="text-xs text-white/40">···</span>
+							</div>
 						</div>
 					</template>
 				</div>
@@ -74,9 +88,14 @@
 					</div>
 				</template>
 				<template v-else>
-					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-4">
+					<div class="text-3xl font-bold bg-clip-text bg-gradient-to-br from-violet-300 to-fuchsia-500 text-transparent mb-1">
 						{{formatNumbers(balance.mine.staked_commitment_balance)}} <span class="text-lg">NAV</span>
 					</div>
+					<div v-if="show_fiat_value" class="flex items-center gap-2 mb-4 min-h-[1.25rem]">
+						<span v-if="fiatValueStaking" class="text-sm text-white/70">≈ {{ fiatValueStaking }}</span>
+						<span v-else-if="navPrice.loading" class="text-xs text-white/40">···</span>
+					</div>
+					<div v-else class="mb-4"></div>
 					<div class="space-y-2 border-t border-white/[0.18] pt-4">
 						<div class="flex justify-between text-sm">
 							<span class="text-white/65">Pending</span>
@@ -290,6 +309,7 @@
 	import sb from 'satoshi-bitcoin';
 	import { computed } from 'vue';
 	import NoWalletSelected from '../components/NoWalletSelected.vue';
+	import { navPrice as navPriceStore, getPriceIn, startPricePolling, stopPricePolling } from '../stores/navPrice';
 
 	export default {
 		components: { NoWalletSelected },
@@ -299,10 +319,33 @@
 				txs: [],
 				alltxs:[],
 				loading: true,
-				txsLoading: true
+				txsLoading: true,
+				fiat_currency: localStorage.getItem('fiat_currency') || 'USD',
+				show_fiat_value: localStorage.getItem('show_fiat_value') !== '0'
 			}
 		},
 		computed: {
+			navPrice() {
+				return navPriceStore;
+			},
+			fiatValue() {
+				if (!this.balance) return null;
+				return this.fiatValueFor(this.getTotal(this.balance));
+			},
+			fiatValueStaking() {
+				if (!this.balance) return null;
+				return this.fiatValueFor(this.balance.mine.staked_commitment_balance);
+			},
+			unitPrice() {
+				const price = getPriceIn(this.fiat_currency);
+				if (price == null) return null;
+				return price.toLocaleString(undefined, {
+					style: 'currency',
+					currency: this.fiat_currency,
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 6,
+				});
+			},
 			dataLoading() {
 				return this.loading || !this.balance;
 			},
@@ -352,6 +395,20 @@
 			getTotal: function(balance)
 			{
 				return sb.toBitcoin(sb.toSatoshi(balance.mine.trusted)+sb.toSatoshi(balance.mine.untrusted_pending)+sb.toSatoshi(balance.mine.immature)+sb.toSatoshi(balance.mine.staked_commitment_balance));
+			},
+			fiatValueFor: function(nav)
+			{
+				if (nav === undefined || nav === null) return null;
+				const n = parseFloat(nav);
+				if (!n || isNaN(n)) return null;
+				const price = getPriceIn(this.fiat_currency);
+				if (price == null) return null;
+				return (n * price).toLocaleString(undefined, {
+					style: 'currency',
+					currency: this.fiat_currency,
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+				});
 			},
 			format: function(n,f)
 			{
@@ -477,20 +534,22 @@
 			}
 		},
 		mounted() {
-			this.getbalance();	
+			this.getbalance();
 			this.listtransactions();
 			this.listalltransactions();
-			this.timer = setInterval(() => 
+			this.timer = setInterval(() =>
 			{
 				this.getbalance();
 				this.listtransactions();
 				this.listalltransactions();
 			},
 			10000);
+			startPricePolling();
 		},
 		beforeUnmount()
 		{
 			clearInterval(this.timer);
+			stopPricePolling();
 		}
 	}
 </script>

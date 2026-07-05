@@ -107,7 +107,13 @@
 
   <!-- Lock group -->
   <div class="flex-1">
-    <label class="stk-label">NAV to Lock</label>
+    <div class="flex items-center justify-between mb-1.5">
+      <label class="stk-label" style="margin-bottom:0">NAV to Lock</label>
+      <button v-if="balance && balance.mine && balance.mine.trusted > 0" type="button" @click="amount_lock = balance.mine.trusted"
+        class="text-xs text-violet-400 hover:text-violet-300 transition-colors focus:outline-none">
+        Use All
+      </button>
+    </div>
     <div class="stk-row">
       <input v-model="amount_lock" type="number" min="0" placeholder="0.00" class="stk-input">
       <button type="button" :disabled="!amount_lock" @click="requireUnlock(lock_coins)" class="stk-btn stk-lock">

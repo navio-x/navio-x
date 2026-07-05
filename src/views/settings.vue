@@ -13,6 +13,102 @@
         <h5 class="text-base font-semibold text-white">Settings</h5>
       </div>
 
+      <!-- ── General ── -->
+      <div class="text-xs font-semibold uppercase tracking-widest text-white/40 pt-1">General</div>
+
+      <!-- Daemon Auto-Start -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Daemon Auto-Start</h5>
+        <p class="mb-3 text-sm text-white/60">Automatically start the local Navio daemon on launch. Turn off to choose your connection method (download binaries or manual connection) each time the app starts.</p>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" true-value="1" false-value="0" v-model="daemon_auto_start" @change="toggle_daemon_auto_start" class="sr-only peer">
+          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-white dark:text-white">Auto-start daemon on launch</span>
+        </label>
+        <p class="text-xs text-white/50 mt-3">Takes effect the next time Navio X starts.</p>
+      </div>
+
+      <!-- Staking -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Staking</h5>
+        <p class="mb-4 text-sm text-white/60">Automatically start staking for the active wallet whenever Navio X launches.</p>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" true-value="1" false-value="0" v-model="auto_start_staking" @change="toggle_auto_start_staking" class="sr-only peer">
+          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-white dark:text-white">Auto-start staking on launch</span>
+        </label>
+      </div>
+
+      <!-- Window Behavior -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Window Behavior</h5>
+        <p class="mb-4 text-sm text-white/60">Control what happens when you minimize or close the window. Requires a restart to take effect.</p>
+
+        <div class="space-y-3">
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" true-value="1" false-value="0" v-model="minimize_to_tray" @change="toggle_minimize_to_tray" class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-white dark:text-white">Minimize to tray instead of the taskbar</span>
+          </label>
+
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" true-value="1" false-value="0" v-model="minimize_on_close" @change="toggle_minimize_on_close" class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-white dark:text-white">Minimize on close instead of quitting</span>
+          </label>
+        </div>
+        <p class="text-xs text-white/50 mt-3">When enabled, closing the window keeps Navio X (and the daemon) running in the tray. Use the tray icon's "Quit" option to fully exit.</p>
+      </div>
+
+      <!-- Fiat Display -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Fiat Display</h5>
+        <p class="mb-4 text-sm text-white/60">Show an approximate fiat value alongside your NAV balance.</p>
+
+        <label class="inline-flex items-center cursor-pointer mb-4">
+          <input type="checkbox" true-value="1" false-value="0" v-model="show_fiat_value" @change="toggle_show_fiat_value" class="sr-only peer">
+          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-white dark:text-white">Show fiat value under balance</span>
+        </label>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-widest text-white/40">Currency</label>
+          <select v-model="fiat_currency" @change="toggle_fiat_currency"
+            class="w-full sm:w-64 px-3 py-2 text-sm font-medium text-white bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer">
+            <option v-for="opt in fiatCurrencies" :key="opt.value" :value="opt.value" class="bg-[#1f1840] text-white">
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── Network & Connection ── -->
+      <div class="text-xs font-semibold uppercase tracking-widest text-white/40 pt-2">Network &amp; Connection</div>
+
+      <!-- Network -->
+      <div class="w-full p-5 glass-card rounded-xl">
+        <h5 class="mb-1 text-base font-semibold text-white">Network</h5>
+        <p class="mb-4 text-sm text-white/60">Switch between Mainnet and Testnet. The app will close and must be relaunched after changing.</p>
+        <div class="flex gap-5 mb-4">
+          <label v-for="net in networks" :key="net.name" class="flex items-center gap-3 cursor-pointer">
+            <input type="radio" v-model="selectedNetwork" :value="net.name"
+              class="w-4 h-4 text-violet-500 bg-gray-700 border-gray-600 focus:ring-violet-500 focus:ring-2">
+            <div>
+              <span class="text-sm font-medium text-white">{{ net.label }}</span>
+              <span class="ml-2 text-xs text-zinc-400">(port {{ net.port }})</span>
+              <span v-if="net.name === currentNetwork" class="ml-2 text-xs text-emerald-400 font-semibold">current</span>
+            </div>
+          </label>
+        </div>
+        <button :disabled="selectedNetwork === currentNetwork" v-on:click="switch_network()"
+          class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none transition">
+          Switch Network
+        </button>
+      </div>
+
+      <!-- ── Advanced ── -->
+      <div class="text-xs font-semibold uppercase tracking-widest text-white/40 pt-2">Advanced</div>
+
       <!-- Debug -->
       <div class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Debug</h5>
@@ -68,50 +164,6 @@
         </div>
       </div>
 
-      <!-- Daemon Auto-Start -->
-      <div class="w-full p-5 glass-card rounded-xl">
-        <h5 class="mb-1 text-base font-semibold text-white">Daemon Auto-Start</h5>
-        <p class="mb-3 text-sm text-white/60">Automatically start the local Navio daemon on launch. Turn off to choose your connection method (download binaries or manual connection) each time the app starts.</p>
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" true-value="1" false-value="0" v-model="daemon_auto_start" @change="toggle_daemon_auto_start" class="sr-only peer">
-          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-          <span class="ms-3 text-sm font-medium text-white dark:text-white">Auto-start daemon on launch</span>
-        </label>
-        <p class="text-xs text-white/50 mt-3">Takes effect the next time Navio X starts.</p>
-      </div>
-
-      <!-- Network -->
-      <div class="w-full p-5 glass-card rounded-xl">
-        <h5 class="mb-1 text-base font-semibold text-white">Network</h5>
-        <p class="mb-4 text-sm text-white/60">Switch between Mainnet and Testnet. The app will close and must be relaunched after changing.</p>
-        <div class="flex gap-5 mb-4">
-          <label v-for="net in networks" :key="net.name" class="flex items-center gap-3 cursor-pointer">
-            <input type="radio" v-model="selectedNetwork" :value="net.name"
-              class="w-4 h-4 text-violet-500 bg-gray-700 border-gray-600 focus:ring-violet-500 focus:ring-2">
-            <div>
-              <span class="text-sm font-medium text-white">{{ net.label }}</span>
-              <span class="ml-2 text-xs text-zinc-400">(port {{ net.port }})</span>
-              <span v-if="net.name === currentNetwork" class="ml-2 text-xs text-emerald-400 font-semibold">current</span>
-            </div>
-          </label>
-        </div>
-        <button :disabled="selectedNetwork === currentNetwork" v-on:click="switch_network()"
-          class="inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none transition">
-          Switch Network
-        </button>
-      </div>
-
-      <!-- Staking -->
-      <div class="w-full p-5 glass-card rounded-xl">
-        <h5 class="mb-1 text-base font-semibold text-white">Staking</h5>
-        <p class="mb-4 text-sm text-white/60">Automatically start staking for the active wallet whenever Navio X launches.</p>
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" true-value="1" false-value="0" v-model="auto_start_staking" @change="toggle_auto_start_staking" class="sr-only peer">
-          <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-          <span class="ms-3 text-sm font-medium text-white dark:text-white">Auto-start staking on launch</span>
-        </label>
-      </div>
-
       <!-- Clear Settings -->
       <div class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Clear Settings</h5>
@@ -141,6 +193,7 @@
   import { ipcRenderer } from 'electron';
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
+  import { FIAT_CURRENCIES } from '../stores/navPrice';
   const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -167,7 +220,12 @@
         binDir:undefined,
         auto_start_staking: localStorage.getItem('auto_start_staking') === '1' ? '1' : '0',
         daemon_debug: localStorage.getItem('daemon_debug') === '1' ? '1' : '0',
-        daemon_auto_start: localStorage.getItem('daemon_auto_start') === '0' ? '0' : '1'
+        daemon_auto_start: localStorage.getItem('daemon_auto_start') === '0' ? '0' : '1',
+        minimize_to_tray: localStorage.getItem('minimize_to_tray') === '1' ? '1' : '0',
+        minimize_on_close: localStorage.getItem('minimize_on_close') === '1' ? '1' : '0',
+        fiat_currency: localStorage.getItem('fiat_currency') || 'USD',
+        show_fiat_value: localStorage.getItem('show_fiat_value') === '0' ? '0' : '1',
+        fiatCurrencies: FIAT_CURRENCIES
       }
     },
     methods: {
@@ -202,6 +260,47 @@
           theme:'dark',
           icon: 'success',
           title: enabled ? 'Staking will auto-start on launch' : 'Auto-start staking disabled',
+        });
+      },
+      toggle_minimize_to_tray:function()
+      {
+        const enabled = this.minimize_to_tray === '1';
+        localStorage.setItem('minimize_to_tray', enabled ? '1' : '0');
+        ipcRenderer.invoke('save-minimize-to-tray-setting', enabled);
+        Toast.fire({
+          theme:'dark',
+          icon: 'success',
+          title: enabled ? 'Minimizing will now send Navio X to the tray' : 'Minimize to tray disabled',
+        });
+      },
+      toggle_minimize_on_close:function()
+      {
+        const enabled = this.minimize_on_close === '1';
+        localStorage.setItem('minimize_on_close', enabled ? '1' : '0');
+        ipcRenderer.invoke('save-minimize-on-close-setting', enabled);
+        Toast.fire({
+          theme:'dark',
+          icon: 'success',
+          title: enabled ? 'Closing the window will now minimize to tray instead of quitting' : 'Minimize on close disabled',
+        });
+      },
+      toggle_show_fiat_value:function()
+      {
+        const enabled = this.show_fiat_value === '1';
+        localStorage.setItem('show_fiat_value', enabled ? '1' : '0');
+        Toast.fire({
+          theme:'dark',
+          icon: 'success',
+          title: enabled ? 'Fiat value will be shown under your balance' : 'Fiat value hidden',
+        });
+      },
+      toggle_fiat_currency:function()
+      {
+        localStorage.setItem('fiat_currency', this.fiat_currency);
+        Toast.fire({
+          theme:'dark',
+          icon: 'success',
+          title: `Fiat currency set to ${this.fiat_currency}`,
         });
       },
       switch_network:function()

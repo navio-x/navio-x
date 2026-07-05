@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog, Tray, Menu, nativeImage } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 import { execFile } from 'node:child_process';
@@ -64,6 +64,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     var daemonStopExpected=false;
     var daemonLogDir=null;
     var stakerStopExpected=false;
+    var tray=null;
+    var isQuittingApp=false;
 
     function getNetwork() {
       try {
@@ -121,6 +123,74 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       } catch (e) {}
       return true;
     }
+
+    function getMinimizeToTray() {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        if (fs.existsSync(configPath)) {
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          return !!config.minimizeToTray;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    function getMinimizeOnClose() {
+      try {
+        const configPath = path.join(app.getPath('userData'), 'config.json');
+        if (fs.existsSync(configPath)) {
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          return !!config.minimizeOnClose;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    function showWindow() {
+      if (!win) return;
+      // On Wayland, calling show()/focus() while the toplevel is still in the
+      // minimized state is a FATAL Chromium check (wayland_toplevel_window.cc:
+      // "Should not be called with kMinimized state") — always restore first.
+      if (win.isMinimized()) win.restore();
+      win.show();
+      win.focus();
+    }
+
+    function createTray() {
+      if (tray) return;
+      const iconPath = join(process.env.VITE_PUBLIC, 'tray-icon.png');
+      let image = nativeImage.createFromPath(iconPath);
+      if (!image.isEmpty() && process.platform !== 'darwin') {
+        image = image.resize({ width: 16, height: 16 });
+      }
+      tray = new Tray(image);
+      tray.setToolTip('Navio X');
+      tray.setContextMenu(Menu.buildFromTemplate([
+        { label: 'Show Navio X', click: () => showWindow() },
+        { type: 'separator' },
+        { label: 'Quit', click: () => quitApp() }
+      ]));
+      tray.on('click', () => showWindow());
+    }
+
+    function destroyTray() {
+      if (tray) {
+        tray.destroy();
+        tray = null;
+      }
+    }
+
+    function updateTrayVisibility() {
+      if (getMinimizeToTray() || getMinimizeOnClose()) createTray();
+      else destroyTray();
+    }
+
+    function quitApp() {
+      isQuittingApp = true;
+      if (win) win.close();
+      else app.quit();
+    }
+
     async function createWindow() {
       win = new BrowserWindow({
         title: 'Navio X',
@@ -145,6 +215,13 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
       win.on('maximize',   () => win?.webContents.send('window-maximized'));
       win.on('unmaximize', () => win?.webContents.send('window-unmaximized'));
 
+      win.on('minimize', (e) => {
+        if (getMinimizeToTray()) {
+          e.preventDefault();
+          win.hide();
+        }
+      });
+
   // Windows özel Acrylic efekt (bazı sürümlerde çalışır)
       if (process.platform === 'win32') {
         try {
@@ -165,6 +242,12 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
   win.on('close', e =>
   {
+    if (!isQuittingApp && getMinimizeOnClose())
+    {
+      e.preventDefault();
+      win.hide();
+      return;
+    }
     console.log("on-close");
     console.log("is daemon binary started :" + daemonBinaryStarted);
     if (daemonBinaryStarted)
@@ -200,9 +283,13 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow();
+  updateTrayVisibility();
+})
 
 app.on('before-quit', (event) => {
+  isQuittingApp = true;
   if (daemonBinaryStarted)
   {
     console.log("before-quit")
@@ -224,11 +311,8 @@ app.on('window-all-closed', () => {
 })
 
 app.on('second-instance', () => {
-  if (win) {
-    // Focus on the main window if the user tried to open another
-    if (win.isMinimized()) win.restore()
-      win.focus()
-  }
+  // Focus on the main window if the user tried to open another
+  showWindow();
 })
 
 app.on('activate', () => {
@@ -321,6 +405,38 @@ ipcMain.handle('save-daemon-autostart-setting', (_, enabled) => {
     } catch (e) {}
     config.daemonAutoStart = !!enabled;
     fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+
+ipcMain.handle('save-minimize-to-tray-setting', (_, enabled) => {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {}
+    config.minimizeToTray = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+    updateTrayVisibility();
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+
+ipcMain.handle('save-minimize-on-close-setting', (_, enabled) => {
+  try {
+    const configPath = path.join(app.getPath('userData'), 'config.json');
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {}
+    config.minimizeOnClose = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), 'utf8');
+    updateTrayVisibility();
     return { success: true };
   } catch (e) {
     return { success: false, error: e.message };
