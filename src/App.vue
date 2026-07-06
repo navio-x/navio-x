@@ -133,6 +133,57 @@
 </div>
 </section>
 
+<section class="h-screen bg-transparent flex items-center justify-center" :class="{ 'pt-9': !isWeb }" v-show="state=='update_daemon'">
+  <div class="px-6 mx-auto max-w-screen-sm text-center w-full">
+    <div class="mb-8 flex justify-center">
+      <div class="relative">
+        <div class="absolute inset-0 rounded-full blur-2xl opacity-50" :style="{ background: updateStep === 'error' ? 'radial-gradient(circle, #dc2626 0%, transparent 70%)' : 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)' }"></div>
+        <div class="relative w-20 h-20 rounded-2xl flex items-center justify-center" :style="{ background: updateStep === 'error' ? 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)' : 'linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)', boxShadow: '0 8px 30px rgba(124,58,237,0.35)' }">
+          <svg v-if="updateStep === 'error'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-9 h-9 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          <svg v-else-if="updateStep === 'done'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-9 h-9 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <svg v-else class="w-9 h-9 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <h1 class="mb-3 text-3xl font-extrabold tracking-tight text-white brand">
+      {{ updateStep === 'error' ? 'Update Failed' : updateStep === 'done' ? 'Update Complete' : 'Updating Navio Core' }}
+      <template v-if="updateTargetTag && updateStep !== 'error'"> {{ updateTargetTag }}</template>
+    </h1>
+    <p class="mb-10 text-base text-gray-300">
+      <template v-if="updateStep === 'error'">{{ updateError }}</template>
+      <template v-else-if="updateStep === 'downloading'">Downloading the update from GitHub releases…</template>
+      <template v-else-if="updateStep === 'extracting'">Extracting update files…</template>
+      <template v-else-if="updateStep === 'stopping'">Stopping the running daemon…</template>
+      <template v-else-if="updateStep === 'installing'">Installing the new binaries…</template>
+      <template v-else-if="updateStep === 'restarting'">Restarting the daemon…</template>
+      <template v-else-if="updateStep === 'done'">Navio Core was updated and the daemon is running again.</template>
+      <template v-else>Please wait…</template>
+    </p>
+
+    <div v-if="updateStep === 'downloading'" class="w-full">
+      <div class="w-full flex justify-between mb-1.5">
+        <span class="text-xs text-white/60">Progress</span>
+        <span id="update-progress-text" class="text-xs text-white/60">0%</span>
+      </div>
+      <div class="w-full bg-white/[0.16] rounded-full h-1.5">
+        <div id="update-progress-bar" class="h-1.5 rounded-full transition-all" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #3b82f6);"></div>
+      </div>
+    </div>
+
+    <button v-if="updateStep === 'error'" @click="state='ready'" class="inline-flex justify-center items-center py-2.5 px-5 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:outline-none">
+      Back to Dashboard
+    </button>
+  </div>
+</section>
+
 <section class="min-h-screen bg-transparent flex flex-col items-center justify-center px-4" :class="{ 'pt-9': !isWeb }" v-show="state=='select_binary'">
   <div class="w-full max-w-3xl">
     <div class="flex items-center justify-between gap-4 mb-2">
@@ -587,7 +638,7 @@ v-show="state=='select_network'"
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
           </svg>
         </span>
-        <button v-else-if="latestRelease" @click="show_release_notes(latestRelease)" type="button"
+        <button v-else-if="latestRelease" @click="show_release_notes(latestRelease, { allowUpdate: true })" type="button"
           class="text-white/35 hover:text-white/70 transition-colors focus:outline-none" :title="'Latest release: ' + latestRelease.tag">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
@@ -690,6 +741,11 @@ v-show="state=='select_network'"
           is_downloading:false,
           is_fetching_releases:false,
           latestRelease: null,
+          isUpdatingBinary: false,
+          updateStep: null,
+          updateError: null,
+          updateTargetTag: '',
+          updateProgress: 0,
           fileinfo:{},
           availableBinaries: [],
           binarySelectionInfo: { platform: '', arch: '' },
@@ -911,13 +967,48 @@ methods: {
         if (inList) html += '</ul>';
         return '<div style="text-align:left;max-height:55vh;overflow-y:auto;padding-right:4px;">' + html + '</div>';
     },
-    show_release_notes: function(bin) {
+    show_release_notes: function(bin, options) {
+        const allowUpdate = !!(options && options.allowUpdate);
         Swal.fire({
             theme: 'dark',
             title: bin.tag || 'Release notes',
             html: this.format_release_notes(bin.notes),
             width: 640,
-            confirmButtonText: 'Close'
+            showCancelButton: allowUpdate,
+            confirmButtonText: allowUpdate ? 'Download and Update' : 'Close',
+            cancelButtonText: 'Close',
+            reverseButtons: true,
+        }).then((result) => {
+            if (allowUpdate && result.isConfirmed) {
+                this.startBinaryUpdate(bin);
+            }
+        });
+    },
+    startBinaryUpdate: function(bin) {
+        if (!bin || !bin.url) return;
+        this.isUpdatingBinary = true;
+        this.updateStep = 'downloading';
+        this.updateError = null;
+        this.updateTargetTag = bin.tag || '';
+        this.updateProgress = 0;
+        this.state = 'update_daemon';
+        ipcRenderer.invoke('update-binary', { url: bin.url, name: bin.name, tag: bin.tag }).then((result) => {
+            if (!result || !result.success) {
+                this.updateStep = 'error';
+                this.updateError = (result && result.error) || 'Update failed.';
+                // If the daemon was already stopped by the time this failed, main
+                // will still attempt a restart (old or new binary) and send
+                // 'is-daemon-started' later — keep isUpdatingBinary true so that
+                // event is intercepted instead of falling through to the normal
+                // login/connect flow. Otherwise no such event is coming.
+                if (!result || !result.daemonWasStopped) {
+                    this.isUpdatingBinary = false;
+                }
+            }
+        }).catch((err) => {
+            this.updateStep = 'error';
+            this.updateError = err.message;
+            this.isUpdatingBinary = false;
         });
     },
     select_binary: function(bin) {
@@ -1147,8 +1238,38 @@ mounted()
         document.getElementById('progress-text').textContent  = percentage + '%';
     });
 
+    ipcRenderer.on('update-status', (_e, payload) => {
+        this.updateStep = payload.step;
+        if (payload.tag) this.updateTargetTag = payload.tag;
+    });
+
+    ipcRenderer.on('update-download-progress', (_e, progress) => {
+        const percentage = Math.floor(progress);
+        this.updateProgress = percentage;
+        const bar = document.getElementById('update-progress-bar');
+        const txt = document.getElementById('update-progress-text');
+        if (bar) bar.style.width = percentage + '%';
+        if (txt) txt.textContent = percentage + '%';
+    });
+
     ipcRenderer.on('is-daemon-started', (_event, data) =>
     {
+        if (this.isUpdatingBinary) {
+            this.isUpdatingBinary = false;
+            if (data.started) {
+                if (this.updateStep === 'error') {
+                    Toast.fire({ theme:'dark', icon:'warning', title: 'Update failed — reverted to the previous version, daemon is running.' });
+                } else {
+                    this.updateStep = 'done';
+                    Toast.fire({ theme:'dark', icon:'success', title: 'Navio Core updated and restarted' });
+                    setTimeout(() => { this.state = 'ready'; }, 1200);
+                }
+            } else {
+                this.updateStep = 'error';
+                this.updateError = (this.updateError ? this.updateError + ' ' : '') + 'The daemon failed to start afterward. Please check the binary folder or restart the app.';
+            }
+            return;
+        }
         console.log("is-daemon-started");
         console.log(data);
         this.$store.commit('set_daemon_auto_started',data.started);
@@ -1235,6 +1356,12 @@ mounted()
             ipcRenderer.invoke('force-quit');
             return;
         }
+        this.stop_staking();
+        this.stop_daemon();
+    })
+    ipcRenderer.on('request-daemon-stop-for-update', () =>
+    {
+        console.log("request-daemon-stop-for-update");
         this.stop_staking();
         this.stop_daemon();
     })

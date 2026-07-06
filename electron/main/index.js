@@ -62,6 +62,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     var daemonProcess=null;
     var daemonStderrLines=[];
     var daemonStopExpected=false;
+    var daemonUpdateInProgress=false;
+    var daemonExitResolvers=[];
     var daemonLogDir=null;
     var stakerStopExpected=false;
     var tray=null;
@@ -352,6 +354,14 @@ ipcMain.handle('remove-bin-dir', async () => {
 
 ipcMain.handle('start-daemon', (_) => {
   startDaemon();
+})
+
+ipcMain.handle('stop-daemon-for-update', async () => {
+  try {
+    return await stopDaemonForUpdate();
+  } catch (e) {
+    return { stopped: false, error: e.message };
+  }
 })
 
 ipcMain.handle('set-setup-complete', () => setSetupComplete(true));
@@ -698,6 +708,80 @@ function formatDownloadError(error, url) {
   return 'An error occurred.';
 }
 
+// Upgrades the running daemon's binaries in place. Downloads and extracts into a
+// staging folder first (so a failed download/extract never touches the live
+// install), only stops the running daemon once the new files are ready on disk,
+// then does an atomic rename swap and restarts the daemon. Once the previous
+// daemon process is confirmed stopped, every failure path below still restarts
+// it (rolling back to the backup copy if the swap itself failed) so the app is
+// never left without a running daemon.
+async function updateBinaries(url, filename, tag) {
+  const binDir = path.join(app.getPath('userData'), 'bin');
+  const stagingDir = path.join(app.getPath('userData'), 'bin_staging');
+  const backupDir = path.join(app.getPath('userData'), 'bin_backup');
+
+  await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {});
+  await fs.promises.rm(backupDir, { recursive: true, force: true }).catch(() => {});
+
+  win.webContents.send('update-status', { step: 'downloading', tag });
+  const savePath = path.join(app.getPath('downloads'), filename);
+  await downloadFile(url, savePath, (progress) => {
+    win.webContents.send('update-download-progress', progress);
+  });
+
+  win.webContents.send('update-status', { step: 'extracting', tag });
+  await fs.promises.mkdir(stagingDir, { recursive: true });
+  await decompress(savePath, stagingDir, {
+    filter: file => file.path.includes('/bin/') || file.path.startsWith('bin/'),
+    map: file => {
+      const parts = file.path.split('/');
+      const binIndex = parts.indexOf('bin');
+      if (binIndex !== -1) {
+        file.path = parts.slice(binIndex + 1).join('/');
+      }
+      return file;
+    }
+  });
+
+  win.webContents.send('update-status', { step: 'stopping', tag });
+  const stopResult = await stopDaemonForUpdate();
+  if (!stopResult.stopped) {
+    await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {});
+    // We couldn't confirm the old process actually exited. Attempt a restart
+    // anyway (best-effort recovery) rather than leaving the app with no daemon.
+    win.webContents.send('update-status', { step: 'restarting', tag });
+    startDaemon();
+    const err = new Error('Could not confirm the daemon stopped safely. Attempted to restart with the previous version.');
+    err.daemonWasStopped = true;
+    throw err;
+  }
+
+  let installError = null;
+  try {
+    win.webContents.send('update-status', { step: 'installing', tag });
+    if (fs.existsSync(binDir)) {
+      await fs.promises.rename(binDir, backupDir);
+    }
+    await fs.promises.rename(stagingDir, binDir);
+  } catch (err) {
+    installError = err;
+    if (fs.existsSync(backupDir) && !fs.existsSync(binDir)) {
+      await fs.promises.rename(backupDir, binDir).catch(() => {});
+    }
+  }
+  await fs.promises.rm(backupDir, { recursive: true, force: true }).catch(() => {});
+  await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {});
+
+  win.webContents.send('update-status', { step: 'restarting', tag });
+  startDaemon();
+
+  if (installError) {
+    installError.daemonWasStopped = true;
+    throw installError;
+  }
+  return { success: true, tag };
+}
+
 ipcMain.handle('download-latest', async () => {
   const platform = os.platform();
   const arch = os.arch();
@@ -731,6 +815,19 @@ ipcMain.handle('download-binary', async (_, payload) => {
     console.error("Download error:", errorMessage);
     win.webContents.send('download-error', errorMessage);
     return null;
+  }
+});
+
+ipcMain.handle('update-binary', async (_, payload) => {
+  if (!payload || typeof payload !== 'object' || !payload.url || !payload.name) {
+    return { success: false, error: 'Invalid update request.', daemonWasStopped: false };
+  }
+  try {
+    return await updateBinaries(payload.url, payload.name, payload.tag);
+  } catch (error) {
+    const errorMessage = formatDownloadError(error, payload.url);
+    console.error("Update error:", errorMessage);
+    return { success: false, error: errorMessage, daemonWasStopped: !!error.daemonWasStopped };
   }
 });
 
@@ -848,6 +945,19 @@ function startDaemon()
     proc.on('exit', (code) => {
       daemonBinaryStarted = false;
       console.log('Daemon exited with code:', code);
+
+      const exitResolvers = daemonExitResolvers;
+      daemonExitResolvers = [];
+      exitResolvers.forEach((fn) => { try { fn(code); } catch (e) {} });
+
+      if (daemonUpdateInProgress) {
+        daemonUpdateInProgress = false;
+        daemonStopExpected = false;
+        daemonProcess = null;
+        console.log('Daemon exited for binary update; app quit suppressed.');
+        return;
+      }
+
       if (code !== 0 && code !== null && !daemonStopExpected) {
         const stderrText = daemonStderrLines.slice(-80).join('').trim();
         const detail = `Exit code: ${code}` + (stderrText ? `\n\nLast output:\n${stderrText.slice(-3000)}` : '');
@@ -910,6 +1020,49 @@ function startDaemon()
   }
 }
 
+// Stops the running daemon and waits for the OS to actually release its process
+// handle (needed before the binary file can be safely overwritten, especially on
+// Windows where a running .exe stays locked). Unlike the normal shutdown path,
+// this suppresses the app-quit-on-daemon-exit behavior in startDaemon()'s
+// proc.on('exit') handler, since an update needs the app to stay alive afterwards
+// to swap files and relaunch the daemon.
+function stopDaemonForUpdate(timeoutMs = 20000, forceKillGraceMs = 5000) {
+  return new Promise((resolve) => {
+    if (!daemonProcess || !daemonBinaryStarted) {
+      resolve({ stopped: true, alreadyStopped: true });
+      return;
+    }
+
+    daemonUpdateInProgress = true;
+    daemonStopExpected = true;
+
+    let settled = false;
+    let forceKillTimer = null;
+    let hardDeadlineTimer = null;
+
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(forceKillTimer);
+      clearTimeout(hardDeadlineTimer);
+      resolve(result);
+    };
+
+    daemonExitResolvers.push((code) => finish({ stopped: true, code }));
+
+    // The RPC client (host/port/credentials) lives in the renderer, so ask it
+    // to issue the graceful "stop" call rather than duplicating that here.
+    win.webContents.send('request-daemon-stop-for-update');
+
+    forceKillTimer = setTimeout(() => {
+      console.warn('Daemon did not exit gracefully in time, sending kill signal for update.');
+      try { daemonProcess && daemonProcess.kill(); } catch (e) { console.error('force-kill error:', e); }
+      hardDeadlineTimer = setTimeout(() => {
+        finish({ stopped: false, timedOut: true });
+      }, forceKillGraceMs);
+    }, timeoutMs);
+  });
+}
 
 function stopStaker(pid)
 {
