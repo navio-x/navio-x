@@ -633,11 +633,12 @@ v-show="state=='select_network'"
       </div>
       <span v-if="networkinfo.subversion" class="flex items-center gap-1 shrink-0">
         <span class="text-[10px] text-white/35">{{ formatSubversion(networkinfo.subversion) }}</span>
-        <span v-if="latestRelease && isLatestVersion()" class="text-emerald-400" title="You are using the latest version of Navio Core">
+        <button v-if="latestRelease && isLatestVersion()" @click="show_release_notes(latestRelease, { upToDate: true })" type="button"
+          class="text-emerald-400 hover:text-emerald-300 transition-colors focus:outline-none" title="You are using the latest version of Navio Core">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
           </svg>
-        </span>
+        </button>
         <button v-else-if="latestRelease" @click="show_release_notes(latestRelease, { allowUpdate: true })" type="button"
           class="text-white/35 hover:text-white/70 transition-colors focus:outline-none" :title="'Latest release: ' + latestRelease.tag">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
@@ -969,10 +970,21 @@ methods: {
     },
     show_release_notes: function(bin, options) {
         const allowUpdate = !!(options && options.allowUpdate);
+        const upToDate = !!(options && options.upToDate);
+        const subtitle = upToDate
+            ? `<p style="margin:0 0 14px;color:#34d399;font-size:13px;font-weight:600;">You are using the latest version of Navio Core</p>`
+            : allowUpdate
+                ? `<p style="margin:0 0 14px;color:#a78bfa;font-size:13px;font-weight:600;">Version ${bin.tag || ''}</p>`
+                : '';
+        const title = upToDate
+            ? "You're up to date"
+            : allowUpdate
+                ? 'New Navio Core update available'
+                : (bin.tag || 'Release notes');
         Swal.fire({
             theme: 'dark',
-            title: bin.tag || 'Release notes',
-            html: this.format_release_notes(bin.notes),
+            title,
+            html: subtitle + this.format_release_notes(bin.notes),
             width: 640,
             showCancelButton: allowUpdate,
             confirmButtonText: allowUpdate ? 'Download and Update' : 'Close',
