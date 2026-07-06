@@ -924,6 +924,8 @@ methods: {
                 title: r,
             });
           }
+      }).catch((err) => {
+          console.log('stop RPC error (daemon likely already tearing down):', err);
       });
     },
     format_listing_date: function(bin) {
@@ -1021,6 +1023,39 @@ methods: {
             this.updateStep = 'error';
             this.updateError = err.message;
             this.isUpdatingBinary = false;
+        });
+    },
+    // The daemon reporting "started" only means the RPC server came up — it does
+    // not guarantee the binary that's actually running is the one we just
+    // installed (e.g. a Windows file-lock could have caused a silent swap
+    // failure, or the daemon's stdout could have raced with an old lingering
+    // process). Confirm via getnetworkinfo's subversion before declaring success.
+    verifyUpdatedDaemonVersion: function(targetTag, attempt) {
+        this.client.command([{ method: 'getnetworkinfo' }]).then((r) => {
+            const info = r && r[0];
+            if (info) this.networkinfo = info;
+            const expected = this.parseVersionArray(targetTag);
+            const actual = this.parseVersionArray(info && info.subversion);
+            const matches = !!expected && !!actual && expected.length === actual.length && expected.every((n, i) => n === actual[i]);
+            if (matches) {
+                Toast.fire({ theme:'dark', icon:'success', title: 'Navio Core updated and restarted' });
+                this.state = 'ready';
+            } else if (attempt < 4) {
+                setTimeout(() => this.verifyUpdatedDaemonVersion(targetTag, attempt + 1), 1500);
+            } else {
+                Toast.fire({
+                    theme:'dark',
+                    icon:'warning',
+                    title: `Restarted, but the daemon still reports ${this.formatSubversion(info && info.subversion)} instead of ${targetTag}. Please fully quit Navio X (check for a lingering naviod process) and reopen it.`
+                });
+                this.state = 'ready';
+            }
+        }).catch(() => {
+            if (attempt < 4) {
+                setTimeout(() => this.verifyUpdatedDaemonVersion(targetTag, attempt + 1), 1500);
+            } else {
+                this.state = 'ready';
+            }
         });
     },
     select_binary: function(bin) {
@@ -1273,8 +1308,7 @@ mounted()
                     Toast.fire({ theme:'dark', icon:'warning', title: 'Update failed — reverted to the previous version, daemon is running.' });
                 } else {
                     this.updateStep = 'done';
-                    Toast.fire({ theme:'dark', icon:'success', title: 'Navio Core updated and restarted' });
-                    setTimeout(() => { this.state = 'ready'; }, 1200);
+                    this.verifyUpdatedDaemonVersion(this.updateTargetTag, 0);
                 }
             } else {
                 this.updateStep = 'error';

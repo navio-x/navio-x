@@ -715,6 +715,18 @@ function formatDownloadError(error, url) {
 // daemon process is confirmed stopped, every failure path below still restarts
 // it (rolling back to the backup copy if the swap itself failed) so the app is
 // never left without a running daemon.
+function logDirSnapshot(label, dir) {
+  try {
+    const entries = fs.readdirSync(dir).map(name => {
+      const stat = fs.statSync(path.join(dir, name));
+      return `${name} (${stat.size}b, mtime=${stat.mtime.toISOString()})`;
+    });
+    console.log(`[update] ${label}:`, entries);
+  } catch (e) {
+    console.log(`[update] ${label}: <unreadable> (${e.message})`);
+  }
+}
+
 async function updateBinaries(url, filename, tag) {
   const binDir = path.join(app.getPath('userData'), 'bin');
   const stagingDir = path.join(app.getPath('userData'), 'bin_staging');
@@ -723,11 +735,18 @@ async function updateBinaries(url, filename, tag) {
   await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {});
   await fs.promises.rm(backupDir, { recursive: true, force: true }).catch(() => {});
 
+  console.log(`[update] Starting update to ${tag} from ${url}`);
+  logDirSnapshot('bin dir before update', binDir);
+
   win.webContents.send('update-status', { step: 'downloading', tag });
   const savePath = path.join(app.getPath('downloads'), filename);
   await downloadFile(url, savePath, (progress) => {
     win.webContents.send('update-download-progress', progress);
   });
+  try {
+    const dlStat = fs.statSync(savePath);
+    console.log(`[update] Downloaded archive: ${savePath} (${dlStat.size}b, mtime=${dlStat.mtime.toISOString()})`);
+  } catch (e) {}
 
   win.webContents.send('update-status', { step: 'extracting', tag });
   await fs.promises.mkdir(stagingDir, { recursive: true });
@@ -742,9 +761,12 @@ async function updateBinaries(url, filename, tag) {
       return file;
     }
   });
+  logDirSnapshot('staging dir after extraction', stagingDir);
 
+  console.log(`[update] Daemon PID before stop request: ${daemonProcess ? daemonProcess.pid : '(none)'}`);
   win.webContents.send('update-status', { step: 'stopping', tag });
   const stopResult = await stopDaemonForUpdate();
+  console.log('[update] stopDaemonForUpdate result:', stopResult);
   if (!stopResult.stopped) {
     await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {});
     // We couldn't confirm the old process actually exited. Attempt a restart
@@ -763,17 +785,22 @@ async function updateBinaries(url, filename, tag) {
       await fs.promises.rename(binDir, backupDir);
     }
     await fs.promises.rename(stagingDir, binDir);
+    console.log('[update] Rename swap completed without error.');
   } catch (err) {
     installError = err;
+    console.error('[update] Rename swap failed:', err);
     if (fs.existsSync(backupDir) && !fs.existsSync(binDir)) {
       await fs.promises.rename(backupDir, binDir).catch(() => {});
+      console.log('[update] Rolled back to backup binaries after swap failure.');
     }
   }
+  logDirSnapshot('bin dir after install step', binDir);
   await fs.promises.rm(backupDir, { recursive: true, force: true }).catch(() => {});
   await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {});
 
   win.webContents.send('update-status', { step: 'restarting', tag });
   startDaemon();
+  console.log(`[update] New daemon PID after restart: ${daemonProcess ? daemonProcess.pid : '(none)'}`);
 
   if (installError) {
     installError.daemonWasStopped = true;
@@ -935,6 +962,7 @@ function startDaemon()
 
     const proc = spawn(executablePath, parameters, spawnOptions);
     daemonProcess = proc;
+    console.log(`Daemon spawned with PID ${proc.pid} from ${executablePath}`);
 
     proc.on('error', (err) => {
       daemonBinaryStarted = false;
@@ -944,7 +972,7 @@ function startDaemon()
 
     proc.on('exit', (code) => {
       daemonBinaryStarted = false;
-      console.log('Daemon exited with code:', code);
+      console.log(`Daemon (PID ${proc.pid}) exited with code:`, code);
 
       const exitResolvers = daemonExitResolvers;
       daemonExitResolvers = [];
@@ -1029,9 +1057,13 @@ function startDaemon()
 function stopDaemonForUpdate(timeoutMs = 20000, forceKillGraceMs = 5000) {
   return new Promise((resolve) => {
     if (!daemonProcess || !daemonBinaryStarted) {
+      console.log('[update] stopDaemonForUpdate: no running daemon process tracked, treating as already stopped.');
       resolve({ stopped: true, alreadyStopped: true });
       return;
     }
+
+    const targetPid = daemonProcess.pid;
+    console.log(`[update] stopDaemonForUpdate: waiting for PID ${targetPid} to exit.`);
 
     daemonUpdateInProgress = true;
     daemonStopExpected = true;
@@ -1045,20 +1077,21 @@ function stopDaemonForUpdate(timeoutMs = 20000, forceKillGraceMs = 5000) {
       settled = true;
       clearTimeout(forceKillTimer);
       clearTimeout(hardDeadlineTimer);
+      console.log(`[update] stopDaemonForUpdate: settled for PID ${targetPid}:`, result);
       resolve(result);
     };
 
-    daemonExitResolvers.push((code) => finish({ stopped: true, code }));
+    daemonExitResolvers.push((code) => finish({ stopped: true, code, pid: targetPid }));
 
     // The RPC client (host/port/credentials) lives in the renderer, so ask it
     // to issue the graceful "stop" call rather than duplicating that here.
     win.webContents.send('request-daemon-stop-for-update');
 
     forceKillTimer = setTimeout(() => {
-      console.warn('Daemon did not exit gracefully in time, sending kill signal for update.');
+      console.warn(`[update] PID ${targetPid} did not exit gracefully in time, sending kill signal.`);
       try { daemonProcess && daemonProcess.kill(); } catch (e) { console.error('force-kill error:', e); }
       hardDeadlineTimer = setTimeout(() => {
-        finish({ stopped: false, timedOut: true });
+        finish({ stopped: false, timedOut: true, pid: targetPid });
       }, forceKillGraceMs);
     }, timeoutMs);
   });
