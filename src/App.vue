@@ -582,7 +582,12 @@ v-show="state=='select_network'"
       </div>
       <span v-if="networkinfo.subversion" class="flex items-center gap-1 shrink-0">
         <span class="text-[10px] text-white/35">{{ formatSubversion(networkinfo.subversion) }}</span>
-        <button v-if="latestRelease" @click="show_release_notes(latestRelease)" type="button"
+        <span v-if="latestRelease && isLatestVersion()" class="text-emerald-400" title="You are using the latest version of Navio Core">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+        </span>
+        <button v-else-if="latestRelease" @click="show_release_notes(latestRelease)" type="button"
           class="text-white/35 hover:text-white/70 transition-colors focus:outline-none" :title="'Latest release: ' + latestRelease.tag">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
@@ -804,6 +809,23 @@ methods: {
         const match = subversion.match(/:v?([\d.]+)/i);
         return match ? `Navio Core v${match[1]}` : subversion;
     },
+    parseVersionArray: function(str) {
+        if (!str) return null;
+        const match = str.match(/(\d+(?:\.\d+)+)/);
+        if (!match) return null;
+        return match[1].split('.').map(Number);
+    },
+    isLatestVersion: function() {
+        if (!this.latestRelease || !this.networkinfo.subversion) return false;
+        const current = this.parseVersionArray(this.networkinfo.subversion);
+        const latest = this.parseVersionArray(this.latestRelease.tag);
+        if (!current || !latest) return false;
+        const len = Math.max(current.length, latest.length);
+        for (let i = 0; i < len; i++) {
+            if ((current[i] || 0) !== (latest[i] || 0)) return false;
+        }
+        return true;
+    },
     stop_staking : function()
     {
         if (this.state !== 'ready') return;
@@ -921,45 +943,56 @@ methods: {
         localStorage.removeItem('connection_method');
         this.is_fetching_releases = true;
         ipcRenderer.invoke('check-binary-exists').then((exists) => {
+            this.is_fetching_releases = false;
             if (exists) {
-                ipcRenderer.invoke('start-daemon').then((data) => {
-                    console.log("start-daemon (existing binary): " + data);
-                }).catch((err) => {
-                    alert('Error: ' + err.message);
-                }).finally(() => {
-                    this.is_fetching_releases = false;
+                Swal.fire({
+                    theme: 'dark',
+                    title: 'Binaries already exist',
+                    text: 'Binary files already exist on disk. If you want to re-download or update the binaries, click Continue.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Continue',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.fetchLatestBinaries();
+                    }
                 });
                 return;
             }
-            ipcRenderer.invoke('download-latest').then((extractPath) => {
-                this.is_fetching_releases = false;
-                if (!extractPath)
-                {
-                    this.is_downloading=false;
-                    return;
-                }
-                document.getElementById('progress-bar').style.width = '100%';
-                document.getElementById('progress-text').textContent = '100%';
-                console.log("Binaries extracted to : " + extractPath);
-                Toast.fire({
-                    theme:'dark',
-                    icon: 'success',
-                    title: "Binaries ready",
-                });
-                ipcRenderer.invoke('start-daemon').then((data) =>
-                {
-                 console.log("start-daemon"+data);
-             }).catch((err) => {
-                alert('Error: ' + err.message);
-            });
-         }).catch((err) => {
-            this.is_fetching_releases = false;
-            alert('Error: ' + err.message);
-        });
+            this.fetchLatestBinaries();
         }).catch((err) => {
             this.is_fetching_releases = false;
             alert('Error: ' + err.message);
         });
+ },
+ fetchLatestBinaries: function() {
+    this.is_fetching_releases = true;
+    ipcRenderer.invoke('download-latest').then((extractPath) => {
+        this.is_fetching_releases = false;
+        if (!extractPath)
+        {
+            this.is_downloading=false;
+            return;
+        }
+        document.getElementById('progress-bar').style.width = '100%';
+        document.getElementById('progress-text').textContent = '100%';
+        console.log("Binaries extracted to : " + extractPath);
+        Toast.fire({
+            theme:'dark',
+            icon: 'success',
+            title: "Binaries ready",
+        });
+        ipcRenderer.invoke('start-daemon').then((data) =>
+        {
+         console.log("start-daemon"+data);
+     }).catch((err) => {
+        alert('Error: ' + err.message);
+    });
+ }).catch((err) => {
+    this.is_fetching_releases = false;
+    alert('Error: ' + err.message);
+});
  },
  startWithCurrentBinaries: function() {
     localStorage.removeItem('connection_method');
