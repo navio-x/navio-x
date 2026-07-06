@@ -640,7 +640,7 @@ v-show="state=='select_network'"
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
           </svg>
         </button>
-        <button v-else-if="latestRelease" @click="show_release_notes(latestRelease, { allowUpdate: true })" type="button"
+        <button v-else-if="latestRelease" @click="show_release_notes(latestRelease, { allowUpdate: $store.state.is_daemon_auto_started })" type="button"
           class="transition-colors focus:outline-none"
           :class="updateAttentionActive ? 'text-violet-400 animate-pulse' : 'text-violet-400 hover:text-violet-300'"
           :title="'Latest release: ' + latestRelease.tag">
@@ -1016,6 +1016,13 @@ methods: {
     },
     startBinaryUpdate: function(bin) {
         if (!bin || !bin.url) return;
+        if (!this.$store.state.is_daemon_auto_started) {
+            // Only the app's own locally-managed daemon can be safely stopped and
+            // have its binaries swapped — a manually-connected node's files (and
+            // process lifecycle) aren't ours to touch.
+            Toast.fire({ theme:'dark', icon:'info', title: 'Automatic updates are only available when Navio X started the daemon locally.' });
+            return;
+        }
         this.isUpdatingBinary = true;
         this.updateStep = 'downloading';
         this.updateError = null;
