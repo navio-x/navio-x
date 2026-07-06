@@ -641,7 +641,9 @@ v-show="state=='select_network'"
           </svg>
         </button>
         <button v-else-if="latestRelease" @click="show_release_notes(latestRelease, { allowUpdate: true })" type="button"
-          class="text-white/35 hover:text-white/70 transition-colors focus:outline-none" :title="'Latest release: ' + latestRelease.tag">
+          class="transition-colors focus:outline-none"
+          :class="updateAttentionActive ? 'text-violet-400 animate-pulse' : 'text-violet-400 hover:text-violet-300'"
+          :title="'Latest release: ' + latestRelease.tag">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
           </svg>
@@ -756,7 +758,13 @@ v-show="state=='select_network'"
           is_starting_daemon: false,
           setupComplete: false,
           autoStakingAttempted: false,
+          updateAttentionActive: false,
       }
+  },
+  computed: {
+    hasUpdateAvailable() {
+      return !!(this.latestRelease && this.networkinfo.subversion && !this.isLatestVersion());
+    }
   },
   watch: {
     network(val) {
@@ -768,6 +776,13 @@ v-show="state=='select_network'"
       if (val && !this.autoStakingAttempted && this.$store.state.auto_start_staking && !this.$store.state.is_staking_active) {
         this.autoStakingAttempted = true;
         this.try_auto_start_staking();
+      }
+    },
+    hasUpdateAvailable(val, oldVal) {
+      if (val && !oldVal) {
+        this.updateAttentionActive = true;
+        clearTimeout(this._updateAttentionTimer);
+        this._updateAttentionTimer = setTimeout(() => { this.updateAttentionActive = false; }, 5000);
       }
     }
   },
