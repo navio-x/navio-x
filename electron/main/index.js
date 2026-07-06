@@ -66,6 +66,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
     var daemonExitResolvers=[];
     var daemonLogDir=null;
     var stakerStopExpected=false;
+    var stakerProcess=null;
+    var stakerExitResolvers=[];
     var tray=null;
     var isQuittingApp=false;
 
@@ -778,6 +780,16 @@ async function updateBinaries(url, filename, tag) {
     throw err;
   }
 
+  // navio-staker's binary lives in the same bin/ folder, so it needs to be
+  // stopped and confirmed exited too before the folder can be safely swapped.
+  const stakerWasRunning = !!stakerProcess;
+  if (stakerWasRunning) {
+    console.log(`[update] Staker PID before stop request: ${stakerProcess.pid}`);
+    win.webContents.send('update-status', { step: 'stopping-staker', tag });
+    const stakerStopResult = await stopStakerAndWait();
+    console.log('[update] stopStakerAndWait result:', stakerStopResult);
+  }
+
   let installError = null;
   try {
     win.webContents.send('update-status', { step: 'installing', tag });
@@ -804,9 +816,10 @@ async function updateBinaries(url, filename, tag) {
 
   if (installError) {
     installError.daemonWasStopped = true;
+    installError.stakerWasStopped = stakerWasRunning;
     throw installError;
   }
-  return { success: true, tag };
+  return { success: true, tag, stakerWasStopped: stakerWasRunning };
 }
 
 ipcMain.handle('download-latest', async () => {
@@ -847,14 +860,14 @@ ipcMain.handle('download-binary', async (_, payload) => {
 
 ipcMain.handle('update-binary', async (_, payload) => {
   if (!payload || typeof payload !== 'object' || !payload.url || !payload.name) {
-    return { success: false, error: 'Invalid update request.', daemonWasStopped: false };
+    return { success: false, error: 'Invalid update request.', daemonWasStopped: false, stakerWasStopped: false };
   }
   try {
     return await updateBinaries(payload.url, payload.name, payload.tag);
   } catch (error) {
     const errorMessage = formatDownloadError(error, payload.url);
     console.error("Update error:", errorMessage);
-    return { success: false, error: errorMessage, daemonWasStopped: !!error.daemonWasStopped };
+    return { success: false, error: errorMessage, daemonWasStopped: !!error.daemonWasStopped, stakerWasStopped: !!error.stakerWasStopped };
   }
 });
 
@@ -1108,6 +1121,47 @@ function stopStaker(pid)
   }
 }
 
+// navio-staker's binary lives in the same bin/ folder as naviod, so it must be
+// fully stopped (and its exit confirmed) before that folder can be safely
+// swapped during an update — otherwise its executable can stay locked on
+// Windows just like naviod's does.
+function stopStakerAndWait(timeoutMs = 15000, forceKillGraceMs = 3000) {
+  return new Promise((resolve) => {
+    if (!stakerProcess) {
+      resolve({ stopped: true, alreadyStopped: true });
+      return;
+    }
+
+    const pid = stakerProcess.pid;
+    console.log(`[update] stopStakerAndWait: waiting for PID ${pid} to exit.`);
+
+    let settled = false;
+    let forceKillTimer = null;
+    let hardDeadlineTimer = null;
+
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(forceKillTimer);
+      clearTimeout(hardDeadlineTimer);
+      console.log(`[update] stopStakerAndWait: settled for PID ${pid}:`, result);
+      resolve(result);
+    };
+
+    stakerExitResolvers.push((code) => finish({ stopped: true, code, pid }));
+
+    stopStaker(pid);
+
+    forceKillTimer = setTimeout(() => {
+      console.warn(`[update] navio-staker (PID ${pid}) did not exit gracefully in time, sending kill signal.`);
+      try { stakerProcess && stakerProcess.kill(); } catch (e) { console.error('force-kill error:', e); }
+      hardDeadlineTimer = setTimeout(() => {
+        finish({ stopped: false, timedOut: true, pid });
+      }, forceKillGraceMs);
+    }, timeoutMs);
+  });
+}
+
 function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
 {
   console.log("Starting staker...");
@@ -1166,6 +1220,7 @@ function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
       }
 
       newProcess = spawn(executablePath, parameters, defaults);
+      stakerProcess = newProcess;
 
       newProcess.on('error', (err) => {
         console.log("Failed to start staker->" + executablePath + "->" + err.message);
@@ -1179,6 +1234,10 @@ function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
 
         newProcess.on('exit', (code, signal) => {
           newProcess = null;
+          stakerProcess = null;
+          const stakerResolvers = stakerExitResolvers;
+          stakerExitResolvers = [];
+          stakerResolvers.forEach((fn) => { try { fn(code); } catch (e) {} });
           if (code !== 0 && !stakerStopExpected)
           {
             console.log("Staker exited unexpectedly. Exit Code : " + code + " Signal : " + signal);
@@ -1223,6 +1282,7 @@ function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
     console.log(executablePath);
 
     newProcess = spawn(executablePath, parameters, defaults);
+    stakerProcess = newProcess;
 
     newProcess.on('error', (err) => {
       console.log('Failed to start staker.' + err.message);
@@ -1237,6 +1297,10 @@ function startStaker(network, wallet, rpcuser, rpcpassword, walletpassphrase)
 
       newProcess.on('exit', (code, signal) => {
         newProcess = null;
+        stakerProcess = null;
+        const stakerResolvers = stakerExitResolvers;
+        stakerExitResolvers = [];
+        stakerResolvers.forEach((fn) => { try { fn(code); } catch (e) {} });
         if (code !== 0 && !stakerStopExpected)
         {
           console.log("Staker exited unexpectedly. Exit Code : " + code + " Signal : " + signal);

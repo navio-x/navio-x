@@ -162,6 +162,7 @@
       <template v-else-if="updateStep === 'downloading'">Downloading the update from GitHub releases…</template>
       <template v-else-if="updateStep === 'extracting'">Extracting update files…</template>
       <template v-else-if="updateStep === 'stopping'">Stopping the running daemon…</template>
+      <template v-else-if="updateStep === 'stopping-staker'">Stopping the staking process…</template>
       <template v-else-if="updateStep === 'installing'">Installing the new binaries…</template>
       <template v-else-if="updateStep === 'restarting'">Restarting the daemon…</template>
       <template v-else-if="updateStep === 'done'">Navio Core was updated and the daemon is running again.</template>
@@ -1007,6 +1008,11 @@ methods: {
         this.updateProgress = 0;
         this.state = 'update_daemon';
         ipcRenderer.invoke('update-binary', { url: bin.url, name: bin.name, tag: bin.tag }).then((result) => {
+            if (result && result.stakerWasStopped) {
+                this.$store.commit('set_staker_pid', undefined);
+                this.$store.commit('set_staking_active', false);
+                Toast.fire({ theme:'dark', icon:'info', title: 'Staking was stopped for the update — restart it from the Staking page when ready.' });
+            }
             if (!result || !result.success) {
                 this.updateStep = 'error';
                 this.updateError = (result && result.error) || 'Update failed.';
