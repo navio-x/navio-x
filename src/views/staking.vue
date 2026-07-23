@@ -149,6 +149,16 @@
 
 
 <div class="p-5">
+    <div class="flex items-center justify-end gap-1.5 mb-3">
+        <button v-for="range in chartRanges" :key="range.value" type="button"
+            @click="setChartRange(range.value)"
+            :class="chartRange === range.value
+                ? 'text-violet-300 bg-violet-500/20 border-violet-500/40'
+                : 'text-white/60 bg-white/5 border-white/10 hover:text-white/85 hover:bg-white/10'"
+            class="px-3 py-1 text-xs font-semibold border rounded-full focus:outline-none transition-colors">
+            {{ range.label }}
+        </button>
+    </div>
     <apexchart class="w-full" height="240" :options="options" :series="series"></apexchart>
 </div>
 </div>
@@ -246,7 +256,13 @@
                 showManualStakingModal: false,
                 manualCommandCopied: false,
                 balance: undefined,
-                binDir: ''
+                binDir: '',
+                chartRange: '7D',
+                chartRanges: [
+                    { label: '7 Day', value: '7D' },
+                    { label: '30 Day', value: '30D' },
+                    { label: '1 Year', value: '1Y' }
+                ]
             }
         },
         computed: {
@@ -442,57 +458,54 @@
                    }
                });
             },
-            list_transactions()
+            setChartRange(range)
             {
-            let vm=this;
-            let categories = [];
-            let rewards= [];
+                this.chartRange = range;
+                this.build_chart();
+            },
+            build_chart()
+            {
+                let vm=this;
+                let categories = [];
+                let rewards= [];
+                const now = new Date();
+                const nowEpoch = Math.floor(now.getTime() / 1000);
+                const isStakeReward = tx => tx.memo === 'Reward' && tx.label === 'Staking' && tx.category !== 'immature';
 
-            this.ready = false;
-            vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
-            {
-                if (r[0].name=="RpcError"||r[0].code)
+                if (vm.chartRange === '1Y')
                 {
-                    console.log("RpcError");
-                    console.log(r);
+                    const months = Array.from({ length: 12 }, (_, i) => {
+                        const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
+                        return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('default', { month: 'short' }), total: 0 };
+                    });
+                    vm.txs.forEach(tx => {
+                        if (!isStakeReward(tx)) return;
+                        const d = new Date(tx.time * 1000);
+                        const idx = months.findIndex(m => m.year === d.getFullYear() && m.month === d.getMonth());
+                        if (idx !== -1) months[idx].total += tx.amount;
+                    });
+                    months.forEach(m => { categories.push(m.label); rewards.push(m.total); });
                 }
                 else
                 {
-                    vm.txs=r[0];
-                    const now = new Date();
+                    const days = vm.chartRange === '30D' ? 30 : 7;
                     const oneDayMs = 1000 * 60 * 60 * 24;
-
-                    const result = Array.from({ length: 15 }, (_, i) => {
-                      const date = new Date(now.getTime() - oneDayMs * (14 - i));
-                      const isoDate = date.toISOString().split('T')[0];
-                      const shortDate = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-                      return {
-                        date: isoDate,
-                        shortDate: shortDate,
-                        total: 0
-                    };
-                });
-
-                    const nowEpoch = Math.floor(now.getTime() / 1000);
-
-                    vm.txs.forEach(tx => {
-                      const isStakeReward = tx.memo === 'Reward' && tx.label === 'Staking' && tx.category !== 'immature';
-                      if (isStakeReward) {
-                        const dayDiff = Math.floor((nowEpoch - tx.time) / (60 * 60 * 24));
-                        if (dayDiff >= 0 && dayDiff < 15) {
-                          result[14 - dayDiff].total += tx.amount;
-                      }
-                  }
-              });
-                    console.log(result);
-                    result.forEach(day => {
-                        console.log(`Date: ${day.date} - Rewards : ${day.total}`);
-                        categories.push(day.shortDate);
-                        rewards.push(day.total);
-
+                    const result = Array.from({ length: days }, (_, i) => {
+                        const date = new Date(now.getTime() - oneDayMs * (days - 1 - i));
+                        const shortDate = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                        return { shortDate, total: 0 };
                     });
-                    vm.options={
+                    vm.txs.forEach(tx => {
+                        if (!isStakeReward(tx)) return;
+                        const dayDiff = Math.floor((nowEpoch - tx.time) / (60 * 60 * 24));
+                        if (dayDiff >= 0 && dayDiff < days) {
+                            result[days - 1 - dayDiff].total += tx.amount;
+                        }
+                    });
+                    result.forEach(day => { categories.push(day.shortDate); rewards.push(day.total); });
+                }
+
+                vm.options={
                         chart: {
                             id: 'staking-chart',
                             type:'area',
@@ -606,17 +619,33 @@
                   }
               }
           };
-          vm.series=[{
-            name: 'Rewards',
-            data: rewards,
-            color: undefined
-        }];
-    }
-    vm.ready = true;
-}).catch((r) => {
-    console.log(r);
-    vm.ready = true;
-});
+                vm.series=[{
+                    name: 'Rewards',
+                    data: rewards,
+                    color: undefined
+                }];
+            },
+            fetch_transactions()
+            {
+                let vm=this;
+                this.ready = false;
+                vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
+                {
+                    if (r[0].name=="RpcError"||r[0].code)
+                    {
+                        console.log("RpcError");
+                        console.log(r);
+                    }
+                    else
+                    {
+                        vm.txs=r[0];
+                        vm.build_chart();
+                    }
+                    vm.ready = true;
+                }).catch((r) => {
+                    console.log(r);
+                    vm.ready = true;
+                });
             }
         },
         mounted()
@@ -627,7 +656,7 @@
             this.getbalance();
             this.balanceTimer = setInterval(() => { this.getbalance(); }, 5000);
             ipcRenderer.invoke('get-bin-dir').then((dir) => { vm.binDir = dir; });
-            this.list_transactions();
+            this.fetch_transactions();
         },
         beforeUnmount()
         {
