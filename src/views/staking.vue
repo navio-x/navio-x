@@ -257,12 +257,14 @@
                 manualCommandCopied: false,
                 balance: undefined,
                 binDir: '',
-                chartRange: '7D',
                 chartRanges: [
                     { label: '7 Day', value: '7D' },
                     { label: '30 Day', value: '30D' },
                     { label: '1 Year', value: '1Y' }
-                ]
+                ],
+                chartRange: ['7D', '30D', '1Y'].includes(localStorage.getItem('staking_chart_range'))
+                    ? localStorage.getItem('staking_chart_range')
+                    : '7D'
             }
         },
         computed: {
@@ -461,6 +463,7 @@
             setChartRange(range)
             {
                 this.chartRange = range;
+                localStorage.setItem('staking_chart_range', range);
                 this.build_chart();
             },
             build_chart()
