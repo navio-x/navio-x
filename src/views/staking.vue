@@ -258,11 +258,14 @@
                 balance: undefined,
                 binDir: '',
                 chartRanges: [
+                    { label: '24 Hour', value: '24H' },
                     { label: '7 Day', value: '7D' },
                     { label: '30 Day', value: '30D' },
+                    { label: '90 Day', value: '90D' },
+                    { label: '180 Day', value: '180D' },
                     { label: '1 Year', value: '1Y' }
                 ],
-                chartRange: ['7D', '30D', '1Y'].includes(localStorage.getItem('staking_chart_range'))
+                chartRange: ['24H', '7D', '30D', '90D', '180D', '1Y'].includes(localStorage.getItem('staking_chart_range'))
                     ? localStorage.getItem('staking_chart_range')
                     : '7D'
             }
@@ -489,9 +492,28 @@
                     });
                     months.forEach(m => { categories.push(m.label); rewards.push(m.total); });
                 }
+                else if (vm.chartRange === '24H')
+                {
+                    const hours = 24;
+                    const oneHourMs = 1000 * 60 * 60;
+                    const result = Array.from({ length: hours }, (_, i) => {
+                        const date = new Date(now.getTime() - oneHourMs * (hours - 1 - i));
+                        const label = `${String(date.getHours()).padStart(2, '0')}:00`;
+                        return { label, total: 0 };
+                    });
+                    vm.txs.forEach(tx => {
+                        if (!isStakeReward(tx)) return;
+                        const hourDiff = Math.floor((nowEpoch - tx.time) / (60 * 60));
+                        if (hourDiff >= 0 && hourDiff < hours) {
+                            result[hours - 1 - hourDiff].total += tx.amount;
+                        }
+                    });
+                    result.forEach(hour => { categories.push(hour.label); rewards.push(hour.total); });
+                }
                 else
                 {
-                    const days = vm.chartRange === '30D' ? 30 : 7;
+                    const daysByRange = { '7D': 7, '30D': 30, '90D': 90, '180D': 180 };
+                    const days = daysByRange[vm.chartRange] || 7;
                     const oneDayMs = 1000 * 60 * 60 * 24;
                     const result = Array.from({ length: days }, (_, i) => {
                         const date = new Date(now.getTime() - oneDayMs * (days - 1 - i));
