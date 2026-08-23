@@ -37,13 +37,17 @@
             Clear
           </button>
 
-          <span class="ml-auto text-[11px] text-white/55">{{ filteredTxs.length }} results</span>
-          <button @click="exportToCSV" class="hst-export-btn shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-            </svg>
-            Export CSV
-          </button>
+          <!-- Grouped so these two always wrap onto a line together instead of
+               the auto-margin stranding "results" alone on an empty row. -->
+          <div class="flex items-center gap-2 sm:ml-auto">
+            <span class="text-[11px] text-white/55 whitespace-nowrap">{{ filteredTxs.length }} results</span>
+            <button @click="exportToCSV" class="hst-export-btn shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              Export CSV
+            </button>
+          </div>
         </div>
       </div>
 
@@ -82,60 +86,45 @@
 
       <!-- ── Table ── -->
       <template v-if="filteredTxs.length">
-        <!-- Fixed header — outside scroll container -->
-        <div class="px-6 pt-3 shrink-0">
-          <table class="w-full table-fixed border-separate [border-spacing:0]">
-            <colgroup>
-              <col style="width:12%">
-              <col style="width:15%">
-              <!-- To/Comment: disabled for now, RPC doesn't seem to persist/return these
-              <col style="width:10%">
-              -->
-              <col style="width:17%">
-              <col style="width:13%">
-              <col style="width:11%">
-              <col style="width:7%">
-              <col style="width:8%">
-              <col style="width:11%">
-              <col style="width:6%">
-            </colgroup>
-            <thead>
-              <tr class="hst-thead-row">
-                <th class="hst-th text-left">Type</th>
-                <th class="hst-th text-left">Amount</th>
-                <th class="hst-th text-left">Label</th>
-                <!--
-                <th class="hst-th text-left">To</th>
-                <th class="hst-th text-left">Comment</th>
-                -->
-                <th class="hst-th text-left">Date</th>
-                <th class="hst-th text-right">Fee</th>
-                <th class="hst-th text-right">Conf.</th>
-                <th class="hst-th text-right">Block</th>
-                <th class="hst-th text-right">Address</th>
-                <th class="hst-th text-right"></th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-
-        <!-- Scrollable body -->
-        <div class="flex-1 overflow-auto px-6 pb-4 min-h-0">
-          <table class="w-full table-fixed border-separate [border-spacing:0]">
-            <colgroup>
-              <col style="width:12%">
-              <col style="width:15%">
-              <col style="width:17%">
+      <!-- Single scroll container for both axes — the header uses `position:
+           sticky` (see .hst-th) to stay pinned during vertical scroll while
+           scrolling horizontally in perfect sync with the body, since it's
+           the same table. A split header/body-table layout was tried here
+           before but produced two independent horizontal scrollbars (one on
+           each scroll container), so this was folded back into one table. -->
+      <div class="flex-1 overflow-auto px-6 pt-3 pb-4 min-h-0">
+        <table class="w-full min-w-[820px] table-fixed border-separate [border-spacing:0]">
+          <colgroup>
+            <col style="width:12%">
+            <col style="width:15%">
+            <!-- To/Comment: disabled for now, RPC doesn't seem to persist/return these
+            <col style="width:10%">
+            -->
+            <col style="width:17%">
+            <col style="width:13%">
+            <col style="width:11%">
+            <col style="width:7%">
+            <col style="width:8%">
+            <col style="width:11%">
+            <col style="width:6%">
+          </colgroup>
+          <thead>
+            <tr class="hst-thead-row">
+              <th class="hst-th text-left">Type</th>
+              <th class="hst-th text-left">Amount</th>
+              <th class="hst-th text-left">Label</th>
               <!--
-              <col style="width:10%">
+              <th class="hst-th text-left">To</th>
+              <th class="hst-th text-left">Comment</th>
               -->
-              <col style="width:13%">
-              <col style="width:11%">
-              <col style="width:7%">
-              <col style="width:8%">
-              <col style="width:11%">
-              <col style="width:6%">
-            </colgroup>
+              <th class="hst-th text-left">Date</th>
+              <th class="hst-th text-right">Fee</th>
+              <th class="hst-th text-right">Conf.</th>
+              <th class="hst-th text-right">Block</th>
+              <th class="hst-th text-right">Address</th>
+              <th class="hst-th text-right"></th>
+            </tr>
+          </thead>
             <tbody>
               <tr v-for="tx in paginatedTxs" :key="tx.txid + tx.time" class="hst-row">
 
@@ -231,17 +220,17 @@
 
               </tr>
             </tbody>
-          </table>
-        </div>
+        </table>
+      </div>
 
         <!-- Pagination -->
-        <div class="px-6 py-2.5 shrink-0 border-t border-white/10 flex items-center justify-between">
-          <div class="flex gap-2">
+        <div class="px-4 sm:px-6 py-2.5 shrink-0 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex gap-2 order-1 sm:order-none">
             <button @click="currentPage = 1" :disabled="currentPage === 1" class="hst-page-btn">« First</button>
             <button @click="currentPage--" :disabled="currentPage === 1" class="hst-page-btn">← Prev</button>
           </div>
-          <span class="text-[12px] text-white/55">Page {{ currentPage }} of {{ totalPages }}</span>
-          <div class="flex gap-2">
+          <span class="order-3 sm:order-none w-full sm:w-auto text-center sm:text-left text-[12px] text-white/55">Page {{ currentPage }} of {{ totalPages }}</span>
+          <div class="flex gap-2 order-2 sm:order-none">
             <button @click="currentPage++" :disabled="currentPage === totalPages" class="hst-page-btn">Next →</button>
             <button @click="currentPage = totalPages" :disabled="currentPage === totalPages" class="hst-page-btn">Last »</button>
           </div>
@@ -487,7 +476,7 @@
                 const groups = {};
                 this.filteredTxs.forEach(tx => {
                     if (tx.category === 'stake') return; // locked-stake principal, not a category total worth surfacing here
-                    const isStakingReward = tx.category === 'receive' && tx.label === 'Staking' && tx.memo === 'Reward';
+                    const isStakingReward = tx.category === 'receive' && (tx.label === 'Staking' || !tx.label) && tx.memo === 'Reward';
                     const key = isStakingReward ? 'staking-reward' : tx.category;
                     if (!groups[key]) groups[key] = { key, count: 0, total: 0 };
                     groups[key].count++;
@@ -507,12 +496,15 @@
                 return Math.max(1, Math.ceil(this.filteredTxs.length / this.pageSize));
             },
             paginatedTxs() {
-                const start = (this.currentPage - 1) * this.pageSize;
+                const page = Math.min(this.currentPage, this.totalPages);
+                const start = (page - 1) * this.pageSize;
                 return this.filteredTxs.slice(start, start + this.pageSize);
             }
         },
         watch: {
-            filteredTxs() { this.currentPage = 1; }
+            selectedCategory() { this.currentPage = 1; },
+            startDate() { this.currentPage = 1; },
+            endDate() { this.currentPage = 1; }
         },
         methods: {
             formatDate(ts) {
@@ -791,6 +783,12 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: 10px;
 }
+@media (max-width: 639px) {
+  /* Single column so the fixed-width badge below always has room — three
+     118px-min columns don't fit a phone screen and the badge would spill
+     into the next cell instead of shrinking. */
+  .hst-summary-card { grid-template-columns: 1fr; }
+}
 .hst-summary-item {
   display: flex;
   align-items: center;
@@ -854,6 +852,7 @@ select.hst-filter option { background: #1f1840; color: rgba(255,255,255,0.98); }
   padding: 0 12px;
   font-size: 12px;
   font-weight: 500;
+  white-space: nowrap;
   color: rgba(255,255,255,0.75);
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.15);

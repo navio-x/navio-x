@@ -368,7 +368,7 @@
 				};
 
 				this.alltxs.forEach(tx => {
-					const isStakeReward = tx.memo === 'Reward' && tx.label === 'Staking' && tx.category !== 'immature';
+					const isStakeReward = tx.memo === 'Reward' && (tx.label === 'Staking' || !tx.label) && tx.category !== 'immature';
 					if (isStakeReward) {
 						const diff = now - tx.time;
 						result.all += tx.amount;

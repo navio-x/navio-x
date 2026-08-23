@@ -1,4 +1,1158 @@
-"use strict";const s=require("electron"),z=require("node:os"),b=require("node:path"),k=require("node:child_process"),C=require("crypto"),m=require("path"),h=require("fs"),j=require("https"),W=require("http"),$=require("decompress"),v=require("os");process.env.DIST_ELECTRON=b.join(__dirname,"..");process.env.DIST=b.join(process.env.DIST_ELECTRON,"../dist");process.env.VITE_PUBLIC=process.env.VITE_DEV_SERVER_URL?b.join(process.env.DIST_ELECTRON,"../public/"):process.env.DIST;z.release().startsWith("6.1")&&s.app.disableHardwareAcceleration();process.platform==="win32"&&s.app.setAppUserModelId(s.app.getName());s.app.requestSingleInstanceLock()||(s.app.quit(),process.exit(0));console.log({electron:process.versions.electron,chrome:process.versions.chrome,node:process.versions.node,v8:process.versions.v8});let o=null;const V=b.join(__dirname,"../preload/index.js"),B=process.env.VITE_DEV_SERVER_URL,H=b.join(process.env.DIST,"index.html"),q=C.randomBytes(256),S=C.createHash("sha256").update(q,"utf8").digest("hex"),y=C.createHash("md5").update(q,"utf8").digest("hex");var g=!1,_=null,P=[],E=!1,M=null;function R(){try{const e=m.join(s.app.getPath("userData"),"config.json");if(h.existsSync(e)){const t=JSON.parse(h.readFileSync(e,"utf8"));if(t.network)return t.network}}catch{}return"mainnet"}function U(){try{const e=m.join(s.app.getPath("userData"),"config.json");if(h.existsSync(e))return!!JSON.parse(h.readFileSync(e,"utf8")).setupComplete}catch{}return!1}function T(e){try{const t=m.join(s.app.getPath("userData"),"config.json");let n={};try{h.existsSync(t)&&(n=JSON.parse(h.readFileSync(t,"utf8")))}catch{}n.setupComplete=e,h.writeFileSync(t,JSON.stringify(n),"utf8")}catch{}}async function N(){if(o=new s.BrowserWindow({title:"Navio X",width:1100,height:740,center:!0,backgroundColor:"#0d071c",transparent:!1,frame:!1,show:!0,hasShadow:!0,resizable:!0,vibrancy:process.platform==="darwin"?"ultra-dark":void 0,icon:b.join(process.env.VITE_PUBLIC,"favicon.ico"),webPreferences:{preload:V,nodeIntegration:!0,contextIsolation:!1}}),o.on("maximize",()=>o==null?void 0:o.webContents.send("window-maximized")),o.on("unmaximize",()=>o==null?void 0:o.webContents.send("window-unmaximized")),process.platform==="win32")try{o.setVibrancy("acrylic")}catch(e){console.log("Windows vibrancy not supported:",e.message)}o.setMenu(null),process.env.VITE_DEV_SERVER_URL?o.loadURL(B):o.loadFile(H),o.on("close",e=>{console.log("on-close"),console.log("is daemon binary started :"+g),g&&(console.log("stop-daemon fired"),e.preventDefault(),E=!0,o.webContents.send("stop-daemon",5))}),o.webContents.on("did-finish-load",()=>{U()?L():o.webContents.send("is-daemon-started",{started:!1,network:R(),rpcuser:S,rpcpassword:y}),o==null||o.webContents.send("main-process-message",new Date().toLocaleString())}),o.webContents.setWindowOpenHandler(({url:e})=>(e.startsWith("https:")&&s.shell.openExternal(e),{action:"deny"}))}s.app.whenReady().then(N);s.app.on("before-quit",e=>{g&&(console.log("before-quit"),e.preventDefault())});s.app.on("will-quit",e=>{g&&(console.log("will-quit"),e.preventDefault())});s.app.on("window-all-closed",()=>{o=null,process.platform!=="darwin"&&s.app.quit()});s.app.on("second-instance",()=>{o&&(o.isMinimized()&&o.restore(),o.focus())});s.app.on("activate",()=>{const e=s.BrowserWindow.getAllWindows();e.length?e[0].focus():N()});s.ipcMain.handle("window-minimize",()=>o==null?void 0:o.minimize());s.ipcMain.handle("window-maximize",()=>{o!=null&&o.isMaximized()?o.unmaximize():o==null||o.maximize()});s.ipcMain.handle("window-close",()=>o==null?void 0:o.close());s.ipcMain.handle("window-is-maximized",()=>(o==null?void 0:o.isMaximized())??!1);s.ipcMain.handle("get-bin-dir",()=>m.join(s.app.getPath("userData"),"bin"));s.ipcMain.handle("remove-bin-dir",async()=>{const e=require("fs"),t=require("path"),{app:n}=require("electron"),i=t.join(n.getPath("userData"),"bin");try{return e.existsSync(i)&&e.rmSync(i,{recursive:!0,force:!0}),{success:!0}}catch(r){return{success:!1,error:r.message}}});s.ipcMain.handle("start-daemon",e=>{L()});s.ipcMain.handle("set-setup-complete",()=>T(!0));s.ipcMain.handle("clear-setup-complete",()=>T(!1));s.ipcMain.handle("check-binary-exists",()=>{const e={win32:"naviod.exe",linux:"naviod",darwin:"naviod"},t=m.join(s.app.getPath("userData"),"bin"),n=e[process.platform];return n?h.existsSync(m.join(t,n)):!1});s.ipcMain.handle("save-network",(e,t)=>{try{const n=m.join(s.app.getPath("userData"),"config.json");let i={};try{h.existsSync(n)&&(i=JSON.parse(h.readFileSync(n,"utf8")))}catch{}return i.network=t,h.writeFileSync(n,JSON.stringify(i),"utf8"),{success:!0}}catch(n){return{success:!1,error:n.message}}});s.ipcMain.handle("start-staker",(e,t,n,i,r)=>{ne(t,n,i,r)});s.ipcMain.handle("stop-staker",(e,t)=>{t&&te(t)});s.ipcMain.handle("force-quit",()=>{if(E=!0,_){try{_.kill()}catch(e){console.error("force-quit kill error:",e)}_=null}g=!1,s.app.quit(),process.exit(0)});s.ipcMain.handle("shell-open-item",(e,t)=>{s.shell.showItemInFolder(`${t}`)});s.ipcMain.handle("shell-open-folder",async(e,t)=>await s.shell.openPath(t));s.ipcMain.handle("update-startup-wallets",(e,{logpath:t,walletName:n,action:i})=>{try{const r=m.dirname(t),a=m.join(r,"settings.json");let d={wallet:[]};if(h.existsSync(a))try{d=JSON.parse(h.readFileSync(a,"utf8"))}catch{}return Array.isArray(d.wallet)||(d.wallet=[]),i==="add"?d.wallet.includes(n)||d.wallet.push(n):i==="remove"&&(d.wallet=d.wallet.filter(p=>p!==n)),h.writeFileSync(a,JSON.stringify(d,null,4),"utf8"),{success:!0}}catch(r){return{success:!1,error:r.message}}});s.ipcMain.handle("get-process-variables",async(e,t)=>({electron:process.versions.electron,chrome:process.versions.chrome,node:process.versions.node,v8:process.versions.v8}));const A="https://api.github.com/repos/nav-io/navio-core/releases";function J(e,t){if(e==="win32")return["win64","x86_64-w64"];if(e==="darwin")return t==="arm64"?["arm64-apple-darwin"]:t==="x64"?["x86_64-apple-darwin"]:["x86_64-apple-darwin"];if(e==="linux"){if(t==="x64")return["x86_64-linux-gnu"];if(t==="arm64")return["aarch64-linux-gnu"];if(t==="arm")return["arm-linux-gnueabihf"];if(t==="ppc64")return v.endianness()==="LE"?["powerpc64le-linux-gnu"]:["powerpc64-linux-gnu"];if(t==="riscv64")return["riscv64-linux-gnu"]}return[]}function G(e,t,n){if(!/^navio-/.test(e)||/\.(asc|sig|sha256|sha256sum|txt)$/i.test(e)||t==="win32"&&!/\.zip$/i.test(e)||t!=="win32"&&!/\.tar\.gz$/i.test(e))return!1;const i=J(t,n);return i.length?i.some(r=>e.toLowerCase().includes(r.toLowerCase())):!1}function X(e){return e?e>=1048576?(e/1048576).toFixed(1)+"M":e>=1024?Math.round(e/1024)+"K":e+"B":""}function K(e){return new Promise((t,n)=>{const i={headers:{Accept:"application/vnd.github+json","User-Agent":"navio-x"}};j.get(e,i,r=>{if(r.statusCode>=400)return r.resume(),n(new Error(`HTTP ${r.statusCode} for ${e}`));let a="";r.setEncoding("utf8"),r.on("data",d=>{a+=d}),r.on("end",()=>{try{t(JSON.parse(a))}catch(d){n(d)}})}).on("error",n)})}function Q(e){if(!e)return null;const t=e.match(/(\d+)\.(\d+)(?:\.(\d+))?(?:[-]?rc(\d+))?/i);return t?[parseInt(t[1],10),parseInt(t[2],10),t[3]?parseInt(t[3],10):0,t[4]?parseInt(t[4],10):1/0]:null}function Y(e,t){for(let n=0;n<4;n++)if(e[n]!==t[n])return e[n]-t[n];return 0}async function F(e,t){const n=await K(`${A}?per_page=20`),i=[];for(const a of n){const d=(a.assets||[]).filter(f=>G(f.name,e,t));if(!d.length)continue;const p=d.reduce((f,u)=>new Date(u.created_at)>new Date(f.created_at)?u:f);i.push({name:p.name,tag:a.tag_name,date:p.created_at,dateRaw:p.created_at||"",size:X(p.size),url:p.browser_download_url,tagUrl:a.html_url,notes:a.body||"",versionRank:Q(a.tag_name)})}i.sort((a,d)=>new Date(d.date)-new Date(a.date));let r=null;for(const a of i)a.versionRank&&(!r||Y(a.versionRank,r.versionRank)>0)&&(r=a);for(const a of i)a.latest=a===r,delete a.versionRank;return i}function Z(e,t,n){return new Promise((i,r)=>{function a(d){(d.startsWith("https:")?j:W).get(d,f=>{const u=f.statusCode;if(u===301||u===302||u===307||u===308){f.resume();const w=f.headers.location;if(!w)return r(new Error("Redirect with no Location header"));a(w);return}if(u&&u>=400){f.resume(),r({response:{status:u},message:`HTTP ${u}`});return}const c=h.createWriteStream(t),l=parseInt(f.headers["content-length"],10);let x=0;f.pipe(c),f.on("data",w=>{x+=w.length,n&&l&&n(Math.round(x/l*100))}),c.on("finish",()=>c.close(i)),c.on("error",w=>{try{h.unlinkSync(t)}catch{}r(w)})}).on("error",r)}a(e)})}async function ee(e,t){const n={filename:t,platform:v.platform(),arch:v.arch()};o.webContents.send("download-file",n);const i=m.join(s.app.getPath("downloads"),t);await Z(e,i,a=>{console.log("Progress:"+a),o.webContents.send("download-progress",a)});const r=m.join(s.app.getPath("userData"),"bin");return await h.promises.mkdir(r,{recursive:!0}),await $(i,r,{filter:a=>a.path.includes("/bin/")||a.path.startsWith("bin/"),map:a=>{const d=a.path.split("/"),p=d.indexOf("bin");return p!==-1&&(a.path=d.slice(p+1).join("/")),a}}),r}function O(e,t){return e&&e.code==="ENOTFOUND"?"Could not connect to url : "+t:e&&e.response&&e.response.status===404?"File not found (404) : "+t:e&&e.response&&e.response.status===403?"Access forbidden (403) : "+t:e&&e.code==="ECONNREFUSED"?"Connection refused.":e&&e.message?e.message:"An error occurred."}s.ipcMain.handle("download-latest",async()=>{const e=v.platform(),t=v.arch();console.log("Platform:"+e+" Arch:"+t);try{const n=await F(e,t);n.length>0?o.webContents.send("download-select-binary",{platform:e,arch:t,options:n}):o.webContents.send("download-error","No compatible binaries found in GitHub releases for this platform.")}catch(n){const i=O(n,A);console.error("GitHub releases fetch error:",i),o.webContents.send("download-error",i)}return null});s.ipcMain.handle("download-binary",async(e,t)=>{if(!t||typeof t!="object"||!t.url||!t.name)return o.webContents.send("download-error","Invalid download request."),null;const{url:n,name:i}=t;try{return await ee(n,i)}catch(r){const a=O(r,n);return console.error("Download error:",a),o.webContents.send("download-error",a),null}});s.ipcMain.handle("list-binaries",async()=>{const e=v.platform(),t=v.arch();try{const n=await F(e,t);return{success:!0,platform:e,arch:t,options:n}}catch(n){return{success:!1,error:n.message}}});function L(){const e=R(),t={win32:"naviod.exe",linux:"naviod",darwin:"naviod"},n=m.join(s.app.getPath("userData"),"bin"),i=t[process.platform];if(!i){console.error("Unsupported platform:",process.platform);return}const r=m.join(n,i);if(console.log("Starting daemon..."),console.log("Platform : "+process.platform),console.log("Architecture : "+process.arch),console.log("App Path : "+s.app.getAppPath()),console.log("Bin directory : "+n),console.log("Executable path : "+r),h.mkdirSync(n,{recursive:!0}),h.existsSync(r))console.error("Daemon binary found:",r);else{console.error("Daemon binary not found:",r),g=!1,o.webContents.send("is-daemon-started",{started:!1,error:"binary_not_found",path:r,network:e,rpcuser:S,rpcpassword:y});return}const a=e==="testnet"?"testnet-navio.nav.community":"blocks.nav.io",d=[...e!=="mainnet"?[`--${e}`]:[],"--printtoconsole","--walletcrosschain","-rpcworkqueue=64",`-rpcuser=${S}`,`-rpcpassword=${y}`,"-txindex=1",`-addnode=${a}`,"-debug=1"];console.log("Daemon Parameters : ["+d+"]");const p={cwd:n,env:process.env,shell:!1,windowsVerbatimArguments:process.platform==="win32"},f=()=>{console.log("Executable:",r),console.log("Params:",d.join(" "));const u=k.spawn(r,d,p);_=u,u.on("error",c=>{g=!1,console.error("Daemon start failed:",c),o.webContents.send("is-daemon-started",{started:!1,network:e,rpcuser:S,rpcpassword:y})}),u.on("exit",c=>{if(g=!1,console.log("Daemon exited with code:",c),c!==0&&c!==null&&!E){const l=P.slice(-80).join("").trim(),x=`Exit code: ${c}`+(l?`
+"use strict";
+const electron = require("electron");
+const node_os = require("node:os");
+const node_path = require("node:path");
+const node_child_process = require("node:child_process");
+const crypto = require("crypto");
+const path = require("path");
+const fs = require("fs");
+const https = require("https");
+const http = require("http");
+const decompress = require("decompress");
+const os = require("os");
+process.env.DIST_ELECTRON = node_path.join(__dirname, "..");
+process.env.DIST = node_path.join(process.env.DIST_ELECTRON, "../dist");
+process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL ? node_path.join(process.env.DIST_ELECTRON, "../public/") : process.env.DIST;
+if (node_os.release().startsWith("6.1")) electron.app.disableHardwareAcceleration();
+if (process.platform === "win32") electron.app.setAppUserModelId(electron.app.getName());
+if (!electron.app.requestSingleInstanceLock()) {
+  electron.app.quit();
+  process.exit(0);
+}
+console.log({
+  electron: process.versions.electron,
+  chrome: process.versions.chrome,
+  node: process.versions.node,
+  v8: process.versions.v8
+});
+let win = null;
+const preload = node_path.join(__dirname, "../preload/index.js");
+const url = process.env.VITE_DEV_SERVER_URL;
+const indexHtml = node_path.join(process.env.DIST, "index.html");
+const randomBytes = crypto.randomBytes(256);
+const rpcuser = crypto.createHash("sha256").update(randomBytes, "utf8").digest("hex");
+const rpcpassword = crypto.createHash("md5").update(randomBytes, "utf8").digest("hex");
+var daemonBinaryStarted = false;
+var daemonProcess = null;
+var daemonStderrLines = [];
+var daemonStopExpected = false;
+var daemonUpdateInProgress = false;
+var daemonExitResolvers = [];
+var daemonLogDir = null;
+var stakerStopExpected = false;
+var stakerProcess = null;
+var stakerExitResolvers = [];
+var tray = null;
+var isQuittingApp = false;
+function getNetwork() {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      if (config.network) return config.network;
+    }
+  } catch (e) {
+  }
+  return "mainnet";
+}
+function getDebugEnabled() {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      return !!config.debug;
+    }
+  } catch (e) {
+  }
+  return false;
+}
+function getSetupComplete() {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      return !!config.setupComplete;
+    }
+  } catch (e) {
+  }
+  return false;
+}
+function setSetupComplete(value) {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch (e) {
+    }
+    config.setupComplete = value;
+    fs.writeFileSync(configPath, JSON.stringify(config), "utf8");
+  } catch (e) {
+  }
+}
+function getDaemonAutoStart() {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      if (config.daemonAutoStart === void 0) return true;
+      return !!config.daemonAutoStart;
+    }
+  } catch (e) {
+  }
+  return true;
+}
+function getMinimizeToTray() {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      return !!config.minimizeToTray;
+    }
+  } catch (e) {
+  }
+  return false;
+}
+function getMinimizeOnClose() {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      return !!config.minimizeOnClose;
+    }
+  } catch (e) {
+  }
+  return false;
+}
+function showWindow() {
+  if (!win) return;
+  if (win.isMinimized()) win.restore();
+  win.show();
+  win.focus();
+}
+function createTray() {
+  if (tray) return;
+  const iconPath = node_path.join(process.env.VITE_PUBLIC, "tray-icon.png");
+  let image = electron.nativeImage.createFromPath(iconPath);
+  if (!image.isEmpty() && process.platform !== "darwin") {
+    image = image.resize({ width: 16, height: 16 });
+  }
+  tray = new electron.Tray(image);
+  tray.setToolTip("Navio X");
+  tray.setContextMenu(electron.Menu.buildFromTemplate([
+    { label: "Show Navio X", click: () => showWindow() },
+    { type: "separator" },
+    { label: "Quit", click: () => quitApp() }
+  ]));
+  tray.on("click", () => showWindow());
+}
+function destroyTray() {
+  if (tray) {
+    tray.destroy();
+    tray = null;
+  }
+}
+function updateTrayVisibility() {
+  if (getMinimizeToTray() || getMinimizeOnClose()) createTray();
+  else destroyTray();
+}
+function quitApp() {
+  isQuittingApp = true;
+  if (win) win.close();
+  else electron.app.quit();
+}
+async function createWindow() {
+  win = new electron.BrowserWindow({
+    title: "Navio X",
+    width: 1100,
+    height: 740,
+    center: true,
+    backgroundColor: "#0d071c",
+    transparent: false,
+    frame: false,
+    show: true,
+    hasShadow: true,
+    resizable: true,
+    vibrancy: process.platform === "darwin" ? "ultra-dark" : void 0,
+    icon: node_path.join(process.env.VITE_PUBLIC, "favicon.ico"),
+    webPreferences: {
+      preload,
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+  win.on("maximize", () => win == null ? void 0 : win.webContents.send("window-maximized"));
+  win.on("unmaximize", () => win == null ? void 0 : win.webContents.send("window-unmaximized"));
+  win.on("minimize", (e) => {
+    if (getMinimizeToTray()) {
+      e.preventDefault();
+      win.hide();
+    }
+  });
+  if (process.platform === "win32") {
+    try {
+      win.setVibrancy("acrylic");
+    } catch (e) {
+      console.log("Windows vibrancy not supported:", e.message);
+    }
+  }
+  win.setMenu(null);
+  if (process.env.VITE_DEV_SERVER_URL) {
+    win.loadURL(url);
+  } else {
+    win.loadFile(indexHtml);
+  }
+  win.on("close", (e) => {
+    if (!isQuittingApp && getMinimizeOnClose()) {
+      e.preventDefault();
+      win.hide();
+      return;
+    }
+    console.log("on-close");
+    console.log("is daemon binary started :" + daemonBinaryStarted);
+    if (daemonBinaryStarted) {
+      console.log("stop-daemon fired");
+      e.preventDefault();
+      daemonStopExpected = true;
+      win.webContents.send("stop-daemon", 5);
+    }
+  });
+  win.webContents.on("did-finish-load", () => {
+    if (getSetupComplete() && getDaemonAutoStart()) {
+      startDaemon();
+    } else {
+      win.webContents.send("is-daemon-started", {
+        started: false,
+        network: getNetwork(),
+        rpcuser,
+        rpcpassword,
+        daemonAutoStart: getDaemonAutoStart()
+      });
+    }
+    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  });
+  win.webContents.setWindowOpenHandler(({ url: url2 }) => {
+    if (url2.startsWith("https:")) electron.shell.openExternal(url2);
+    return { action: "deny" };
+  });
+}
+electron.app.whenReady().then(() => {
+  createWindow();
+  updateTrayVisibility();
+});
+electron.app.on("before-quit", (event) => {
+  isQuittingApp = true;
+  if (daemonBinaryStarted) {
+    console.log("before-quit");
+    event.preventDefault();
+  }
+});
+electron.app.on("will-quit", (event) => {
+  if (daemonBinaryStarted) {
+    console.log("will-quit");
+    event.preventDefault();
+  }
+});
+electron.app.on("window-all-closed", () => {
+  win = null;
+  if (process.platform !== "darwin") electron.app.quit();
+});
+electron.app.on("second-instance", () => {
+  showWindow();
+});
+electron.app.on("activate", () => {
+  const allWindows = electron.BrowserWindow.getAllWindows();
+  if (allWindows.length) {
+    allWindows[0].focus();
+  } else {
+    createWindow();
+  }
+});
+electron.ipcMain.handle("window-minimize", () => win == null ? void 0 : win.minimize());
+electron.ipcMain.handle("window-maximize", () => {
+  (win == null ? void 0 : win.isMaximized()) ? win.unmaximize() : win == null ? void 0 : win.maximize();
+});
+electron.ipcMain.handle("window-close", () => win == null ? void 0 : win.close());
+electron.ipcMain.handle("window-is-maximized", () => (win == null ? void 0 : win.isMaximized()) ?? false);
+electron.ipcMain.handle("get-bin-dir", () => {
+  return path.join(electron.app.getPath("userData"), "bin");
+});
+electron.ipcMain.handle("remove-bin-dir", async () => {
+  const fs2 = require("fs");
+  const path2 = require("path");
+  const { app } = require("electron");
+  const binDir = path2.join(app.getPath("userData"), "bin");
+  try {
+    if (fs2.existsSync(binDir)) {
+      fs2.rmSync(binDir, { recursive: true, force: true });
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+electron.ipcMain.handle("start-daemon", (_) => {
+  startDaemon();
+});
+electron.ipcMain.handle("stop-daemon-for-update", async () => {
+  try {
+    return await stopDaemonForUpdate();
+  } catch (e) {
+    return { stopped: false, error: e.message };
+  }
+});
+electron.ipcMain.handle("set-setup-complete", () => setSetupComplete(true));
+electron.ipcMain.handle("clear-setup-complete", () => setSetupComplete(false));
+electron.ipcMain.handle("get-setup-complete", () => getSetupComplete());
+electron.ipcMain.handle("check-binary-exists", () => {
+  const filenames = { win32: "naviod.exe", linux: "naviod", darwin: "naviod" };
+  const binDir = path.join(electron.app.getPath("userData"), "bin");
+  const binaryName = filenames[process.platform];
+  if (!binaryName) return false;
+  return fs.existsSync(path.join(binDir, binaryName));
+});
+electron.ipcMain.handle("save-network", (_, networkName) => {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch (e) {
+    }
+    config.network = networkName;
+    fs.writeFileSync(configPath, JSON.stringify(config), "utf8");
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+electron.ipcMain.handle("save-debug-setting", (_, enabled) => {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch (e) {
+    }
+    config.debug = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), "utf8");
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+electron.ipcMain.handle("save-daemon-autostart-setting", (_, enabled) => {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch (e) {
+    }
+    config.daemonAutoStart = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), "utf8");
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+electron.ipcMain.handle("save-minimize-to-tray-setting", (_, enabled) => {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch (e) {
+    }
+    config.minimizeToTray = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), "utf8");
+    updateTrayVisibility();
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+electron.ipcMain.handle("save-minimize-on-close-setting", (_, enabled) => {
+  try {
+    const configPath = path.join(electron.app.getPath("userData"), "config.json");
+    let config = {};
+    try {
+      if (fs.existsSync(configPath)) config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch (e) {
+    }
+    config.minimizeOnClose = !!enabled;
+    fs.writeFileSync(configPath, JSON.stringify(config), "utf8");
+    updateTrayVisibility();
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+electron.ipcMain.handle("start-staker", (_, network, wallet, rpcuser2, rpcpassword2, walletpassphrase) => {
+  startStaker(network, wallet, rpcuser2, rpcpassword2, walletpassphrase);
+});
+electron.ipcMain.handle("stop-staker", (_, pid) => {
+  if (pid) stopStaker(pid);
+});
+electron.ipcMain.handle("force-quit", () => {
+  daemonStopExpected = true;
+  if (daemonProcess) {
+    try {
+      daemonProcess.kill();
+    } catch (e) {
+      console.error("force-quit kill error:", e);
+    }
+    daemonProcess = null;
+  }
+  daemonBinaryStarted = false;
+  electron.app.quit();
+  process.exit(0);
+});
+electron.ipcMain.handle("shell-open-item", (_, path2) => {
+  electron.shell.showItemInFolder(`${path2}`);
+});
+electron.ipcMain.handle("shell-open-folder", async (_, folderPath) => {
+  return await electron.shell.openPath(folderPath);
+});
+electron.ipcMain.handle("update-startup-wallets", (_, { logpath, walletName, action }) => {
+  try {
+    const dir = path.dirname(logpath);
+    const settingsPath = path.join(dir, "settings.json");
+    let settings = { wallet: [] };
+    if (fs.existsSync(settingsPath)) {
+      try {
+        settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
+      } catch (e) {
+      }
+    }
+    if (!Array.isArray(settings.wallet)) settings.wallet = [];
+    if (action === "add") {
+      if (!settings.wallet.includes(walletName)) settings.wallet.push(walletName);
+    } else if (action === "remove") {
+      settings.wallet = settings.wallet.filter((w) => w !== walletName);
+    }
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 4), "utf8");
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+electron.ipcMain.handle("get-process-variables", async (_, folderPath) => {
+  return {
+    electron: process.versions.electron,
+    chrome: process.versions.chrome,
+    node: process.versions.node,
+    v8: process.versions.v8
+  };
+});
+const GITHUB_RELEASES_API = "https://api.github.com/repos/nav-io/navio-core/releases";
+function archTokens(platform, arch) {
+  if (platform === "win32") return ["win64", "x86_64-w64"];
+  if (platform === "darwin") {
+    if (arch === "arm64") return ["arm64-apple-darwin"];
+    if (arch === "x64") return ["x86_64-apple-darwin"];
+    return ["x86_64-apple-darwin"];
+  }
+  if (platform === "linux") {
+    if (arch === "x64") return ["x86_64-linux-gnu"];
+    if (arch === "arm64") return ["aarch64-linux-gnu"];
+    if (arch === "arm") return ["arm-linux-gnueabihf"];
+    if (arch === "ppc64") {
+      return os.endianness() === "LE" ? ["powerpc64le-linux-gnu"] : ["powerpc64-linux-gnu"];
+    }
+    if (arch === "riscv64") return ["riscv64-linux-gnu"];
+  }
+  return [];
+}
+function matchesGitHubAsset(name, platform, arch) {
+  if (!/^navio-/.test(name)) return false;
+  if (/\.(asc|sig|sha256|sha256sum|txt)$/i.test(name)) return false;
+  if (platform === "win32" && !/\.zip$/i.test(name)) return false;
+  if (platform !== "win32" && !/\.tar\.gz$/i.test(name)) return false;
+  const tokens = archTokens(platform, arch);
+  if (!tokens.length) return false;
+  return tokens.some((t) => name.toLowerCase().includes(t.toLowerCase()));
+}
+function formatSize(bytes) {
+  if (!bytes) return "";
+  if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + "M";
+  if (bytes >= 1024) return Math.round(bytes / 1024) + "K";
+  return bytes + "B";
+}
+function fetchJSON(url2) {
+  return new Promise((resolve, reject) => {
+    const opts = {
+      headers: { "Accept": "application/vnd.github+json", "User-Agent": "navio-x" }
+    };
+    https.get(url2, opts, (res) => {
+      if (res.statusCode >= 400) {
+        res.resume();
+        return reject(new Error(`HTTP ${res.statusCode} for ${url2}`));
+      }
+      let data = "";
+      res.setEncoding("utf8");
+      res.on("data", (c) => {
+        data += c;
+      });
+      res.on("end", () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }).on("error", reject);
+  });
+}
+function parseVersionRank(tag) {
+  if (!tag) return null;
+  const m = tag.match(/(\d+)\.(\d+)(?:\.(\d+))?(?:[-]?rc(\d+))?/i);
+  if (!m) return null;
+  return [
+    parseInt(m[1], 10),
+    parseInt(m[2], 10),
+    m[3] ? parseInt(m[3], 10) : 0,
+    m[4] ? parseInt(m[4], 10) : Infinity
+  ];
+}
+function compareVersionRank(a, b) {
+  for (let i = 0; i < 4; i++) {
+    if (a[i] !== b[i]) return a[i] - b[i];
+  }
+  return 0;
+}
+async function listGitHubReleases(platform, arch) {
+  const releases = await fetchJSON(`${GITHUB_RELEASES_API}?per_page=20`);
+  const result = [];
+  for (const release of releases) {
+    const assets = (release.assets || []).filter((a) => matchesGitHubAsset(a.name, platform, arch));
+    if (!assets.length) continue;
+    const asset = assets.reduce(
+      (newest, a) => new Date(a.created_at) > new Date(newest.created_at) ? a : newest
+    );
+    result.push({
+      name: asset.name,
+      tag: release.tag_name,
+      date: asset.created_at,
+      dateRaw: asset.created_at || "",
+      size: formatSize(asset.size),
+      url: asset.browser_download_url,
+      tagUrl: release.html_url,
+      notes: release.body || "",
+      versionRank: parseVersionRank(release.tag_name)
+    });
+  }
+  result.sort((a, b) => new Date(b.date) - new Date(a.date));
+  let latest = null;
+  for (const entry of result) {
+    if (!entry.versionRank) continue;
+    if (!latest || compareVersionRank(entry.versionRank, latest.versionRank) > 0) latest = entry;
+  }
+  for (const entry of result) {
+    entry.latest = entry === latest;
+    delete entry.versionRank;
+  }
+  return result;
+}
+function downloadFile(url2, dest, onProgress) {
+  return new Promise((resolve, reject) => {
+    function doGet(currentUrl) {
+      const mod = currentUrl.startsWith("https:") ? https : http;
+      mod.get(currentUrl, (response) => {
+        const status = response.statusCode;
+        if (status === 301 || status === 302 || status === 307 || status === 308) {
+          response.resume();
+          const location = response.headers.location;
+          if (!location) return reject(new Error("Redirect with no Location header"));
+          doGet(location);
+          return;
+        }
+        if (status && status >= 400) {
+          response.resume();
+          reject({ response: { status }, message: `HTTP ${status}` });
+          return;
+        }
+        const file = fs.createWriteStream(dest);
+        const total = parseInt(response.headers["content-length"], 10);
+        let downloaded = 0;
+        response.pipe(file);
+        response.on("data", (chunk) => {
+          downloaded += chunk.length;
+          if (onProgress && total) {
+            onProgress(Math.round(downloaded / total * 100));
+          }
+        });
+        file.on("finish", () => file.close(resolve));
+        file.on("error", (err) => {
+          try {
+            fs.unlinkSync(dest);
+          } catch (e) {
+          }
+          reject(err);
+        });
+      }).on("error", reject);
+    }
+    doGet(url2);
+  });
+}
+async function downloadAndExtract(url2, filename) {
+  const fileInfo = { filename, platform: os.platform(), arch: os.arch() };
+  win.webContents.send("download-file", fileInfo);
+  const savePath = path.join(electron.app.getPath("downloads"), filename);
+  await downloadFile(url2, savePath, (progress) => {
+    console.log("Progress:" + progress);
+    win.webContents.send("download-progress", progress);
+  });
+  const extractPath = path.join(electron.app.getPath("userData"), "bin");
+  await fs.promises.mkdir(extractPath, { recursive: true });
+  await decompress(savePath, extractPath, {
+    filter: (file) => file.path.includes("/bin/") || file.path.startsWith("bin/"),
+    map: (file) => {
+      const parts = file.path.split("/");
+      const binIndex = parts.indexOf("bin");
+      if (binIndex !== -1) {
+        file.path = parts.slice(binIndex + 1).join("/");
+      }
+      return file;
+    }
+  });
+  return extractPath;
+}
+function formatDownloadError(error, url2) {
+  if (error && error.code === "ENOTFOUND") return "Could not connect to url : " + url2;
+  if (error && error.response && error.response.status === 404) return "File not found (404) : " + url2;
+  if (error && error.response && error.response.status === 403) return "Access forbidden (403) : " + url2;
+  if (error && error.code === "ECONNREFUSED") return "Connection refused.";
+  if (error && error.message) return error.message;
+  return "An error occurred.";
+}
+function logDirSnapshot(label, dir) {
+  try {
+    const entries = fs.readdirSync(dir).map((name) => {
+      const stat = fs.statSync(path.join(dir, name));
+      return `${name} (${stat.size}b, mtime=${stat.mtime.toISOString()})`;
+    });
+    console.log(`[update] ${label}:`, entries);
+  } catch (e) {
+    console.log(`[update] ${label}: <unreadable> (${e.message})`);
+  }
+}
+async function updateBinaries(url2, filename, tag) {
+  const binDir = path.join(electron.app.getPath("userData"), "bin");
+  const stagingDir = path.join(electron.app.getPath("userData"), "bin_staging");
+  const backupDir = path.join(electron.app.getPath("userData"), "bin_backup");
+  await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {
+  });
+  await fs.promises.rm(backupDir, { recursive: true, force: true }).catch(() => {
+  });
+  console.log(`[update] Starting update to ${tag} from ${url2}`);
+  logDirSnapshot("bin dir before update", binDir);
+  win.webContents.send("update-status", { step: "downloading", tag });
+  const savePath = path.join(electron.app.getPath("downloads"), filename);
+  await downloadFile(url2, savePath, (progress) => {
+    win.webContents.send("update-download-progress", progress);
+  });
+  try {
+    const dlStat = fs.statSync(savePath);
+    console.log(`[update] Downloaded archive: ${savePath} (${dlStat.size}b, mtime=${dlStat.mtime.toISOString()})`);
+  } catch (e) {
+  }
+  win.webContents.send("update-status", { step: "extracting", tag });
+  await fs.promises.mkdir(stagingDir, { recursive: true });
+  await decompress(savePath, stagingDir, {
+    filter: (file) => file.path.includes("/bin/") || file.path.startsWith("bin/"),
+    map: (file) => {
+      const parts = file.path.split("/");
+      const binIndex = parts.indexOf("bin");
+      if (binIndex !== -1) {
+        file.path = parts.slice(binIndex + 1).join("/");
+      }
+      return file;
+    }
+  });
+  logDirSnapshot("staging dir after extraction", stagingDir);
+  console.log(`[update] Daemon PID before stop request: ${daemonProcess ? daemonProcess.pid : "(none)"}`);
+  win.webContents.send("update-status", { step: "stopping", tag });
+  const stopResult = await stopDaemonForUpdate();
+  console.log("[update] stopDaemonForUpdate result:", stopResult);
+  if (!stopResult.stopped) {
+    await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {
+    });
+    win.webContents.send("update-status", { step: "restarting", tag });
+    startDaemon();
+    const err = new Error("Could not confirm the daemon stopped safely. Attempted to restart with the previous version.");
+    err.daemonWasStopped = true;
+    throw err;
+  }
+  const stakerWasRunning = !!stakerProcess;
+  if (stakerWasRunning) {
+    console.log(`[update] Staker PID before stop request: ${stakerProcess.pid}`);
+    win.webContents.send("update-status", { step: "stopping-staker", tag });
+    const stakerStopResult = await stopStakerAndWait();
+    console.log("[update] stopStakerAndWait result:", stakerStopResult);
+  }
+  let installError = null;
+  try {
+    win.webContents.send("update-status", { step: "installing", tag });
+    if (fs.existsSync(binDir)) {
+      await fs.promises.rename(binDir, backupDir);
+    }
+    await fs.promises.rename(stagingDir, binDir);
+    console.log("[update] Rename swap completed without error.");
+  } catch (err) {
+    installError = err;
+    console.error("[update] Rename swap failed:", err);
+    if (fs.existsSync(backupDir) && !fs.existsSync(binDir)) {
+      await fs.promises.rename(backupDir, binDir).catch(() => {
+      });
+      console.log("[update] Rolled back to backup binaries after swap failure.");
+    }
+  }
+  logDirSnapshot("bin dir after install step", binDir);
+  await fs.promises.rm(backupDir, { recursive: true, force: true }).catch(() => {
+  });
+  await fs.promises.rm(stagingDir, { recursive: true, force: true }).catch(() => {
+  });
+  win.webContents.send("update-status", { step: "restarting", tag });
+  startDaemon();
+  console.log(`[update] New daemon PID after restart: ${daemonProcess ? daemonProcess.pid : "(none)"}`);
+  if (installError) {
+    installError.daemonWasStopped = true;
+    installError.stakerWasStopped = stakerWasRunning;
+    throw installError;
+  }
+  return { success: true, tag, stakerWasStopped: stakerWasRunning };
+}
+electron.ipcMain.handle("download-latest", async () => {
+  const platform = os.platform();
+  const arch = os.arch();
+  console.log("Platform:" + platform + " Arch:" + arch);
+  try {
+    const options = await listGitHubReleases(platform, arch);
+    if (options.length > 0) {
+      win.webContents.send("download-select-binary", { platform, arch, options });
+    } else {
+      win.webContents.send("download-error", "No compatible binaries found in GitHub releases for this platform.");
+    }
+  } catch (error) {
+    const errorMessage = formatDownloadError(error, GITHUB_RELEASES_API);
+    console.error("GitHub releases fetch error:", errorMessage);
+    win.webContents.send("download-error", errorMessage);
+  }
+  return null;
+});
+electron.ipcMain.handle("download-binary", async (_, payload) => {
+  if (!payload || typeof payload !== "object" || !payload.url || !payload.name) {
+    win.webContents.send("download-error", "Invalid download request.");
+    return null;
+  }
+  const { url: url2, name } = payload;
+  try {
+    return await downloadAndExtract(url2, name);
+  } catch (error) {
+    const errorMessage = formatDownloadError(error, url2);
+    console.error("Download error:", errorMessage);
+    win.webContents.send("download-error", errorMessage);
+    return null;
+  }
+});
+electron.ipcMain.handle("update-binary", async (_, payload) => {
+  if (!payload || typeof payload !== "object" || !payload.url || !payload.name) {
+    return { success: false, error: "Invalid update request.", daemonWasStopped: false, stakerWasStopped: false };
+  }
+  try {
+    return await updateBinaries(payload.url, payload.name, payload.tag);
+  } catch (error) {
+    const errorMessage = formatDownloadError(error, payload.url);
+    console.error("Update error:", errorMessage);
+    return { success: false, error: errorMessage, daemonWasStopped: !!error.daemonWasStopped, stakerWasStopped: !!error.stakerWasStopped };
+  }
+});
+electron.ipcMain.handle("list-binaries", async () => {
+  const platform = os.platform();
+  const arch = os.arch();
+  try {
+    const options = await listGitHubReleases(platform, arch);
+    return { success: true, platform, arch, options };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+function startDaemon() {
+  const network = getNetwork();
+  const debugEnabled = getDebugEnabled();
+  const filenames = {
+    win32: "naviod.exe",
+    linux: "naviod",
+    darwin: "naviod"
+  };
+  const binDir = path.join(electron.app.getPath("userData"), "bin");
+  const binaryName = filenames[process.platform];
+  if (!binaryName) {
+    console.error("Unsupported platform:", process.platform);
+    return;
+  }
+  const executablePath = path.join(binDir, binaryName);
+  console.log("Starting daemon...");
+  console.log("Platform : " + process.platform);
+  console.log("Architecture : " + process.arch);
+  console.log("App Path : " + electron.app.getAppPath());
+  console.log("Bin directory : " + binDir);
+  console.log("Executable path : " + executablePath);
+  fs.mkdirSync(binDir, { recursive: true });
+  if (!fs.existsSync(executablePath)) {
+    console.error("Daemon binary not found:", executablePath);
+    daemonBinaryStarted = false;
+    win.webContents.send("is-daemon-started", {
+      started: false,
+      error: "binary_not_found",
+      path: executablePath,
+      network,
+      rpcuser,
+      rpcpassword
+    });
+    return;
+  } else {
+    console.error("Daemon binary found:", executablePath);
+  }
+  const addnode = network === "testnet" ? "testnet-navio.nav.community" : "blocks.nav.io";
+  const parameters = [
+    ...network !== "mainnet" ? [`--${network}`] : [],
+    "--printtoconsole",
+    "--walletcrosschain",
+    "-rpcworkqueue=64",
+    `-rpcuser=${rpcuser}`,
+    `-rpcpassword=${rpcpassword}`,
+    "-txindex=1",
+    `-addnode=${addnode}`,
+    ...debugEnabled ? [
+      "-debug=1",
+      "-debugexclude=libevent",
+      "-debugexclude=http",
+      "-debugexclude=rpc",
+      "-debugexclude=leveldb",
+      "-debugexclude=bench",
+      "-debugexclude=net",
+      "-debugexclude=addrman"
+    ] : []
+  ];
+  console.log("Daemon Parameters : [" + parameters + "]");
+  const spawnOptions = {
+    cwd: binDir,
+    env: process.env,
+    shell: false,
+    windowsVerbatimArguments: process.platform === "win32"
+  };
+  const startProcess = () => {
+    console.log("Executable:", executablePath);
+    console.log("Params:", parameters.join(" "));
+    const proc = node_child_process.spawn(executablePath, parameters, spawnOptions);
+    daemonProcess = proc;
+    console.log(`Daemon spawned with PID ${proc.pid} from ${executablePath}`);
+    proc.on("error", (err) => {
+      daemonBinaryStarted = false;
+      console.error("Daemon start failed:", err);
+      win.webContents.send("is-daemon-started", { started: false, network, rpcuser, rpcpassword });
+    });
+    proc.on("exit", (code) => {
+      daemonBinaryStarted = false;
+      console.log(`Daemon (PID ${proc.pid}) exited with code:`, code);
+      const exitResolvers = daemonExitResolvers;
+      daemonExitResolvers = [];
+      exitResolvers.forEach((fn) => {
+        try {
+          fn(code);
+        } catch (e) {
+        }
+      });
+      if (daemonUpdateInProgress) {
+        daemonUpdateInProgress = false;
+        daemonStopExpected = false;
+        daemonProcess = null;
+        console.log("Daemon exited for binary update; app quit suppressed.");
+        return;
+      }
+      if (code !== 0 && code !== null && !daemonStopExpected) {
+        const stderrText = daemonStderrLines.slice(-80).join("").trim();
+        const detail = `Exit code: ${code}` + (stderrText ? `
 
 Last output:
-${l.slice(-3e3)}`:""),w=m.join(s.app.getPath("userData"),"bin"),I=M||s.app.getPath("userData");o==null||o.hide();let D;do D=s.dialog.showMessageBoxSync({type:"error",title:"Navio Daemon Crashed",message:"The Navio daemon exited unexpectedly.",detail:x,buttons:["Open Binary Folder","Open Log Folder","Close Navio X"],defaultId:2,cancelId:2}),D===0&&s.shell.openPath(w),D===1&&s.shell.openPath(I);while(D!==2)}s.app.quit(),process.exit(c??0)}),u.stdout.on("data",c=>{const l=c.toString();console.log("*",l);const x=l.match(/Using wallet directory (.+)/);x&&(M=x[1].trim()),l.includes("Starting HTTP server")&&(g=!0,o.webContents.send("is-daemon-started",{started:!0,network:e,rpcuser:S,rpcpassword:y}))}),u.stderr.on("data",c=>{const l=c.toString();P.push(l),P.length>200&&P.shift(),l.startsWith("Warning")||console.error("stderr:",l)})};process.platform==="linux"||process.platform==="darwin"?k.execFile("chmod",["+x",r],u=>{if(u){console.error("chmod failed:",u);return}f()}):f()}function te(e){console.log("Stopping staker. PID : "+e),process.kill(e,"SIGTERM")}function ne(e,t,n,i){console.log("Starting staker..."),console.log(`${e}`),console.log(`${t}`),console.log(`${n}`),console.log(`${i}`);let r=m.join(s.app.getPath("userData"),"bin"),a=process.platform!=="win32",d={linux:"navio-staker",darwin:"navio-staker",win32:"navio-staker.exe"},p=m.join(r,d[process.platform]);var f=["-"+e,"-wallet="+t,"-rpcuser="+n,"-rpcpassword="+i];console.log("Binary Parameters : ["+f+"]");const u={cwd:r,env:process.env,shell:a,windowsVerbatimArguments:!0};console.log("Platform : "+process.platform),console.log("App Path : "+s.app.getAppPath()),console.log("Architecture : "+process.arch);var c;process.platform==="linux"||process.platform==="darwin"?(console.log("Setting staker file as executable "+p),k.execFile("chmod",["+x",p],u,function(){c=k.spawn(p,f,u),c.on("error",l=>{console.log("Failed to start staker->"+p+"->"+l.message)}),c.pid?(o.webContents.send("start-staker-success",c.pid),console.log("Staker started. PID:"+c.pid),c.on("exit",l=>{c=null,o.webContents.send("stop-staker-success"),console.log("Staker stopped. Exit Code : "+l)}),c.stdout.on("data",l=>{console.log(l.toString())}),c.stderr.on("data",l=>{console.log("stderr : "+l),l.toString().startsWith("Warning")||console.log("Staker start failed->"+l.toString())})):console.log("Staker start failed.")})):(console.log(p),c=k.spawn(p,f,u),c.on("error",l=>{console.log("Failed to start staker."+l.message),console.log(l)}),c.pid?(o.webContents.send("start-staker-success",c.pid),console.log("Staker started. PID:"+c.pid),c.on("exit",l=>{c=null,o.webContents.send("stop-staker-success"),console.log("Staker stopped. Exit Code : "+l)}),c.stdout.on("data",l=>{console.log(l.toString())}),c.stderr.on("data",l=>{console.log("stderr : "+l),l.toString().startsWith("Warning")||console.log("Staker start failed",l.toString())})):console.log("Staker start failed."))}
+${stderrText.slice(-3e3)}` : "");
+        const binDir2 = path.join(electron.app.getPath("userData"), "bin");
+        const logDir = daemonLogDir || electron.app.getPath("userData");
+        win == null ? void 0 : win.hide();
+        let clicked;
+        do {
+          clicked = electron.dialog.showMessageBoxSync({
+            type: "error",
+            title: "Navio Daemon Crashed",
+            message: "The Navio daemon exited unexpectedly.",
+            detail,
+            buttons: ["Open Binary Folder", "Open Log Folder", "Close Navio X"],
+            defaultId: 2,
+            cancelId: 2
+          });
+          if (clicked === 0) electron.shell.openPath(binDir2);
+          if (clicked === 1) electron.shell.openPath(logDir);
+        } while (clicked !== 2);
+      }
+      electron.app.quit();
+      process.exit(code ?? 0);
+    });
+    proc.stdout.on("data", (data) => {
+      const out = data.toString();
+      console.log("*", out);
+      const walletDirMatch = out.match(/Using wallet directory (.+)/);
+      if (walletDirMatch) daemonLogDir = walletDirMatch[1].trim();
+      if (out.includes("Starting HTTP server")) {
+        daemonBinaryStarted = true;
+        win.webContents.send("is-daemon-started", { started: true, network, rpcuser, rpcpassword });
+      }
+    });
+    proc.stderr.on("data", (data) => {
+      const err = data.toString();
+      daemonStderrLines.push(err);
+      if (daemonStderrLines.length > 200) daemonStderrLines.shift();
+      if (!err.startsWith("Warning")) {
+        console.error("stderr:", err);
+      }
+    });
+  };
+  if (process.platform === "linux" || process.platform === "darwin") {
+    node_child_process.execFile("chmod", ["+x", executablePath], (err) => {
+      if (err) {
+        console.error("chmod failed:", err);
+        return;
+      }
+      startProcess();
+    });
+  } else {
+    startProcess();
+  }
+}
+function stopDaemonForUpdate(timeoutMs = 2e4, forceKillGraceMs = 5e3) {
+  return new Promise((resolve) => {
+    if (!daemonProcess || !daemonBinaryStarted) {
+      console.log("[update] stopDaemonForUpdate: no running daemon process tracked, treating as already stopped.");
+      resolve({ stopped: true, alreadyStopped: true });
+      return;
+    }
+    const targetPid = daemonProcess.pid;
+    console.log(`[update] stopDaemonForUpdate: waiting for PID ${targetPid} to exit.`);
+    daemonUpdateInProgress = true;
+    daemonStopExpected = true;
+    let settled = false;
+    let forceKillTimer = null;
+    let hardDeadlineTimer = null;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(forceKillTimer);
+      clearTimeout(hardDeadlineTimer);
+      console.log(`[update] stopDaemonForUpdate: settled for PID ${targetPid}:`, result);
+      resolve(result);
+    };
+    daemonExitResolvers.push((code) => finish({ stopped: true, code, pid: targetPid }));
+    win.webContents.send("request-daemon-stop-for-update");
+    forceKillTimer = setTimeout(() => {
+      console.warn(`[update] PID ${targetPid} did not exit gracefully in time, sending kill signal.`);
+      try {
+        daemonProcess && daemonProcess.kill();
+      } catch (e) {
+        console.error("force-kill error:", e);
+      }
+      hardDeadlineTimer = setTimeout(() => {
+        finish({ stopped: false, timedOut: true, pid: targetPid });
+      }, forceKillGraceMs);
+    }, timeoutMs);
+  });
+}
+function stopStaker(pid) {
+  console.log("Stopping staker. PID : " + pid);
+  stakerStopExpected = true;
+  try {
+    process.kill(pid, "SIGTERM");
+  } catch (err) {
+    console.log("Failed to stop staker->" + err.message);
+  }
+}
+function stopStakerAndWait(timeoutMs = 15e3, forceKillGraceMs = 3e3) {
+  return new Promise((resolve) => {
+    if (!stakerProcess) {
+      resolve({ stopped: true, alreadyStopped: true });
+      return;
+    }
+    const pid = stakerProcess.pid;
+    console.log(`[update] stopStakerAndWait: waiting for PID ${pid} to exit.`);
+    let settled = false;
+    let forceKillTimer = null;
+    let hardDeadlineTimer = null;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(forceKillTimer);
+      clearTimeout(hardDeadlineTimer);
+      console.log(`[update] stopStakerAndWait: settled for PID ${pid}:`, result);
+      resolve(result);
+    };
+    stakerExitResolvers.push((code) => finish({ stopped: true, code, pid }));
+    stopStaker(pid);
+    forceKillTimer = setTimeout(() => {
+      console.warn(`[update] navio-staker (PID ${pid}) did not exit gracefully in time, sending kill signal.`);
+      try {
+        stakerProcess && stakerProcess.kill();
+      } catch (e) {
+        console.error("force-kill error:", e);
+      }
+      hardDeadlineTimer = setTimeout(() => {
+        finish({ stopped: false, timedOut: true, pid });
+      }, forceKillGraceMs);
+    }, timeoutMs);
+  });
+}
+function startStaker(network, wallet, rpcuser2, rpcpassword2, walletpassphrase) {
+  console.log("Starting staker...");
+  console.log(`${network}`);
+  console.log(`${wallet}`);
+  console.log(`${rpcuser2}`);
+  console.log(`${rpcpassword2}`);
+  stakerStopExpected = false;
+  let stakerStderrLines = [];
+  let binDir = path.join(electron.app.getPath("userData"), "bin");
+  let filenames = {
+    linux: "navio-staker",
+    darwin: "navio-staker",
+    win32: "navio-staker.exe"
+  };
+  let executablePath = path.join(binDir, filenames[process.platform]);
+  var parameters = [
+    ...network === "testnet" ? ["-" + network] : [],
+    "-wallet=" + wallet,
+    "-rpcuser=" + rpcuser2,
+    "-rpcpassword=" + rpcpassword2,
+    ...walletpassphrase ? ["-walletpassphrase=" + walletpassphrase] : []
+  ];
+  console.log("Binary Parameters : [" + parameters.map((p) => p.startsWith("-walletpassphrase=") ? "-walletpassphrase=***" : p) + "]");
+  const defaults = {
+    cwd: binDir,
+    env: process.env,
+    shell: false,
+    windowsVerbatimArguments: false
+  };
+  console.log("Platform : " + process.platform);
+  console.log("App Path : " + electron.app.getAppPath());
+  console.log("Architecture : " + process.arch);
+  var newProcess;
+  if (process.platform === "linux" || process.platform === "darwin") {
+    console.log("Setting staker file as executable " + executablePath);
+    node_child_process.execFile("chmod", ["+x", executablePath], defaults, function(chmodErr) {
+      if (chmodErr) {
+        console.log("Failed to chmod staker binary->" + chmodErr.message);
+        win.webContents.send("start-staker-error", { code: chmodErr.code, message: chmodErr.message });
+        return;
+      }
+      newProcess = node_child_process.spawn(executablePath, parameters, defaults);
+      stakerProcess = newProcess;
+      newProcess.on("error", (err) => {
+        console.log("Failed to start staker->" + executablePath + "->" + err.message);
+        win.webContents.send("start-staker-error", { code: err.code, message: err.message });
+      });
+      if (newProcess.pid) {
+        win.webContents.send("start-staker-success", newProcess.pid);
+        console.log("Staker started. PID:" + newProcess.pid);
+        newProcess.on("exit", (code, signal) => {
+          newProcess = null;
+          stakerProcess = null;
+          const stakerResolvers = stakerExitResolvers;
+          stakerExitResolvers = [];
+          stakerResolvers.forEach((fn) => {
+            try {
+              fn(code);
+            } catch (e) {
+            }
+          });
+          if (code !== 0 && !stakerStopExpected) {
+            console.log("Staker exited unexpectedly. Exit Code : " + code + " Signal : " + signal);
+            const stderrText = stakerStderrLines.join("").trim();
+            win.webContents.send("start-staker-error", {
+              code,
+              signal,
+              message: stderrText || `Staker process exited with code ${code}`
+            });
+          } else {
+            win.webContents.send("stop-staker-success");
+            console.log("Staker stopped. Exit Code : " + code);
+          }
+        });
+        newProcess.stdout.on("data", (data) => {
+          console.log(data.toString());
+        });
+        newProcess.stderr.on("data", (stderr) => {
+          const text = stderr.toString();
+          console.log("stderr : " + text);
+          if (!text.startsWith("Warning")) {
+            console.log("Staker start failed->" + text);
+          }
+          stakerStderrLines.push(text);
+          if (stakerStderrLines.length > 80) stakerStderrLines.shift();
+        });
+      } else {
+        console.log("Staker start failed.");
+        win.webContents.send("start-staker-error", { message: "Failed to start staker process." });
+      }
+    });
+  } else {
+    console.log(executablePath);
+    newProcess = node_child_process.spawn(executablePath, parameters, defaults);
+    stakerProcess = newProcess;
+    newProcess.on("error", (err) => {
+      console.log("Failed to start staker." + err.message);
+      console.log(err);
+      win.webContents.send("start-staker-error", { code: err.code, message: err.message });
+    });
+    if (newProcess.pid) {
+      win.webContents.send("start-staker-success", newProcess.pid);
+      console.log("Staker started. PID:" + newProcess.pid);
+      newProcess.on("exit", (code, signal) => {
+        newProcess = null;
+        stakerProcess = null;
+        const stakerResolvers = stakerExitResolvers;
+        stakerExitResolvers = [];
+        stakerResolvers.forEach((fn) => {
+          try {
+            fn(code);
+          } catch (e) {
+          }
+        });
+        if (code !== 0 && !stakerStopExpected) {
+          console.log("Staker exited unexpectedly. Exit Code : " + code + " Signal : " + signal);
+          const stderrText = stakerStderrLines.join("").trim();
+          win.webContents.send("start-staker-error", {
+            code,
+            signal,
+            message: stderrText || `Staker process exited with code ${code}`
+          });
+        } else {
+          win.webContents.send("stop-staker-success");
+          console.log("Staker stopped. Exit Code : " + code);
+        }
+      });
+      newProcess.stdout.on("data", (data) => {
+        console.log(data.toString());
+      });
+      newProcess.stderr.on("data", (stderr) => {
+        const text = stderr.toString();
+        console.log("stderr : " + text);
+        if (!text.startsWith("Warning")) {
+          console.log("Staker start failed", text);
+        }
+        stakerStderrLines.push(text);
+        if (stakerStderrLines.length > 80) stakerStderrLines.shift();
+      });
+    } else {
+      console.log("Staker start failed.");
+      win.webContents.send("start-staker-error", { message: "Failed to start staker process." });
+    }
+  }
+}
+//# sourceMappingURL=index.js.map

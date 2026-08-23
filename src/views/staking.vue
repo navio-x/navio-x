@@ -46,7 +46,7 @@
             </div>
 
             <!-- Status row: button | commitments | staker status -->
-            <div class="flex items-stretch gap-3 px-3 pb-3">
+            <div class="flex flex-col sm:flex-row sm:items-stretch gap-3 px-3 pb-3">
 
                 <!-- Start / Stop button -->
                 <button v-if="!$store.state.is_staking_active" v-on:click="start_staking()"
@@ -103,7 +103,7 @@
 
             </div>
 
-<div class="flex gap-4 p-3">
+<div class="flex flex-col sm:flex-row gap-4 p-3">
 
   <!-- Lock group -->
   <div class="flex-1">
@@ -149,7 +149,7 @@
 
 
 <div class="p-5">
-    <div class="flex items-center justify-end gap-1.5 mb-3">
+    <div class="flex items-center flex-wrap justify-end gap-1.5 mb-3">
         <button v-for="range in chartRanges" :key="range.value" type="button"
             @click="setChartRange(range.value)"
             :class="chartRange === range.value
@@ -476,7 +476,7 @@
                 let rewards= [];
                 const now = new Date();
                 const nowEpoch = Math.floor(now.getTime() / 1000);
-                const isStakeReward = tx => tx.memo === 'Reward' && tx.label === 'Staking' && tx.category !== 'immature';
+                const isStakeReward = tx => tx.memo === 'Reward' && (tx.label === 'Staking' || !tx.label) && tx.category !== 'immature';
 
                 if (vm.chartRange === '1Y')
                 {

@@ -1,6 +1,6 @@
 {
   "name": "navio-x",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist-electron/main/index.js",
   "description": "navio-x wallet",
   "author": "x",
@@ -36,6 +36,8 @@
     "dev:web": "node proxy.js & vite --config vite.config.web.ts"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.6.8",
     "@tailwindcss/forms": "^0.5.7",
     "@vitejs/plugin-vue": "^4.3.3",
     "autoprefixer": "^10.4.16",
@@ -55,6 +57,8 @@
     "vue-tsc": "^1.8.8"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.0.18",
     "@phosphor-icons/vue": "^2.2.1",

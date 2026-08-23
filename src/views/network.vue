@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import { isWeb } from '../utils/platform.js'
+
 export default {
   name: 'NetworkSelector',
   props: {
@@ -78,7 +80,7 @@ export default {
   data() {
     return {
       selected: null,
-      isWeb: !!import.meta.env.VITE_WEB
+      isWeb
     }
   },
   mounted() {

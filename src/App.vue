@@ -1,6 +1,6 @@
 <script setup>
     import { Vue } from 'vue'
-    const isWeb = !!import.meta.env.VITE_WEB
+    import { isWeb } from './utils/platform.js'
 </script>
 
 <template>
@@ -547,7 +547,22 @@ v-show="state=='select_network'"
 </div>
 
 <div id="nav" v-show="state=='ready'">
-  <aside id="default-sidebar" class="fixed left-0 z-40 w-64 flex flex-col sidebar-glass" :class="isWeb ? 'top-0 h-screen' : 'top-9 h-[calc(100vh-36px)]'" aria-label="Sidebar">
+  <!-- Mobile menu toggle (hidden at sm and up, where the sidebar is always visible) -->
+  <button type="button" @click="sidebarOpen = !sidebarOpen"
+    class="sm:hidden fixed left-3 z-50 inline-flex items-center justify-center w-9 h-9 rounded-lg glass-btn-secondary text-white focus:outline-none"
+    :class="isWeb ? 'top-3' : 'top-11'"
+    aria-label="Toggle menu" :aria-expanded="sidebarOpen">
+    <PhX v-if="sidebarOpen" :size="20" weight="bold" />
+    <PhList v-else :size="20" weight="bold" />
+  </button>
+
+  <!-- Backdrop for the mobile off-canvas sidebar -->
+  <div v-if="sidebarOpen" @click="sidebarOpen = false" class="sm:hidden fixed inset-0 z-30 bg-black/50"></div>
+
+  <aside id="default-sidebar"
+    class="fixed left-0 z-40 w-64 flex flex-col sidebar-glass transition-transform duration-300 ease-in-out sm:translate-x-0"
+    :class="[isWeb ? 'top-0 h-screen' : 'top-9 h-[calc(100vh-36px)]', sidebarOpen ? 'translate-x-0' : '-translate-x-full']"
+    aria-label="Sidebar">
 
     <!-- Ambient glow blobs -->
     <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-none">
@@ -556,7 +571,7 @@ v-show="state=='select_network'"
   </div>
 
   <!-- Main nav -->
-  <nav class="relative flex-1 overflow-y-auto px-3 pt-4 pb-2">
+  <nav class="relative flex-1 overflow-y-auto px-3 pt-16 sm:pt-4 pb-2">
       <router-link to="/home"
       class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
       active-class="nav-item-active">
@@ -685,7 +700,7 @@ v-show="state=='select_network'"
 
 </aside>
 
-<div class="sm:ml-64" :class="isWeb ? 'h-screen' : 'h-[calc(100vh-36px)] mt-9'">
+<div class="sm:ml-64" :class="isWeb ? 'h-screen pt-16 sm:pt-0' : 'h-[calc(100vh-36px)] mt-9 pt-14 sm:pt-0'">
   <router-view />
 </div>
 </div>
@@ -698,13 +713,14 @@ v-show="state=='select_network'"
     import Swal from 'sweetalert2';
     import '@sweetalert2/theme-dark/dark.scss';
     import Client from 'bitcoin-core';
+    import { isWeb } from './utils/platform.js';
     import NetworkSelector from './views/network.vue';
     import SettingsView from './views/settings.vue';
     import TitleBar from './components/TitleBar.vue';
     import {
         PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
         PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
-        PhGearSix, PhInfo
+        PhGearSix, PhInfo, PhList, PhX
     } from '@phosphor-icons/vue';
     const Toast = Swal.mixin({
         toast: true,
@@ -718,7 +734,7 @@ v-show="state=='select_network'"
           NetworkSelector, SettingsView, TitleBar,
           PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
           PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
-          PhGearSix, PhInfo
+          PhGearSix, PhInfo, PhList, PhX
       },
       data() {
         const networks = [
@@ -731,6 +747,7 @@ v-show="state=='select_network'"
           networks,
           app:null,
           state: "",
+          sidebarOpen: false,
           username:"",
           password:"",
           host: localStorage.getItem('host') || "localhost",
@@ -784,6 +801,9 @@ v-show="state=='select_network'"
         clearTimeout(this._updateAttentionTimer);
         this._updateAttentionTimer = setTimeout(() => { this.updateAttentionActive = false; }, 5000);
       }
+    },
+    '$route'() {
+      this.sidebarOpen = false;
     }
   },
 methods: {
@@ -834,7 +854,7 @@ methods: {
         this.port    = net.port;
         localStorage.setItem('network', net.name);
         ipcRenderer.invoke('save-network', net.name);
-        this.state = import.meta.env.VITE_WEB ? 'setup' : 'select_daemon_method';
+        this.state = isWeb ? 'setup' : 'select_daemon_method';
     },
     getBlockChainInfo: function() {
         const batch = [{ method: "getblockchaininfo" }];
@@ -1389,7 +1409,7 @@ mounted()
         {
             if (!data.started)
             {
-                this.state = import.meta.env.VITE_WEB ? 'setup' : 'select_daemon_method';
+                this.state = isWeb ? 'setup' : 'select_daemon_method';
             }
             else
             {

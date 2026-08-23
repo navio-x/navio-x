@@ -16,8 +16,8 @@
       <!-- ── General ── -->
       <div class="text-xs font-semibold uppercase tracking-widest text-white/40 pt-1">General</div>
 
-      <!-- Daemon Auto-Start -->
-      <div class="w-full p-5 glass-card rounded-xl">
+      <!-- Daemon Auto-Start (desktop only — manages the local naviod process) -->
+      <div v-if="!isWeb" class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Daemon Auto-Start</h5>
         <p class="mb-3 text-sm text-white/60">Automatically start the local Navio daemon on launch. Turn off to choose your connection method (download binaries or manual connection) each time the app starts.</p>
         <label class="inline-flex items-center cursor-pointer">
@@ -39,8 +39,8 @@
         </label>
       </div>
 
-      <!-- Window Behavior -->
-      <div class="w-full p-5 glass-card rounded-xl">
+      <!-- Window Behavior (desktop only — no tray/taskbar on mobile) -->
+      <div v-if="!isWeb" class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Window Behavior</h5>
         <p class="mb-4 text-sm text-white/60">Control what happens when you minimize or close the window. Requires a restart to take effect.</p>
 
@@ -109,8 +109,8 @@
       <!-- ── Advanced ── -->
       <div class="text-xs font-semibold uppercase tracking-widest text-white/40 pt-2">Advanced</div>
 
-      <!-- Debug -->
-      <div class="w-full p-5 glass-card rounded-xl">
+      <!-- Debug (desktop only — reads local daemon/staker log files) -->
+      <div v-if="!isWeb" class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Debug</h5>
         <p class="mb-3 text-sm text-white/60">View Navio logs.</p>
 
@@ -141,8 +141,8 @@
         </div>
       </div>
 
-      <!-- Navio Binaries -->
-      <div class="w-full p-5 glass-card rounded-xl">
+      <!-- Navio Binaries (desktop only — manages the downloaded local binaries) -->
+      <div v-if="!isWeb" class="w-full p-5 glass-card rounded-xl">
         <h5 class="mb-1 text-base font-semibold text-white">Navio Binaries</h5>
         <p class="mb-3 text-sm text-white/60">View the binary files required for Navio to run.</p>
         <div v-if="binDir">
@@ -194,6 +194,7 @@
   import Swal from 'sweetalert2';
   import '@sweetalert2/theme-dark/dark.scss';
   import { FIAT_CURRENCIES } from '../stores/navPrice';
+  import { isWeb } from '../utils/platform.js';
   const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -213,6 +214,7 @@
       ];
       const currentNetwork = localStorage.getItem('network') || 'mainnet';
       return {
+        isWeb,
         networks,
         currentNetwork,
         selectedNetwork: currentNetwork,
