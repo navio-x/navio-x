@@ -380,8 +380,23 @@
             getbalance : function()
             {
                 let vm=this;
-                vm.client.getBalances().then((r) => { vm.balance=r; })
+                return vm.client.getBalances().then((r) => { vm.balance=r; })
                     .catch((r) => { console.log(r); });
+            },
+            scheduleNextBalancePoll : function()
+            {
+                let vm=this;
+                // Chained via setTimeout (not setInterval) so a slow/stuck naviod call
+                // never causes the next tick to pile another request on top of it.
+                vm.balanceTimer = setTimeout(() =>
+                {
+                    if (!vm.balancePollActive) return;
+                    vm.getbalance().then(() =>
+                    {
+                        if (vm.balancePollActive) vm.scheduleNextBalancePoll();
+                    });
+                },
+                5000);
             },
             stop_staking : function()
             {
@@ -679,13 +694,15 @@
 
             this.list_staked_commitments();
             this.getbalance();
-            this.balanceTimer = setInterval(() => { this.getbalance(); }, 5000);
+            this.balancePollActive = true;
+            this.scheduleNextBalancePoll();
             ipcRenderer.invoke('get-bin-dir').then((dir) => { vm.binDir = dir; });
             this.fetch_transactions();
         },
         beforeUnmount()
         {
-            clearInterval(this.balanceTimer);
+            this.balancePollActive = false;
+            clearTimeout(this.balanceTimer);
         }
 }
 </script>

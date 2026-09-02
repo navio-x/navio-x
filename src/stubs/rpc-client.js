@@ -9,6 +9,8 @@ const PROXY = (typeof window !== 'undefined' ? window.location.origin : 'http://
 // relay, which is what makes CORS work there.
 const isNative = Capacitor.isNativePlatform();
 
+const RPC_TIMEOUT_MS = 15000;
+
 class WebRPCClient {
   constructor({ host = 'localhost', port = 48471, username = '', password = '', wallet = null } = {}) {
     this.host     = host;
@@ -27,27 +29,38 @@ class WebRPCClient {
       params:  params ?? [],
     };
 
-    const request = isNative
-      ? CapacitorHttp.post({
-          url: `http://${this.host}:${this.port}${this.wallet ? `/wallet/${encodeURIComponent(this.wallet)}` : '/'}`,
-          headers: {
-            'Content-Type':  'application/json',
-            'Authorization': `Basic ${btoa(`${this.username}:${this.password}`)}`,
-          },
-          data: body,
-        }).then(response => response.data)
-      : fetch(PROXY, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-RPC-Host':   this.host,
-            'X-RPC-Port':   String(this.port),
-            'X-RPC-User':   this.username,
-            'X-RPC-Pass':   this.password,
-            ...(this.wallet ? { 'X-RPC-Wallet': this.wallet } : {}),
-          },
-          body: JSON.stringify(body),
-        }).then(r => r.json());
+    // Without a bound here, a stuck naviod (busy rescan, full rpcworkqueue)
+    // leaves the request pending forever — the caller's promise never settles,
+    // so polling loops pile up more requests on top instead of failing and retrying.
+    let request;
+    if (isNative) {
+      request = CapacitorHttp.post({
+        url: `http://${this.host}:${this.port}${this.wallet ? `/wallet/${encodeURIComponent(this.wallet)}` : '/'}`,
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Basic ${btoa(`${this.username}:${this.password}`)}`,
+        },
+        data: body,
+        connectTimeout: RPC_TIMEOUT_MS,
+        readTimeout: RPC_TIMEOUT_MS,
+      }).then(response => response.data);
+    } else {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+      request = fetch(PROXY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-RPC-Host':   this.host,
+          'X-RPC-Port':   String(this.port),
+          'X-RPC-User':   this.username,
+          'X-RPC-Pass':   this.password,
+          ...(this.wallet ? { 'X-RPC-Wallet': this.wallet } : {}),
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      }).then(r => r.json()).finally(() => clearTimeout(timer));
+    }
 
     return request.then(data => {
       if (data.error) {

@@ -472,7 +472,7 @@
 			getbalance: function()
 			{
 				let vm=this;
-				vm.client.getBalances().then((r) =>
+				return vm.client.getBalances().then((r) =>
 				{
 					vm.balance=r;
 					vm.loading=false;
@@ -496,7 +496,9 @@
 					const wait = Math.max(0, minLoadingMs - (Date.now() - loadStart));
 					setTimeout(() => { vm.txsLoading = false; }, wait);
 				};
-				vm.client.command([{ method: "listtransactions", parameters: [] }]).then((r) =>
+				// only the last 5 are ever shown on this page, so ask naviod for
+				// just those instead of pulling its (growing) default page size
+				return vm.client.command([{ method: "listtransactions", parameters: ["*", 5] }]).then((r) =>
 				{
 					if (r[0].name=="RpcError"||r[0].code)
 					{
@@ -519,7 +521,7 @@
 			{
 				let vm=this;
 				console.log("listtransactions");
-				vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
+				return vm.client.command([{ method: "listtransactions", parameters: ["*", 100000] }]).then((r) =>
 				{
 					if (r[0].name=="RpcError"||r[0].code)
 					{
@@ -527,28 +529,45 @@
 						console.log(r);
 					}
 					else
-					{ 
+					{
 						vm.alltxs=r[0];
 					}
 				});
+			},
+			scheduleNextPoll: function()
+			{
+				let vm=this;
+				// Chained via setTimeout (not setInterval) so a slow/stuck naviod call
+				// never causes the next tick to pile another request on top of it.
+				vm.pollTimer = setTimeout(() =>
+				{
+					if (!vm.pollActive) return;
+					vm.pollTick++;
+					const tasks = [vm.getbalance(), vm.listtransactions()];
+					// full-history scan is only needed for the staking reward sums and
+					// is expensive on large wallets, so it runs far less often (~every 60s)
+					if (vm.pollTick % 6 === 0) tasks.push(vm.listalltransactions());
+					Promise.allSettled(tasks).then(() =>
+					{
+						if (vm.pollActive) vm.scheduleNextPoll();
+					});
+				},
+				10000);
 			}
 		},
 		mounted() {
 			this.getbalance();
 			this.listtransactions();
 			this.listalltransactions();
-			this.timer = setInterval(() =>
-			{
-				this.getbalance();
-				this.listtransactions();
-				this.listalltransactions();
-			},
-			10000);
+			this.pollTick = 0;
+			this.pollActive = true;
+			this.scheduleNextPoll();
 			startPricePolling();
 		},
 		beforeUnmount()
 		{
-			clearInterval(this.timer);
+			this.pollActive = false;
+			clearTimeout(this.pollTimer);
 			stopPricePolling();
 		}
 	}

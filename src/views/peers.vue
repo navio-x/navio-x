@@ -243,38 +243,47 @@ export default {
     return {
       peers: [],
       networkInfo: {},
-      intervalId: undefined,
+      pollTimer: undefined,
+      pollActive: false,
       node_name: '',
       node_add_type: 'onetry',
     }
   },
   methods: {
     getpeerinfo() {
-      this.client.command([{ method: 'getpeerinfo' }]).then((r) => {
+      return this.client.command([{ method: 'getpeerinfo' }]).then((r) => {
         if (r[0] && (r[0].name === 'RpcError' || r[0].code)) {
           console.log('getpeerinfo RpcError', r);
         } else {
           this.peers = r[0];
         }
-      });
+      }).catch((r) => console.log('getpeerinfo error', r));
     },
     getnetworkinfo() {
-      this.client.command([{ method: 'getnetworkinfo' }]).then((r) => {
+      return this.client.command([{ method: 'getnetworkinfo' }]).then((r) => {
         if (r[0] && (r[0].name === 'RpcError' || r[0].code)) {
           console.log('getnetworkinfo RpcError', r);
         } else {
           this.networkInfo = r[0];
         }
-      });
+      }).catch((r) => console.log('getnetworkinfo error', r));
+    },
+    scheduleNextPoll() {
+      // Chained via setTimeout (not setInterval) so a slow/stuck naviod call
+      // never causes the next tick to pile another request on top of it.
+      this.pollTimer = window.setTimeout(() => {
+        if (!this.pollActive) return;
+        Promise.allSettled([this.getpeerinfo(), this.getnetworkinfo()]).then(() => {
+          if (this.pollActive) this.scheduleNextPoll();
+        });
+      }, 5000);
     },
   },
   mounted() {
     this.getpeerinfo();
     this.getnetworkinfo();
-    this.intervalId = window.setInterval(() => {
-      this.getpeerinfo();
-      this.getnetworkinfo();
-    }, 5000);
+    this.pollActive = true;
+    this.scheduleNextPoll();
 
     let $buttonElement = document.querySelector('#button-add-node');
     let $modalElement = document.querySelector('#modal-add-node');
@@ -299,7 +308,8 @@ export default {
     }
   },
   unmounted() {
-    window.clearInterval(this.intervalId);
+    this.pollActive = false;
+    window.clearTimeout(this.pollTimer);
   }
 }
 </script>

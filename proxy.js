@@ -59,19 +59,37 @@ function proxyRPC(req, res) {
       },
     };
 
+    let responded = false;
+
     const proxyReq = http.request(opts, proxyRes => {
       let data = '';
       proxyRes.on('data', chunk => { data += chunk; });
       proxyRes.on('end', () => {
+        if (responded) return;
+        responded = true;
         res.setHeader('Content-Type', 'application/json');
         res.writeHead(proxyRes.statusCode);
         res.end(data);
       });
     });
 
+    // A stuck naviod (busy rescan, full rpcworkqueue) would otherwise hold this
+    // socket open indefinitely, so bound it and fail fast instead of hanging.
+    proxyReq.setTimeout(20000, () => {
+      proxyReq.destroy(new Error('naviod RPC request timed out'));
+    });
+
     proxyReq.on('error', e => {
+      if (responded) return;
+      responded = true;
       res.writeHead(502);
       res.end(JSON.stringify({ error: { code: -1, message: e.message } }));
+    });
+
+    // If the browser gave up on us (e.g. its own fetch timeout aborted),
+    // don't keep the upstream request occupying a naviod rpcworkqueue slot.
+    res.on('close', () => {
+      if (!responded) proxyReq.destroy();
     });
 
     proxyReq.write(body);

@@ -704,7 +704,7 @@
       getwalletinfo:function()
       {
         let vm=this;
-        this.client.command('getwalletinfo').then((r) =>
+        return this.client.command('getwalletinfo').then((r) =>
         {
           vm.is_wallet_loaded=true;
           vm.wallet_info=r;
@@ -724,6 +724,21 @@
             vm.wallet_info=undefined;
           }
         });
+      },
+      scheduleNextWalletInfoPoll:function()
+      {
+        let vm=this;
+        // Chained via setTimeout (not setInterval) so a slow/stuck naviod call
+        // never causes the next tick to pile another request on top of it.
+        vm.walletInfoTimer = setTimeout(() =>
+        {
+          if (!vm.pollActive) return;
+          vm.getwalletinfo().then(() =>
+          {
+            if (vm.pollActive) vm.scheduleNextWalletInfoPoll();
+          });
+        },
+        1000);
       },
       manage_wallet:function(wallet)
       {
@@ -1047,11 +1062,8 @@
       this.listwalletdir().then(() =>
       {
         vm.getwalletinfo();
-        vm.timer = setInterval(() =>
-        {
-          vm.getwalletinfo();
-        },
-        1000);
+        vm.pollActive = true;
+        vm.scheduleNextWalletInfoPoll();
       });
       this.client.command([{ method: "getrpcinfo" }]).then((r) => {
         if (r[0] && r[0].logpath) vm.logpath = r[0].logpath;
@@ -1091,7 +1103,8 @@
     },
     beforeUnmount()
     {
-      clearInterval(this.timer);
+      this.pollActive = false;
+      clearTimeout(this.walletInfoTimer);
     }
   }
 </script>
