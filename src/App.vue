@@ -688,6 +688,10 @@ v-show="state=='select_network'"
     <span :class="blocks == headers ? 'text-emerald-400/70' : 'text-violet-400/70'">{{ headers.toLocaleString() }}</span>
 </span>
 </div>
+<div class="pt-2 flex items-center justify-between">
+  <span class="text-[11px] text-white/55">Difficulty</span>
+  <span class="text-[11px] font-mono text-white/80" :title="difficulty">{{ format_difficulty(difficulty) }}</span>
+</div>
 <div v-if="mempoolTxids.length" class="pt-2 flex items-center justify-between">
   <span class="text-[11px] text-white/55">Mempool</span>
   <button type="button" @click="show_mempool()" class="text-[11px] font-mono text-violet-300 hover:text-violet-200 transition-colors focus:outline-none">
@@ -761,6 +765,7 @@ v-show="state=='select_network'"
           network: savedNetwork,
           blocks:0,
           headers:0,
+          difficulty:0,
           chain:undefined,
           networkinfo:{},
           mempoolTxids:[],
@@ -871,6 +876,7 @@ methods: {
             vm.chain=r[0].chain;
             vm.blocks=r[0].blocks;
             vm.headers=r[0].headers;
+            vm.difficulty=r[0].difficulty;
             if (!vm.$store.state.active_wallet)
             {
                 console.log("Listing wallets...");
@@ -927,6 +933,14 @@ methods: {
             width: 640,
             confirmButtonText: 'Close',
         });
+    },
+    format_difficulty: function(difficulty) {
+        const n = Number(difficulty);
+        if (!isFinite(n)) return '0';
+        if (n >= 1e9) return (n / 1e9).toFixed(2) + 'G';
+        if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+        if (n >= 1e3) return (n / 1e3).toFixed(2) + 'K';
+        return n.toFixed(2);
     },
     formatSubversion: function(subversion) {
         if (!subversion) return '';
