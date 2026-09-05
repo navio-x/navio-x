@@ -692,6 +692,10 @@ v-show="state=='select_network'"
   <span class="text-[11px] text-white/55">Difficulty</span>
   <span class="text-[11px] font-mono text-white/80" :title="difficulty">{{ format_difficulty(difficulty) }}</span>
 </div>
+<div v-if="lastBlockTime" class="pt-2 flex items-center justify-between">
+  <span class="text-[11px] text-white/55">Last block</span>
+  <span class="text-[11px] font-mono text-white/80" :title="new Date(lastBlockTime * 1000).toLocaleString()">{{ format_time_ago(lastBlockTime) }}</span>
+</div>
 <div v-if="mempoolTxids.length" class="pt-2 flex items-center justify-between">
   <span class="text-[11px] text-white/55">Mempool</span>
   <button type="button" @click="show_mempool()" class="text-[11px] font-mono text-violet-300 hover:text-violet-200 transition-colors focus:outline-none">
@@ -769,6 +773,7 @@ v-show="state=='select_network'"
           chain:undefined,
           networkinfo:{},
           mempoolTxids:[],
+          lastBlockTime:0,
           remember:false,
           auto_login:false,
           is_downloading:false,
@@ -909,6 +914,32 @@ methods: {
         {
             console.log(r);
         });
+    },
+    getBestBlockTime: function() {
+        let vm=this;
+        this.client.command([{ method: "getbestblockhash" }]).then((r) =>
+        {
+            const hash = r[0];
+            if (!hash) return null;
+            return vm.client.command([{ method: "getblock", parameters: [hash] }]);
+        }).then((r) =>
+        {
+            if (r && r[0]) vm.lastBlockTime = r[0].time;
+        }).catch((r) =>
+        {
+            console.log(r);
+        });
+    },
+    format_time_ago: function(unixTime) {
+        if (!unixTime) return '';
+        const seconds = Math.max(0, Math.floor(Date.now() / 1000) - unixTime);
+        if (seconds < 60) return seconds + 's ago';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + 'm ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + 'h ' + (minutes % 60) + 'm ago';
+        const days = Math.floor(hours / 24);
+        return days + 'd ' + (hours % 24) + 'h ago';
     },
     getRawMempool: function() {
         const batch = [{ method: "getrawmempool" }];
@@ -1327,8 +1358,11 @@ methods: {
             {
                 vm.getBlockChainInfo();
                 vm.getNetworkInfo();
-                vm.getRawMempool();
             }, 1000);
+            // Mempool size only needs to be roughly fresh for the sidebar label.
+            window.setInterval(function() { vm.getRawMempool(); }, 5000);
+            // ~120s average block time — 20s gives 6 checks/block without hammering the node.
+            window.setInterval(function() { vm.getBestBlockTime(); }, 20000);
         }).catch((r) =>
         {
             this.state='connection_error';
