@@ -688,6 +688,12 @@ v-show="state=='select_network'"
     <span :class="blocks == headers ? 'text-emerald-400/70' : 'text-violet-400/70'">{{ headers.toLocaleString() }}</span>
 </span>
 </div>
+<div v-if="mempoolTxids.length" class="pt-2 flex items-center justify-between">
+  <span class="text-[11px] text-white/55">Mempool</span>
+  <button type="button" @click="show_mempool()" class="text-[11px] font-mono text-violet-300 hover:text-violet-200 transition-colors focus:outline-none">
+    {{ mempoolTxids.length }} tx
+  </button>
+</div>
 </div>
 <div v-else class="flex items-center gap-2.5 px-1 py-2">
     <svg class="w-4 h-4 text-violet-400 animate-spin shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -757,6 +763,7 @@ v-show="state=='select_network'"
           headers:0,
           chain:undefined,
           networkinfo:{},
+          mempoolTxids:[],
           remember:false,
           auto_login:false,
           is_downloading:false,
@@ -895,6 +902,30 @@ methods: {
         }).catch((r) =>
         {
             console.log(r);
+        });
+    },
+    getRawMempool: function() {
+        const batch = [{ method: "getrawmempool" }];
+        let vm=this;
+        this.client.command(batch).then((r) =>
+        {
+            vm.mempoolTxids = Array.isArray(r[0]) ? r[0] : [];
+        }).catch((r) =>
+        {
+            console.log(r);
+        });
+    },
+    show_mempool: function() {
+        if (!this.mempoolTxids.length) return;
+        const rows = this.mempoolTxids.map((txid) =>
+            '<div style="padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.08);font-family:monospace;font-size:12px;word-break:break-all;">' + txid + '</div>'
+        ).join('');
+        Swal.fire({
+            theme: 'dark',
+            title: 'Mempool (' + this.mempoolTxids.length + ' tx)',
+            html: '<div style="text-align:left;max-height:55vh;overflow-y:auto;border:1px solid rgba(255,255,255,0.08);border-radius:8px;">' + rows + '</div>',
+            width: 640,
+            confirmButtonText: 'Close',
         });
     },
     formatSubversion: function(subversion) {
@@ -1282,6 +1313,7 @@ methods: {
             {
                 vm.getBlockChainInfo();
                 vm.getNetworkInfo();
+                vm.getRawMempool();
             }, 1000);
         }).catch((r) =>
         {
