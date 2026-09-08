@@ -916,6 +916,9 @@ methods: {
         });
     },
     getBestBlockTime: function() {
+        // Skip while syncing: the tip is moving too fast for this to be meaningful,
+        // and it's an unnecessary RPC round-trip on a daemon that's already busy.
+        if (this.blocks != this.headers) return;
         let vm=this;
         this.client.command([{ method: "getbestblockhash" }]).then((r) =>
         {
@@ -942,6 +945,9 @@ methods: {
         return days + 'd ' + (hours % 24) + 'h ago';
     },
     getRawMempool: function() {
+        // Skip while syncing: mempool is irrelevant during IBD and this is an
+        // unnecessary RPC call on a daemon that's already busy catching up.
+        if (this.blocks != this.headers) return;
         const batch = [{ method: "getrawmempool" }];
         let vm=this;
         this.client.command(batch).then((r) =>
