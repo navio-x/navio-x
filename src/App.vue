@@ -608,10 +608,24 @@ v-show="state=='select_network'"
       </router-link>
 
       <router-link to="/staking"
-      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
       active-class="nav-item-active">
         <PhDatabase :size="19" weight="duotone" class="shrink-0" />
         <span>Staking</span>
+      </router-link>
+
+      <router-link to="/trade"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium mb-0.5"
+      active-class="nav-item-active">
+        <PhArrowsLeftRight :size="19" weight="duotone" class="shrink-0" />
+        <span>Trade</span>
+      </router-link>
+
+      <router-link to="/assets"
+      class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.12] transition-all text-sm font-medium"
+      active-class="nav-item-active">
+        <PhCoins :size="19" weight="duotone" class="shrink-0" />
+        <span>Assets</span>
       </router-link>
 
       <div class="my-3 border-t border-white/[0.14]"></div>
@@ -734,7 +748,7 @@ v-show="state=='select_network'"
     import {
         PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
         PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
-        PhGearSix, PhInfo, PhList, PhX
+        PhGearSix, PhInfo, PhList, PhX, PhArrowsLeftRight, PhCoins
     } from '@phosphor-icons/vue';
     const Toast = Swal.mixin({
         toast: true,
@@ -748,7 +762,7 @@ v-show="state=='select_network'"
           NetworkSelector, SettingsView, TitleBar,
           PhHouse, PhWallet, PhPaperPlaneTilt, PhArrowCircleDown,
           PhClockCounterClockwise, PhDatabase, PhTerminalWindow,
-          PhGearSix, PhInfo, PhList, PhX
+          PhGearSix, PhInfo, PhList, PhX, PhArrowsLeftRight, PhCoins
       },
       data() {
         const networks = [

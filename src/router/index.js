@@ -10,6 +10,8 @@ import About from "../views/about.vue";
 import History from "../views/history.vue";
 import Staking from "../views/staking.vue";
 import Peers from "../views/peers.vue";
+import Trade from "../views/trade.vue";
+import Assets from "../views/assets.vue";
 
 const routes = [
 {
@@ -66,6 +68,16 @@ const routes = [
   path: "/peers",
   name: "Peers",
   component: Peers,
+},
+{
+  path: "/trade",
+  name: "Trade",
+  component: Trade,
+},
+{
+  path: "/assets",
+  name: "Assets",
+  component: Assets,
 }
 ];
 
